@@ -1,0 +1,79 @@
+.info-segment {
+    background-color: red;
+    position:fixed!important;
+    top:7rem!important;
+    margin-left: 570px!important;
+    width: 260px!important;
+}
+
+.chemical-color {
+    background-color: #F44336!important;
+}
+
+.organism-color {
+    background-color: #3399ff!important;
+}
+
+.structure-color {
+    background-color: #009688!important;
+}
+
+.physiologic-color {
+    background-color: #8E24AA!important;
+}
+
+.pathologic-color {
+    background-color: #F3D250!important;
+}
+
+.gene-color {
+    background-color: #374785!important;
+}
+
+.disease-color {
+    background-color: #f7941d!important;
+}
+
+.resultlist-container {
+    padding-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.result-list {
+    width: 800px!important;
+}
+
+.list-item {
+    padding-top: 2rem!important;
+    padding-bottom: 2rem!important;
+    padding-left: 3rem!important;
+    padding-right: 3rem!important;
+}
+
+.list-header {
+    font-size: 2rem!important;
+}
+
+/* .search-result-title {
+    padding-top: 0.5rem!important;
+} */
+
+.result-list-pagination {
+    /*margin-top: 2rem!important;*/
+    margin-bottom: 1rem!important;
+}
+
+.page-note {
+    color: gray;
+    font-size: 0.85rem;
+}
+
+.resultlist-word-list {
+    /* background-color: red; */
+    overflow-x: hidden!important;
+    padding: 0!important;
+    max-height: 28rem!important;
+}

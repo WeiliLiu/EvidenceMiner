@@ -1,0 +1,16 @@
+.author-label {
+  margin-bottom: 0.2rem!important;
+  color: black!important;
+}
+
+.article-body-container {
+  /* background-color: red; */
+  /* width: 100%; */
+  /* padding: 2rem!important; */
+  /* border-left: 1px solid; */
+  padding-left: 27rem!important;
+  padding-top: 2rem!important;
+  padding-right: 27rem!important;
+  padding-bottom: 5rem!important;
+  min-height: 100vh;
+}

@@ -1,0 +1,26 @@
+.article-container {
+    /*background-color: red;*/
+    align-content: center;
+    justify-content: center;
+    display: flex;
+}
+
+.article-grid {
+    margin-top: 1.5rem!important;
+    width: 1500px!important;
+}
+
+.type-button {
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.article-left-segment {
+    overflow-x: hidden!important;
+    width: 25rem!important;
+}
+
+.article-left-segment::-webkit-scrollbar { 
+    display: none; }
