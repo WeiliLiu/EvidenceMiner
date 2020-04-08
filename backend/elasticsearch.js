@@ -42,6 +42,12 @@ exports.indexExists = indexExists;
 function initMapping() {
     return elasticClient.indices.putMapping({
         index: indexName,
+        "settings" : {
+            "index" : {
+                "number_of_shards" : 12, 
+                "number_of_replicas" : 2 
+            }
+        },
         type: "document",
         body: {
             properties: {
@@ -103,6 +109,7 @@ exports.initMapping = initMapping;
  */
 function addDocument(document) {
     // console.log("indexing document")
+    // console.log(document);
     return elasticClient.index({
         index: indexName,
         body: {
@@ -140,7 +147,7 @@ function getSearchResult(query) {
                     "should": [
                         {
                             "match": {
-                                "title": query
+                                "searchKey": query
                             }
                         }
                     ]
