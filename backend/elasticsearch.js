@@ -7,104 +7,6 @@ var elasticClient = new Client({
 var indexName = "evidenceminer";
 
 /**
- * Delete an existing index
- */
-function deleteIndex() {
-    return elasticClient.indices.delete({
-        index: indexName,
-    });
-}
-exports.deleteIndex = deleteIndex;
-
-/**
- * Create an index
- */
-function initIndex() {
-    return elasticClient.indices.create({
-        index: indexName
-    });
-}
-exports.initIndex = initIndex;
-
-/**
- * Check for the existence of an index
- */
-function indexExists() {
-    return elasticClient.indices.exists({
-        index: indexName
-    });
-}
-exports.indexExists = indexExists;
-
-/**
- * Initialize the mapping for the index
- */
-function initMapping() {
-    return elasticClient.indices.putMapping({
-        index: indexName,
-        "settings" : {
-            "index" : {
-                "number_of_shards" : 12, 
-                "number_of_replicas" : 2 
-            }
-        },
-        type: "document",
-        body: {
-            properties: {
-                "pmid": {
-                    "type": "keyword"
-                },
-                "sentId": {
-                    "type": "long"
-                },
-                "entities": {
-                    "type": "object"
-                },
-                "isTitle": {
-                    "type": "long"
-                },
-                "title": {
-                    "type": "text"
-                },
-                "prevSent": {
-                    "type": "text"
-                },
-                "nextSent": {
-                    "type": "text"
-                },
-                "date": {
-                    "type": "long"
-                },
-                "author_list": {
-                    "type": "keyword"
-                },
-                "journal_name": {
-                    "type": "keyword"
-                },
-                "mesh_heading": {
-                    "type": "text",
-                    "similarity": "BM25",
-                },
-                "sentence":{
-                    "type": "text"
-                },
-                "patterns":{
-                    "type": "object"
-                },
-                "searchKey": {
-                    "type": "text",
-                    "similarity": "BM25",
-                },
-                "metaPattern": {
-                    "type": "search_as_you_type"
-                }
-            }
-        }
-    });
-}
-exports.initMapping = initMapping;
-
-/**
  * Add a document to the index
  */
 function addDocument(document) {
@@ -140,17 +42,11 @@ function getSearchResult(query) {
     return elasticClient.search({
         index: indexName,
         from: 0,
-        size: 10,
+        size: 2000,
         body: {
             "query": {
-                "bool": {
-                    "should": [
-                        {
-                            "match": {
-                                "searchKey": query
-                            }
-                        }
-                    ]
+                "match": {
+                    "searchKey": query
                 }
             }
         }

@@ -1,4 +1,4 @@
-const env = 'staging'
+const env = 'dev'
 
 const dev = {
   searchUrl: 'http://localhost:9200',

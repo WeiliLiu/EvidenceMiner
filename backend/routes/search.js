@@ -10,7 +10,7 @@ var elastic = require('../elasticsearch');
 
 // GET search query
 router.get('/', function (req, res, next) {
-  console.log(req.body)
+  // console.log(req.body.query)
   elastic.getSearchResult(req.body.query)
     .then(result => {
       console.log(result);

@@ -66,3 +66,9 @@ node_modules/
 
 # data
 pubmed_with_pattern.json
+
+# elasticsearch log
+es_log.txt
+
+# elasticsearch binary
+elasticsearch-7.6.2

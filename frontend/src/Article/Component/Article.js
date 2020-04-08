@@ -49,7 +49,7 @@ export default class Article extends React.Component {
     componentDidMount() {
         var query = {"query":{"bool":{"must":[{"match":{"pmid":this.props.match.params.id.replace('#', ' ').split(' ')[0]}}],"must_not":[],"should":[]}},"from":0,"size":250,"sort":[],"aggs":{}};
 
-        axios.get(config.searchUrl + '/pubmed/_search', {
+        axios.get(config.searchUrl + '/evidenceminer/_search', {
             params: {
                 source: JSON.stringify(query),
                 source_content_type: 'application/json'
