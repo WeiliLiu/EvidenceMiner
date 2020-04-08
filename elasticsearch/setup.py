@@ -3,18 +3,9 @@ from elasticsearch import Elasticsearch
 
 if __name__ == '__main__':
     INDEX_NAME = "evidenceminer"
-    # TYPE_NAME = "covid19_0313"
     NUMBER_SHARDS = 1 # keep this as one if no cluster
     NUMBER_REPLICAS = 0
 
-    # type_list = []
-    # with open("/home/ubuntu/Oxygen/data/CORD-19-NER/2020-03-13/type_list.txt", "r") as fin:
-    #     for line in fin:
-    #         line = line.strip().lower()
-    #         if line and line != "date":
-    #             type_list.append(line)
-    
-    # print(f"{len(type_list)} entity types in total")
     '''
     following is the defined schema
     '''
@@ -29,7 +20,7 @@ if __name__ == '__main__':
             "type": "object"
         },
         "isTitle": {
-            "type": "boolean"
+            "type": "long"
         },
         "title": {
             "type": "text"
@@ -60,7 +51,8 @@ if __name__ == '__main__':
             "type": "object"
         },
         "searchKey": {
-            "type": "keyword"
+            "type": "text",
+            "similarity": "BM25",
         },
         "metaPattern": {
             "type": "search_as_you_type"
@@ -71,14 +63,6 @@ if __name__ == '__main__':
         "settings": {
             "number_of_shards": NUMBER_SHARDS,
             "number_of_replicas": NUMBER_REPLICAS,
-            # "index": {
-            #     "similarity": {
-            #         "dirichlet_lm": {
-            #             "type": "LMDirichlet",
-            #             "mu": 2000
-            #         }
-            #     }
-            # }
         },
         "mappings": {
             "properties": base_properties

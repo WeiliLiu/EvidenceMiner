@@ -1,26 +1,13 @@
 import time
 import json
-from collections import defaultdict
 from elasticsearch import Elasticsearch
+import re
 
 if __name__ == '__main__':
-    # inputFilePath = "../data/CORD-19-NER/2020-03-13/COVID-19-corpus-ner-merged.json"
-    # typeFilePath = "../data/CORD-19-NER/2020-03-13/type_list.txt"
-    # logFilePath = "../data/CORD-19-NER/2020-03-13/log_20200330.txt"
-    # statFilePath = "../data/CORD-19-NER/2020-03-13/stats_20200330.txt"
     inputFilePath = "./pubmed_with_pattern.json"
     logFilePath = "./es_log.txt"
 
     INDEX_NAME = "evidenceminer"
-    # TYPE_NAME = "covid19_0313"
-
-    # type_list = []
-    # with open(typeFilePath, "r") as fin:
-    #     for line in fin:
-    #         line = line.strip().lower()
-    #         if line and line != "date":
-    #             type_list.append(line)
-
 
     es = Elasticsearch()
 
@@ -28,21 +15,11 @@ if __name__ == '__main__':
         start = time.time()
         bulk_size = 100 # number of document processed in each bulk index
         bulk_data = [] # data in bulk index
-        
-        ## saving the sum of all field lengths for later model usage
-        # length_dict = {
-        #     "title_length_sum": 0,
-        #     "abstract_length_sum": 0,
-        #     "total_length_sum": 0,
-        #     "full_text_length_sum": 0
-        # }
-        # for entity_type in type_list:
-        #     length_dict[entity_type+"_length_sum"] = 0
 
         cnt = 0
         for line in fin: ## each line is single document
-            if cnt == 1:
-                break
+            # if cnt == 100:
+            #     break
             cnt += 1
             paperInfo = json.loads(line.strip())
             
@@ -109,10 +86,9 @@ if __name__ == '__main__':
                 data_dict["author_list"] = []
             
             # update date
-            # print(cnt)
             if paperInfo["PubDate"]["Year"]:
                 if len(paperInfo["PubDate"]["Year"]) != 4 or paperInfo["PubDate"]["Year"].isdigit() == False:
-                    data_dict["date"] = "No Year"
+                    data_dict["date"] = -1
                 else:
                     data_dict["date"] = int(paperInfo["PubDate"]["Year"])
             elif paperInfo["PubDate"]["MedlineDate"]:
@@ -133,14 +109,13 @@ if __name__ == '__main__':
             op_dict = {
                 "index": {
                     "_index": INDEX_NAME,
-                    "_type": 'doc',
-                    "_id": cnt
+                    # "_type": 'doc',
+                    # "_id": cnt
                 }
             }
 
             bulk_data.append(op_dict)
             bulk_data.append(data_dict)       
-            print(bulk_data)
                     
             ## Start Bulk indexing
             if cnt % bulk_size == 0 and cnt != 0:

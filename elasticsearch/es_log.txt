@@ -1,2 +1,0 @@
-bulk indexing... 1, escaped time 0.00138092041016 (seconds) 
-Finish indexing. Total escaped time 0.00792098045349 (seconds) 
