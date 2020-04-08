@@ -18,13 +18,10 @@ if __name__ == '__main__':
 
         cnt = 0
         for line in fin: ## each line is single document
-            # if cnt == 100:
-            #     break
             cnt += 1
             paperInfo = json.loads(line.strip())
             
             data_dict = {}
-            # total_length = 0
             
             # update PMID
             data_dict["pmid"] = paperInfo.get("PMID", "-1")
@@ -109,8 +106,6 @@ if __name__ == '__main__':
             op_dict = {
                 "index": {
                     "_index": INDEX_NAME,
-                    # "_type": 'doc',
-                    # "_id": cnt
                 }
             }
 
