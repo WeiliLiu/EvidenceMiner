@@ -1,5 +1,5 @@
 import React from 'react';
-import {Container, Header, Divider, Popup, List, Message, Label, Icon, Transition, Grid} from "semantic-ui-react";
+import {Container, Header, Divider, Popup, List, Message, Label, Icon, Transition, Grid, Menu, Segment, Dropdown} from "semantic-ui-react";
 import '../Style/ArticleBody.css';
 import PatternTable from '../Component/PatternTable.js';
 import {Animated} from "react-animated-css";
@@ -153,23 +153,39 @@ export default class ArticleBody extends React.Component {
     render() {
         return(
             <Container className={'article-body-container'} fluid style={{ backgroundColor: "" }}>
-                <Header as='h1' className={'article-header'}>{this.highlightText(1)}</Header>
-                <div className={'author-names'}><a style={{ color: '#7e7e7e' }}>PMID:</a> <a href={'#'}>{this.props.pmid}</a></div>
+                <h1>{this.highlightText(1)}</h1>
+                {/* <div className={'author-names'}><a style={{ color: '#7e7e7e' }}>PMID:</a> <a href={'#'}>{this.props.pmid}</a></div>
                 <div className={'author-names'}><a style={{ color: '#7e7e7e' }}>Authors:</a> {this.showAuthors()}</div>
                 <div className={'author-names'}><a style={{ color: '#7e7e7e' }}>Journal:</a> <i>{this.props.journal}</i></div>
-                <div className={'author-names'}><a style={{ color: '#7e7e7e' }}>Publish Year:</a> {this.props.date}</div>
-                <Divider/>
-                <Header as='h4' id="abstract-header">Abstract:{"\t"}
-                    <Icon name='refresh' link onClick={this.props.clearSentColor} />
-                </Header>
-                <p>
-                    {this.highlightText(0)}
-                </p>
-                <Header as='h4'>Body:</Header>
-                <p>{this.highlightText(2)}</p>
-                {/* <Header as='h4'>Patterns: </Header>
-                <PatternTable patterns={this.props.patterns} changeSentColor={this.props.changeSentColor}
-                    scrollToAnchor={this.scrollToAnchor}/> */}
+                <div className={'author-names'}><a style={{ color: '#7e7e7e' }}>Publish Year:</a> {this.props.date}</div> */}
+                
+                <Segment className="word-segment">
+                    <Header as='h4' style={{ backgroundColor: 'red' }}>Label Coloring & Entity Counts</Header>
+                    {/* <Divider/> */}
+                    <div>
+                        <Dropdown placeholder={'Sorted By: ' + this.state.sortMode} selection fluid className='icon'>
+                            <Dropdown.Menu>
+                                <Dropdown.Header icon='hand pointer' content={'Choose a method'} />
+                                <Dropdown.Divider />
+                                <Dropdown.Item label={{ color: 'red', empty: true, circular: true }} text='Frequency' onClick={() => this.setState({ sortMode: 'Frequency' })}/>
+                                <Dropdown.Item label={{ color: 'blue', empty: true, circular: true }} text='Alphabet' onClick={() => this.setState({ sortMode: 'Alphabet' })}/>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                        <List>
+                            {this.props.showWordList()}
+                        </List>
+                    </div>
+                </Segment>
+
+                <div className="abstract-container">
+                    <h4>Abstract</h4>
+                    <p>
+                        {this.highlightText(0)}
+                    </p>
+                </div>
+                <div className="body-container">
+                    <p>{this.highlightText(2)}</p>
+                </div>
             </Container>
         )
     }

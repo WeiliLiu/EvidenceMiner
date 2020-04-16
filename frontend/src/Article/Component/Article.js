@@ -47,9 +47,10 @@ export default class Article extends React.Component {
     }
 
     componentDidMount() {
+        // var query = {"query":{"bool":{"must":[{"match":{"pmid":this.props.match.params.id.replace('#', ' ').split(' ')[0]}}],"must_not":[],"should":[]}},"from":0,"size":250,"sort":[],"aggs":{}};
         var query = {"query":{"bool":{"must":[{"match":{"pmid":this.props.match.params.id.replace('#', ' ').split(' ')[0]}}],"must_not":[],"should":[]}},"from":0,"size":250,"sort":[],"aggs":{}};
 
-        axios.get(config.searchUrl + '/evidenceminer/_search', {
+        axios.get(config.searchUrl + '/pubmed/_search', {
             params: {
                 source: JSON.stringify(query),
                 source_content_type: 'application/json'
@@ -207,7 +208,6 @@ export default class Article extends React.Component {
 
     showWordList() {
         var table = [];
-        console.log(this.state.typeDict);
         var types = Object.keys(this.state.typeDict);
         for(let i = 0; i < types.length; i++) {
             table.push(<MajorTypeList Type={types[i]} List={this.state.typeDict[types[i]]} sortMode={this.state.sortMode}/>)
@@ -218,7 +218,7 @@ export default class Article extends React.Component {
     render() {
         return (
             <div>
-                <Menu vertical fixed="left" size="big" className="article-left-segment">
+                {/* <Menu vertical fixed="left" size="big" className="article-left-segment">
                     <Menu.Item>
                         <Link to={{
                                 pathname: `/`
@@ -228,25 +228,6 @@ export default class Article extends React.Component {
                                 />
                         </Link>
                     </Menu.Item>
-                    {/* <Menu.Item>
-                        <Search
-                                fluid
-                                loading={false}
-                                input={<Input fluid icon='search' placeholder='Search...' />}
-                                // onResultSelect={this.handleResultSelect}
-                                // onSearchChange={_.debounce(this.handleSearchChange, 500, {
-                                // leading: true,
-                                // })}
-                                // results={results}
-                                // value={value}
-                                // resultRenderer={resultRenderer}
-                                // noResultsMessage={"No meta patterns found!"}
-                                // onKeyPress={this.handleKeyPress}
-                                // onFocus={() => {this.setState({searchBarFocused: true})}}
-                                // onBlur={() => {this.setState({searchBarFocused: false})}}
-                                {...this.props}
-                            />
-                    </Menu.Item> */}
                     <Menu.Item>
                         <Segment >
                             <Header as='h4'>Label Coloring & Entity Counts</Header>
@@ -266,7 +247,7 @@ export default class Article extends React.Component {
                             </div>
                         </Segment>
                     </Menu.Item>
-                </Menu>
+                </Menu> */}
 
                 <ArticleBody sentences={this.state.sentences}
                             title={this.state.title}  abstract={this.state.abstract} authors={this.state.authors}
@@ -274,15 +255,15 @@ export default class Article extends React.Component {
                             entities={this.state.entities} typeDict={this.state.typeDict} patterns={this.state.patterns}
                             state={this.props.location.state === undefined? "None": this.props.location.state}
                             sentColors={this.state.sentColors} changeSentColor={this.changeSentColor}
-                            clearSentColor={this.clearSentColor}/>
+                            clearSentColor={this.clearSentColor} showWordList={this.showWordList} />
 
-                <Menu vertical fixed="right" size="big" className="article-left-segment">
+                {/* <Menu vertical fixed="right" size="big" className="article-left-segment">
                     <Menu.Item>
                         <Header as='h4'>Meta-pattern Extractions </Header>
                         <PatternTable patterns={this.state.patterns} changeSentColor={this.changeSentColor}
                             scrollToAnchor={this.scrollToAnchor}/>
                     </Menu.Item>
-                </Menu>
+                </Menu> */}
             </div>
         )
     }

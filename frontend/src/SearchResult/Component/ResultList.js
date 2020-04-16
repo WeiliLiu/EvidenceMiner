@@ -52,7 +52,7 @@ export default class ResultList extends React.Component {
         var query = {"query":{"bool":{"must":[],"must_not":[],"should":should_array}},"from":0,"size":2000,"sort":[],"aggs":{}};
         console.log(query)
 
-        axios.get(config.searchUrl + '/evidenceminer/_search', {
+        axios.get(config.searchUrl + '/pubmed/_search', {
             params: {
                 source: JSON.stringify(query),
                 source_content_type: 'application/json'

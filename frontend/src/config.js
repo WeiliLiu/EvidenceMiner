@@ -1,7 +1,7 @@
 const env = 'dev'
 
 const dev = {
-  searchUrl: 'http://localhost:9200',
+  searchUrl: 'https://7dc1bc0b.ngrok.io',
   frontUrl: 'http://localhost:3000',
 }
 

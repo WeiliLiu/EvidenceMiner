@@ -1,3 +1,7 @@
+html, body {
+    font-family: 'Raleway', sans-serif;
+}
+
 .article-container {
     /*background-color: red;*/
     align-content: center;
