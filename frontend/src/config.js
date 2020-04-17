@@ -1,4 +1,4 @@
-const env = 'dev'
+const env = 'staging'
 
 const dev = {
   searchUrl: 'https://search-evidenceminer-lnayeh5s4wbpvgy4jezyqwk2ja.us-west-2.es.amazonaws.com/evidenceminer',
@@ -6,8 +6,8 @@ const dev = {
 }
 
 const staging = {
-  frontUrl: 'https://evidenceminer.firebaseapp.com',
-  searchUrl: 'https://7dc1bc0b.ngrok.io',
+  frontUrl: 'https://covid19-dev-deploy.d21sixze5eipkn.amplifyapp.com/',
+  searchUrl: 'https://search-evidenceminer-lnayeh5s4wbpvgy4jezyqwk2ja.us-west-2.es.amazonaws.com/evidenceminer',
 }
 
 const prod = {
