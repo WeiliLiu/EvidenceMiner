@@ -1,12 +1,21 @@
+// import react
 import React from 'react';
-import { Image, List, Header, Pagination, Icon, Segment, Label, Divider, Grid, Ref, Rail, Sticky, Container, Menu } from 'semantic-ui-react'
-import '../Style/ResultList.css';
-import axios from 'axios';
-import {Link} from "react-router-dom";
-import {withRouter} from 'react-router-dom';
+
+// import packages
+import { Image, List, Header, Pagination, Icon, Segment, Label, Divider, Grid, Ref, Rail, Sticky, Container, Menu, FormTextArea } from 'semantic-ui-react'
+
+// import self-made components
 import MajorTypeList from '../../Article/Component/MajorTypeList';
 import Result from './Result';
+
+// import api endpoints
+import api from '../../api';
+
+// import configurations
 import config from '../../config';
+
+// import css file
+import '../Style/ResultList.css';
 
 export default class ResultList extends React.Component {
     constructor(props) {
@@ -19,177 +28,189 @@ export default class ResultList extends React.Component {
             resultLength: 0,
             keyword: "",
             responseTime: 0,
-            isFlushed: false,
             typeDict: {},
         }
 
-        this.componentDidMount = this.componentDidMount.bind(this);
-        this.componentWillReceiveProps = this.componentWillReceiveProps.bind(this);
         this.showSearchResults = this.showSearchResults.bind(this);
         this.getSearchURL = this.getSearchURL.bind(this);
-        this.showWordList = this.showWordList.bind(this);
+        // this.showWordList = this.showWordList.bind(this);
     }
 
-    componentWillReceiveProps(nextProps, nextContext) {
-        // console.log('at resultlist')
+    async componentDidMount() {
+        // Get query from the url querystring
+        const searchKeyword = new URLSearchParams(window.location.search).get('kw');
+
+        // Get the total number of search results returned
+        const numSearchResults = await api.getSearchResultCount(searchKeyword);
+
+        // Calculate paging related numbers
+        const totalPages = Math.ceil(numSearchResults / 10);
+        const currPage = new URLSearchParams(window.location.search).get('page')
+
+        // Call the api to query elasticsearch
+        const resultSize = 10;
+        const searchResult = await api.getSearchResult(searchKeyword, resultSize, currPage);
+        console.log(searchResult);
+
+        // Modify states based on search results
         this.setState({
-            isFlushed: !this.state.isFlushed
-        });
-        // window.location.reload();
-        this.forceUpdate();
-    }
-
-    componentDidMount() {
-        const searchParams = new URLSearchParams(window.location.search);
-        var keyword = searchParams.get('kw');
-        var should_array = [];
-        var curr_obj = {
-            "match": {
-                "searchKey": keyword
-            }
-        }
-        should_array.push(curr_obj)
-        var query = {"query":{"bool":{"must":[],"must_not":[],"should":should_array}},"from":0,"size":2000,"sort":[],"aggs":{}};
-        console.log(query)
-
-        axios.get(config.searchUrl + '/pubmed/_search', {
-            params: {
-                source: JSON.stringify(query),
-                source_content_type: 'application/json'
-            }
+            responseTime: searchResult.took,
+            searchResults: searchResult.hits.hits,
+            totalPage: totalPages,
+            currentPage: currPage,
+            keyword: searchKeyword,
+            resultLength: numSearchResults,
+            // typeDict: cleaned_type_dict,
         })
-            .then(response => {
-                console.log(response.data.hits.hits)
-                var typeDict = {
-                    'Organism': {
-                        'Archeon': {},
-                        'Bacterium': {},
-                        'Eukaryote': {},
-                        'Virus': {},
-                    },
-                    'Fully Formed Anatomical Structure': {
-                        'Body Part, Organ, or Organ Component': {},
-                        'Tissue': {},
-                        'Cell': {},
-                        'Cell Component': {},
-                        'Gene or Genome': {},
-                    },
-                    'Chemical': {
-                        'Chemical': {},
-                    },
-                    'Physiologic Function': {
-                        'Organism Function': {},
-                        'Organ or Tissue Function': {},
-                        'Cell Function': {},
-                        'Molecular Function': {},
-                    },
-                    'Pathologic Function': {
-                        'Disease or Syndrome': {},
-                        'Cell or Molecular Dysfunction': {},
-                        'Experimental Model of Disease': {},
-                    }
-                };
-                var entities = [];
-                for (let i = 0; i < response.data.hits.hits.length; i++) {
-                    for (let j = 0; j < response.data.hits.hits[i]._source.entities.length; j++) {
-                        entities.push(response.data.hits.hits[i]._source.entities[j]);
-                    }
-                }
-                console.log(entities)
-                for(let i = 0; i < entities.length; i++) {
-                    if(parent_type[entities[i].type] in typeDict === false) {
-                        typeDict[parent_type[entities[i].type]] = {}
-                    }
-                    if(entities[i].type in typeDict[parent_type[entities[i].type]] === false) {
-                        typeDict[parent_type[entities[i].type]][entities[i].type] = {}
-                    }
-                    if(entities[i].name in typeDict[parent_type[entities[i].type]][entities[i].type] === false) {
-                        typeDict[parent_type[entities[i].type]][entities[i].type][entities[i].name] = 0;
-                    }
-                    typeDict[parent_type[entities[i].type]][entities[i].type][entities[i].name] += 1;
-                }
 
-                var cleaned_type_dict = {};
-                var major_types = Object.keys(typeDict);
-                for(let i = 0; i < major_types.length; i++) {
-                    var minor_types = Object.keys(typeDict[major_types[i]])
-                    var should_include_major_type = false;
-                    for(let j = 0; j < minor_types.length; j++) {
-                        if(Object.keys(typeDict[major_types[i]][minor_types[j]]).length !== 0) {
-                            should_include_major_type = true;
-                            break;
-                        }
-                    }
+        // const searchParams = new URLSearchParams(window.location.search);
+        // var keyword = searchParams.get('kw');
+        // var should_array = [];
+        // var curr_obj = {
+        //     "match": {
+        //         "searchKey": keyword
+        //     }
+        // }
+        // should_array.push(curr_obj)
+        // var query = {"query":{"bool":{"must":[],"must_not":[],"should":should_array}},"from":0,"size":15,"sort":[],"aggs":{}};
+        // console.log(query)
 
-                    if(should_include_major_type === true) {
-                        cleaned_type_dict[major_types[i]] = {};
-                        for(let j = 0; j < minor_types.length; j++) {
-                            if(Object.keys(typeDict[major_types[i]][minor_types[j]]).length !== 0) {
-                                cleaned_type_dict[major_types[i]][minor_types[j]] = typeDict[major_types[i]][minor_types[j]]
-                            } else {
-                                continue;
-                            }
-                        }
-                    }else {
-                        continue;
-                    }
-                }
-                console.log(cleaned_type_dict);
+        // axios.get(config.searchUrl + '/_search', {
+        //     params: {
+        //         source: JSON.stringify(query),
+        //         source_content_type: 'application/json'
+        //     }
+        // })
+        //     .then(response => {
+        //         console.log(response.data.hits.hits)
+                // var typeDict = {
+                //     'Organism': {
+                //         'Archeon': {},
+                //         'Bacterium': {},
+                //         'Eukaryote': {},
+                //         'Virus': {},
+                //     },
+                //     'Fully Formed Anatomical Structure': {
+                //         'Body Part, Organ, or Organ Component': {},
+                //         'Tissue': {},
+                //         'Cell': {},
+                //         'Cell Component': {},
+                //         'Gene or Genome': {},
+                //     },
+                //     'Chemical': {
+                //         'Chemical': {},
+                //     },
+                //     'Physiologic Function': {
+                //         'Organism Function': {},
+                //         'Organ or Tissue Function': {},
+                //         'Cell Function': {},
+                //         'Molecular Function': {},
+                //     },
+                //     'Pathologic Function': {
+                //         'Disease or Syndrome': {},
+                //         'Cell or Molecular Dysfunction': {},
+                //         'Experimental Model of Disease': {},
+                //     }
+                // };
+        //         var entities = [];
+        //         for (let i = 0; i < response.data.hits.hits.length; i++) {
+        //             for (let j = 0; j < response.data.hits.hits[i]._source.entities.length; j++) {
+        //                 entities.push(response.data.hits.hits[i]._source.entities[j]);
+        //             }
+        //         }
+        //         console.log(entities)
+        //         for(let i = 0; i < entities.length; i++) {
+        //             if(parent_type[entities[i].type] in typeDict === false) {
+        //                 typeDict[parent_type[entities[i].type]] = {}
+        //             }
+        //             if(entities[i].type in typeDict[parent_type[entities[i].type]] === false) {
+        //                 typeDict[parent_type[entities[i].type]][entities[i].type] = {}
+        //             }
+        //             if(entities[i].name in typeDict[parent_type[entities[i].type]][entities[i].type] === false) {
+        //                 typeDict[parent_type[entities[i].type]][entities[i].type][entities[i].name] = 0;
+        //             }
+        //             typeDict[parent_type[entities[i].type]][entities[i].type][entities[i].name] += 1;
+        //         }
 
-                var result_list = response.data.hits.hits;
-                var num_results = Object.keys(response.data.hits.hits).length;
-                var total_pages = Math.ceil(num_results / 10);
-                const searchParams = new URLSearchParams(window.location.search);
-                var curr_page = searchParams.get('page')
-                this.setState({
-                    responseTime: response.data.took,
-                    searchResults: result_list,
-                    resultLength: Object.keys(result_list).length,
-                    totalPage: total_pages,
-                    currentPage: curr_page,
-                    keyword: keyword,
-                    typeDict: cleaned_type_dict,
-                })
-            })
+        //         var cleaned_type_dict = {};
+        //         var major_types = Object.keys(typeDict);
+        //         for(let i = 0; i < major_types.length; i++) {
+        //             var minor_types = Object.keys(typeDict[major_types[i]])
+        //             var should_include_major_type = false;
+        //             for(let j = 0; j < minor_types.length; j++) {
+        //                 if(Object.keys(typeDict[major_types[i]][minor_types[j]]).length !== 0) {
+        //                     should_include_major_type = true;
+        //                     break;
+        //                 }
+        //             }
+
+        //             if(should_include_major_type === true) {
+        //                 cleaned_type_dict[major_types[i]] = {};
+        //                 for(let j = 0; j < minor_types.length; j++) {
+        //                     if(Object.keys(typeDict[major_types[i]][minor_types[j]]).length !== 0) {
+        //                         cleaned_type_dict[major_types[i]][minor_types[j]] = typeDict[major_types[i]][minor_types[j]]
+        //                     } else {
+        //                         continue;
+        //                     }
+        //                 }
+        //             }else {
+        //                 continue;
+        //             }
+        //         }
+        //         console.log(cleaned_type_dict);
+
+        //         var result_list = response.data.hits.hits;
+        //         var num_results = Object.keys(response.data.hits.hits).length;
+        //         var total_pages = Math.ceil(num_results / 10);
+        //         const searchParams = new URLSearchParams(window.location.search);
+        //         var curr_page = searchParams.get('page')
+        //         this.setState({
+        //             responseTime: response.data.took,
+        //             searchResults: result_list,
+        //             resultLength: Object.keys(result_list).length,
+        //             totalPage: total_pages,
+        //             currentPage: curr_page,
+        //             keyword: keyword,
+        //             typeDict: cleaned_type_dict,
+        //         })
+        //     })
     }
 
-    showSearchResults() {
+    showSearchResults = () => {
         var table = [];
-        var result_length = Object.keys(this.state.searchResults).length;
-        var start_index = (this.state.currentPage - 1) * 10;
-        var end_index = start_index + 10;
-        if(end_index > result_length) {
-            end_index = result_length;
-        }
-        for(let i = start_index; i < end_index; i++) {
-            // console.log(this.state.searchResults[i]._source.title)
-            table.push(<Result pmid={this.state.searchResults[i]._source.pmid}
-                                sentence={this.state.searchResults[i]._source.sentence}
-                                prevSentence={this.state.searchResults[i]._source.prevSent}
-                                nextSentence={this.state.searchResults[i]._source.nextSent}
-                                title={this.state.searchResults[i]._source.title}
-                                sentID={this.state.searchResults[i]._source.sentId}
-                                isTitle={this.state.searchResults[i]._source.isTitle}
-                                abstract={this.state.searchResults[i]._source.abstract} key={i}
-                                entities={this.state.searchResults[i]._source.entities}
-                                authors={this.state.searchResults[i]._source.author_list}
-                                date={this.state.searchResults[i]._source.date}
-                                journal={this.state.searchResults[i]._source.journal_name}
-                                score={this.state.searchResults[i]._score}
-                                key={i} ranking={String(i)}/>)
-        }
+
+        this.state.searchResults.map(result => {
+            const resultObj = result._source;
+            table.push(<Result pmid={resultObj.pmid}
+                sentence={resultObj.sentence}
+                prevSentence={resultObj.prevSent}
+                nextSentence={resultObj.nextSent}
+                title={resultObj.title}
+                sentID={resultObj.sentId}
+                isTitle={resultObj.isTitle}
+                abstract={resultObj.abstract}
+                entities={resultObj.entities}
+                authors={resultObj.author_list}
+                date={resultObj.date}
+                journal={resultObj.journal_name}
+                score={result._score}
+                key={result._id} 
+                ranking={this.state.searchResults.indexOf(result)} 
+                page={this.state.currentPage} />)
+        })
+
         return table;
     }
 
-    showWordList() {
-        var table = [];
-        console.log(this.state.typeDict);
-        var types = Object.keys(this.state.typeDict);
-        for(let i = 0; i < types.length; i++) {
-            table.push(<MajorTypeList Type={types[i]} List={this.state.typeDict[types[i]]} sortMode={'Frequency'}/>)
-        }
-        return table;
-    }
+    // showWordList() {
+    //     var table = [];
+    //     console.log(this.state.typeDict);
+    //     var types = Object.keys(this.state.typeDict);
+    //     for(let i = 0; i < types.length; i++) {
+    //         table.push(<MajorTypeList Type={types[i]} List={this.state.typeDict[types[i]]} sortMode={'Frequency'}/>)
+    //     }
+    //     return table;
+    // }
 
     getSearchURL = (keyword, nextPage) => {
         return config.frontUrl + "/search" + '?kw=' + keyword + "&page=" + nextPage;
@@ -200,6 +221,9 @@ export default class ResultList extends React.Component {
     }
 
     render() {
+        // return(
+        //     <div>SearchResult</div>
+        // )
         return(
             <div style={{ paddingTop: "2rem" }}>
                 <Grid stretched style={{ paddingLeft: "1rem" }}>
@@ -217,7 +241,6 @@ export default class ResultList extends React.Component {
                 <Grid padded>
                     <Grid.Column width={1} />
                     <Grid.Column width={10}>
-                        {/* <Header><Icon name='search' />Search Results for:  </Header> */}
                         <List divided verticalAlign='middle' size={'big'}>
                             {this.showSearchResults()}
                         </List>
@@ -235,7 +258,7 @@ export default class ResultList extends React.Component {
                             />
                         </Segment>
                     </Grid.Column>
-                    <Grid.Column width={4} style={{ backgroundColor: '', height: 'auto' }}>
+                    {/* <Grid.Column width={4} style={{ backgroundColor: '', height: 'auto' }}>
                         <div style={{ color: 'black', padding: '1rem', borderLeft: "1px solid rgb(225, 225, 225)" }}>
                             <Header as='h6'>Label Coloring & Frequent Associated Entities</Header>
                             <Segment basic className='resultlist-word-list'>
@@ -244,7 +267,7 @@ export default class ResultList extends React.Component {
                                 </List>
                             </Segment>
                         </div>
-                    </Grid.Column>
+                    </Grid.Column> */}
                     <Grid.Column width={1} />
                 </Grid>
             </div>
@@ -252,32 +275,62 @@ export default class ResultList extends React.Component {
     }
 }
 
+// const color = {
+//     'Chemical': '#F44336',
+//     'Organism': '#3399ff',
+//     'Fully Formed Anatomical Structure': '#009688',
+//     'Physiologic Function': '#8E24AA',
+//     'Pathologic Function': '#F3D250',
+//     'Gene or Genome': '#374785',
+//     'Disease or Syndrome': '#f7941d',
+// };
+
 const color = {
-    'Chemical': '#F44336',
-    'Organism': '#3399ff',
-    'Fully Formed Anatomical Structure': '#009688',
-    'Physiologic Function': '#8E24AA',
-    'Pathologic Function': '#F3D250',
-    'Gene or Genome': '#374785',
-    'Disease or Syndrome': '#f7941d',
+    'SPACY_TYPE': '#F44336',
+    'NEW_TYPE': '#3399ff',
+    'PHYSICAL_OBJECT': '#009688',
+    'CONCEPTUAL_ENTITY': '#8E24AA',
+    'ACTIVITY': '#F3D250',
+    'PHENOMENON_OR_PROCESS': '#374785',
 };
 
+// const parent_type = {
+//     'Chemical': 'Chemical',
+//     'Archaeon': 'Organism',
+//     'Bacterium': 'Organism',
+//     'Eukaryote': 'Organism',
+//     'Virus': 'Organism',
+//     'Body Part, Organ, or Organ Component': 'Fully Formed Anatomical Structure',
+//     'Tissue': 'Fully Formed Anatomical Structure',
+//     'Cell': 'Fully Formed Anatomical Structure',
+//     'Cell Component': 'Fully Formed Anatomical Structure',
+//     'Gene or Genome': 'Fully Formed Anatomical Structure',
+//     'Organism Function': 'Physiologic Function',
+//     'Organ or Tissue Function': 'Physiologic Function',
+//     'Cell Function': 'Physiologic Function',
+//     'Molecular Function': 'Physiologic Function',
+//     'Disease or Syndrome': 'Pathologic Function',
+//     'Cell or Molecular Dysfunction': 'Pathologic Function',
+//     'Experimental Model of Disease': 'Pathologic Function',
+// }
+
 const parent_type = {
-    'Chemical': 'Chemical',
-    'Archaeon': 'Organism',
-    'Bacterium': 'Organism',
-    'Eukaryote': 'Organism',
-    'Virus': 'Organism',
-    'Body Part, Organ, or Organ Component': 'Fully Formed Anatomical Structure',
-    'Tissue': 'Fully Formed Anatomical Structure',
-    'Cell': 'Fully Formed Anatomical Structure',
-    'Cell Component': 'Fully Formed Anatomical Structure',
-    'Gene or Genome': 'Fully Formed Anatomical Structure',
-    'Organism Function': 'Physiologic Function',
-    'Organ or Tissue Function': 'Physiologic Function',
-    'Cell Function': 'Physiologic Function',
-    'Molecular Function': 'Physiologic Function',
-    'Disease or Syndrome': 'Pathologic Function',
-    'Cell or Molecular Dysfunction': 'Pathologic Function',
-    'Experimental Model of Disease': 'Pathologic Function',
+    "PERSON": "SPACY_TYPE",
+    "NORP": "SPACY_TYPE",
+    "FAC": "SPACY_TYPE",
+    "ORG": "SPACY_TYPE",
+    "GPE": "SPACY_TYPE",
+    "LOC": "SPACY_TYPE",
+    "PRODUCT": "SPACY_TYPE",
+    "EVENT": "SPACY_TYPE",
+    "WORK_OF_ART": "SPACY_TYPE",
+    "LAW": "SPACY_TYPE",
+    "LANGUAGE": "SPACY_TYPE",
+    "DATE": "SPACY_TYPE",
+    "TIME": "SPACY_TYPE",
+    "PERCENT": "SPACY_TYPE",
+    "MONEY": "SPACY_TYPE",
+    "QUANTITY": "SPACY_TYPE",
+    "ORDINAL": "SPACY_TYPE",
+    "CARDINAL": "SPACY_TYPE"
 }

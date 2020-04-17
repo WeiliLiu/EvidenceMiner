@@ -1,5 +1,5 @@
 html, body {
-    font-family: 'Raleway', sans-serif;
+    font-family: 'Merriweather', serif;
 }
 
 .article-container {
@@ -28,3 +28,9 @@ html, body {
 
 .article-left-segment::-webkit-scrollbar { 
     display: none; }
+
+.article-body-wrapper {
+    width: 100%;
+    max-width: 1500px;
+    margin: 0 auto;
+}

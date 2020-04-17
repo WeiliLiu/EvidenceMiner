@@ -124,23 +124,22 @@ export default class Result extends React.Component {
         }
     }
 
-    decideScoreColor = (ranking) => {
-        // console.log(ranking)
-        if(ranking === '0') {
+    decideScoreColor = (ranking, page) => {
+        if(ranking === 0 && page === '1') {
             return 'red';
-        }else if (ranking === '1') {
+        }else if (ranking === 1 && page === '1') {
             return 'orange';
-        }else if (ranking === '2') {
+        }else if (ranking === 2 && page === '1') {
             return 'yellow';
         }else {
             return '';
         }
     }
 
-    decideScoreSize = (ranking) => {
-        if(ranking === '0') {
+    decideScoreSize = (ranking, page) => {
+        if(ranking === 0 && page === '1') {
             return 'small';
-        }else if (ranking === '1') {
+        }else if (ranking === 1 && page === '1') {
             return 'tiny';
         }else {
             return 'mini';
@@ -148,6 +147,7 @@ export default class Result extends React.Component {
     }
 
     render() {
+        console.log(this.props.authors)
         return(
             <Segment basic className={'search-segment'}>
                 <Link to={{
@@ -167,7 +167,7 @@ export default class Result extends React.Component {
                 <div className={'metadata-section'} style={{ marginTop: '1rem' }}>
                     <Popup content='Evidence score indicates the confidence of the retrieved sentence being a supporting evidence of the input query.' 
                         style={style} inverted mouseEnterDelay={300} mouseLeaveDelay={300}
-                        trigger={<Label as='a' size={this.decideScoreSize(this.props.ranking)} color={this.decideScoreColor(this.props.ranking)} image>
+                        trigger={<Label as='a' size={this.decideScoreSize(this.props.ranking, this.props.page)} color={this.decideScoreColor(this.props.ranking, this.props.page)} image>
                         {/* <img src='https://react.semantic-ui.com/images/avatar/small/jenny.jpg' /> */}
                         <Icon name='check'/>
                         Evidence Score
@@ -187,7 +187,7 @@ export default class Result extends React.Component {
                         <Label.Detail as='a' onClick={() => this.setState({showAllAuthors: !this.state.showAllAuthors})}><Icon name='angle double down' fitted/></Label.Detail>
                     </Label>
                 </div>
-                {this.props.isTitle? "":<small style={{ color: 'green' }}>Title: {this.props.title}</small>}
+                {this.props.isTitle === 1? "":<small style={{ color: 'green' }}>Title: {this.props.title}</small>}
                 <Transition visible={this.state.showAllAuthors} animation='scale' duration={500}>
                     <Message className={'author-section'}  onDismiss={() => this.setState({showAllAuthors: !this.state.showAllAuthors})}>
                         <Message.Content>
@@ -208,34 +208,121 @@ export default class Result extends React.Component {
     }
 }
 
+// const color = {
+//     'Chemical': '#F44336',
+//     'Organism': '#3399ff',
+//     'Fully Formed Anatomical Structure': '#009688',
+//     'Physiologic Function': '#8E24AA',
+//     'Pathologic Function': '#F3D250',
+//     'Gene or Genome': '#374785',
+//     'Disease or Syndrome': '#f7941d',
+// };
+
 const color = {
-    'Chemical': '#F44336',
-    'Organism': '#3399ff',
-    'Fully Formed Anatomical Structure': '#009688',
-    'Physiologic Function': '#8E24AA',
-    'Pathologic Function': '#F3D250',
-    'Gene or Genome': '#374785',
-    'Disease or Syndrome': '#f7941d',
+    'SPACY TYPE': '#F44336',
+    'NEW TYPE': '#3399ff',
+    'PHYSICAL OBJECT': '#009688',
+    'CONCEPTUAL ENTITY': '#8E24AA',
+    'ACTIVITY': '#F3D250',
+    'PHENOMENON OR PROCESS': '#374785',
 };
 
+// const parent_type = {
+//     'Chemical': 'Chemical',
+//     'Archaeon': 'Organism',
+//     'Bacterium': 'Organism',
+//     'Eukaryote': 'Organism',
+//     'Virus': 'Organism',
+//     'Body Part, Organ, or Organ Component': 'Fully Formed Anatomical Structure',
+//     'Tissue': 'Fully Formed Anatomical Structure',
+//     'Cell': 'Fully Formed Anatomical Structure',
+//     'Cell Component': 'Fully Formed Anatomical Structure',
+//     'Gene or Genome': 'Fully Formed Anatomical Structure',
+//     'Organism Function': 'Physiologic Function',
+//     'Organ or Tissue Function': 'Physiologic Function',
+//     'Cell Function': 'Physiologic Function',
+//     'Molecular Function': 'Physiologic Function',
+//     'Disease or Syndrome': 'Pathologic Function',
+//     'Cell or Molecular Dysfunction': 'Pathologic Function',
+//     'Experimental Model of Disease': 'Pathologic Function',
+// }
+
 const parent_type = {
-    'Chemical': 'Chemical',
-    'Archaeon': 'Organism',
-    'Bacterium': 'Organism',
-    'Eukaryote': 'Organism',
-    'Virus': 'Organism',
-    'Body Part, Organ, or Organ Component': 'Fully Formed Anatomical Structure',
-    'Tissue': 'Fully Formed Anatomical Structure',
-    'Cell': 'Fully Formed Anatomical Structure',
-    'Cell Component': 'Fully Formed Anatomical Structure',
-    'Gene or Genome': 'Fully Formed Anatomical Structure',
-    'Organism Function': 'Physiologic Function',
-    'Organ or Tissue Function': 'Physiologic Function',
-    'Cell Function': 'Physiologic Function',
-    'Molecular Function': 'Physiologic Function',
-    'Disease or Syndrome': 'Pathologic Function',
-    'Cell or Molecular Dysfunction': 'Pathologic Function',
-    'Experimental Model of Disease': 'Pathologic Function',
+    "PERSON": "SPACY TYPE",
+    "NORP": "SPACY TYPE",
+    "FAC": "SPACY TYPE",
+    "ORG": "SPACY TYPE",
+    "GPE": "SPACY TYPE",
+    "LOC": "SPACY TYPE",
+    "PRODUCT": "SPACY TYPE",
+    "EVENT": "SPACY TYPE",
+    "WORK OF ART": "SPACY TYPE",
+    "LAW": "SPACY TYPE",
+    "LANGUAGE": "SPACY TYPE",
+    "DATE": "SPACY TYPE",
+    "TIME": "SPACY TYPE",
+    "PERCENT": "SPACY TYPE",
+    "MONEY": "SPACY TYPE",
+    "QUANTITY": "SPACY TYPE",
+    "ORDINAL": "SPACY TYPE",
+    "CARDINAL": "SPACY TYPE",
+    "CORONAVIRUS": "NEW TYPE",
+    "VIRAL PROTEIN": "NEW TYPE",
+    "LIVESTOCK": "NEW TYPE",
+    "WILDLIFE": "NEW TYPE",
+    "EVOLUTION": "NEW TYPE",
+    "PHYSICAL SCIENCE": "NEW TYPE",
+    "SUBSTRATE": "NEW TYPE",
+    "MATERIAL": "NEW TYPE",
+    "IMMUNE RESPONSE": "NEW TYPE",
+    "ORGANISM": "PHYSICAL OBJECT",
+    "ARCHAEON": "PHYSICAL OBJECT",
+    "BACTERIUM": "PHYSICAL OBJECT",
+    "EUKARYOTE": "PHYSICAL OBJECT",
+    "VIRUS": "PHYSICAL OBJECT",
+    "ANATOMICAL STRUCTURE": "PHYSICAL OBJECT",
+    "BODY PART ORGAN OR ORGAN COMPONENT": "PHYSICAL OBJECT",
+    "TISSUE": "PHYSICAL OBJECT",
+    "CELL": "PHYSICAL OBJECT",
+    "CELL COMPONENT": "PHYSICAL OBJECT",
+    "GENE OR GENOME": "PHYSICAL OBJECT",
+    "MANUFACTURED_OBJECT": "PHYSICAL OBJECT",
+    "CHEMICAL": "PHYSICAL OBJECT",
+    "BODY_SUBSTANCE": "PHYSICAL OBJECT",
+    "FOOD": "PHYSICAL OBJECT",
+    "TEMPORAL CONCEPT": "CONCEPTUAL ENTITY",
+    "QUALITATIVE CONCEPT": "CONCEPTUAL ENTITY",
+    "QUANTITATIVE CONCEPT": "CONCEPTUAL ENTITY",
+    "FUNCTIONAL CONCEPT": "CONCEPTUAL ENTITY",
+    "SPATIAL CONCEPT": "CONCEPTUAL ENTITY",
+    "LABORATORY OR TEST RESULT": "CONCEPTUAL ENTITY",
+    "SIGN OR SYMPTOM": "CONCEPTUAL ENTITY",
+    "ORGANISM ATTRIBUTE": "CONCEPTUAL ENTITY",
+    "INTELLECTUAL PRODUCT": "CONCEPTUAL ENTITY",
+    "LANGUAGE": "CONCEPTUAL ENTITY",
+    "OCCUPATION OR DISCIPLINE": "CONCEPTUAL ENTITY",
+    "ORGANIZATION": "CONCEPTUAL ENTITY",
+    "GROUP ATTRIBUTE": "CONCEPTUAL ENTITY",
+    "GROUP": "CONCEPTUAL ENTITY",
+    "SOCIAL BEHAVIOR": "ACTIVITY",
+    "INDIVIDUAL BEHAVIOR": "ACTIVITY",
+    "DAILY OR RECREATIONAL ACTIVITY": "ACTIVITY",
+    "LABORATORY PROCEDURE": "ACTIVITY",
+    "DIAGNOSTIC PROCEDURE": "ACTIVITY",
+    "THERAPEUTIC OR PREVENTIVE PROCEDURE": "ACTIVITY",
+    "RESEARCH ACTIVITY": "ACTIVITY",
+    "GOVERNMENTAL OR REGULATORY ACTIVITY": "ACTIVITY",
+    "EDUCATIONAL ACTIVITY": "ACTIVITY",
+    "MACHINE ACTIVITY": "ACTIVITY",
+    "HUMAN-CAUSED PHENOMENON OR PROCESS": "PHENOMENON OR PROCESS",
+    "ORGANISM FUNCTION": "PHENOMENON OR PROCESS",
+    "ORGAN OR TISSUE FUNCTION": "PHENOMENON OR PROCESS",
+    "CELL FUNCTION": "PHENOMENON OR PROCESS",
+    "MOLECULAR FUNCTION": "PHENOMENON OR PROCESS",
+    "DISEASE OR SYNDROME": "PHENOMENON OR PROCESS",
+    "CELL OR MOLECULAR DYSFUNCTION": "PHENOMENON OR PROCESS",
+    "EXPERIMENTAL MODEL OF DISEASE": "PHENOMENON OR PROCESS",
+    "INJURY OR POISONING": "PHENOMENON OR PROCESS",
 }
 
 const style = {

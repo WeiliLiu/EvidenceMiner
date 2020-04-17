@@ -48,15 +48,25 @@ export default class Article extends React.Component {
 
     componentDidMount() {
         // var query = {"query":{"bool":{"must":[{"match":{"pmid":this.props.match.params.id.replace('#', ' ').split(' ')[0]}}],"must_not":[],"should":[]}},"from":0,"size":250,"sort":[],"aggs":{}};
-        var query = {"query":{"bool":{"must":[{"match":{"pmid":this.props.match.params.id.replace('#', ' ').split(' ')[0]}}],"must_not":[],"should":[]}},"from":0,"size":250,"sort":[],"aggs":{}};
+        // var query = {"query":{"bool":{"must":[{"match":{"pmid":this.props.match.params.id.replace('#', ' ').split(' ')[0]}}],"must_not":[],"should":[]}},"from":0,"size":250,"sort":[],"aggs":{}};
+        console.log(this.props.match.params.id.replace('#', ' ').split(' ')[0]);
+        var query = {
+            "query": {
+                "match": {"pmid": this.props.match.params.id.replace('#', ' ').split(' ')[0]}
+            },
+            "from":0,
+            "size":10000,
+        }
+        console.log(config.searchUrl + '_search')
 
-        axios.get(config.searchUrl + '/pubmed/_search', {
+        axios.get(config.searchUrl + '/_search', {
             params: {
                 source: JSON.stringify(query),
                 source_content_type: 'application/json'
             }
         })
             .then(response => {
+                console.log(response.data);
                 var sentences = [];
                 var entities = [];
                 var patterns = [];
@@ -249,13 +259,15 @@ export default class Article extends React.Component {
                     </Menu.Item>
                 </Menu> */}
 
-                <ArticleBody sentences={this.state.sentences}
-                            title={this.state.title}  abstract={this.state.abstract} authors={this.state.authors}
-                            date={this.state.publish_date} pmid={this.state.pmid} journal={this.state.journal}
-                            entities={this.state.entities} typeDict={this.state.typeDict} patterns={this.state.patterns}
-                            state={this.props.location.state === undefined? "None": this.props.location.state}
-                            sentColors={this.state.sentColors} changeSentColor={this.changeSentColor}
-                            clearSentColor={this.clearSentColor} showWordList={this.showWordList} />
+                <div className="article-body-wrapper">
+                    <ArticleBody sentences={this.state.sentences}
+                                title={this.state.title}  abstract={this.state.abstract} authors={this.state.authors}
+                                date={this.state.publish_date} pmid={this.state.pmid} journal={this.state.journal}
+                                entities={this.state.entities} typeDict={this.state.typeDict} patterns={this.state.patterns}
+                                state={this.props.location.state === undefined? "None": this.props.location.state}
+                                sentColors={this.state.sentColors} changeSentColor={this.changeSentColor}
+                                clearSentColor={this.clearSentColor} showWordList={this.showWordList} scrollToAnchor={this.scrollToAnchor}/>
+                </div>
 
                 {/* <Menu vertical fixed="right" size="big" className="article-left-segment">
                     <Menu.Item>
@@ -269,32 +281,51 @@ export default class Article extends React.Component {
     }
 }
 
+// const color = {
+//     'Chemical': '#F44336',
+//     'Organism': '#3399ff',
+//     'Fully Formed Anatomical Structure': '#009688',
+//     'Physiologic Function': '#8E24AA',
+//     'Pathologic Function': '#F3D250',
+//     'Gene or Genome': '#374785',
+//     'Disease or Syndrome': '#f7941d',
+// };
+
 const color = {
-    'Chemical': '#F44336',
-    'Organism': '#3399ff',
-    'Fully Formed Anatomical Structure': '#009688',
-    'Physiologic Function': '#8E24AA',
-    'Pathologic Function': '#F3D250',
-    'Gene or Genome': '#374785',
-    'Disease or Syndrome': '#f7941d',
+    'SPACY_TYPE': '#F44336',
+    'NEW_TYPE': '#3399ff',
+    'PHYSICAL_OBJECT': '#009688',
+    'CONCEPTUAL_ENTITY': '#8E24AA',
+    'ACTIVITY': '#F3D250',
+    'PHENOMENON_OR_PROCESS': '#374785',
 };
 
+// const parent_type = {
+//     'Chemical': 'Chemical',
+//     'Archaeon': 'Organism',
+//     'Bacterium': 'Organism',
+//     'Eukaryote': 'Organism',
+//     'Virus': 'Organism',
+//     'Body Part, Organ, or Organ Component': 'Fully Formed Anatomical Structure',
+//     'Tissue': 'Fully Formed Anatomical Structure',
+//     'Cell': 'Fully Formed Anatomical Structure',
+//     'Cell Component': 'Fully Formed Anatomical Structure',
+//     'Gene or Genome': 'Fully Formed Anatomical Structure',
+//     'Organism Function': 'Physiologic Function',
+//     'Organ or Tissue Function': 'Physiologic Function',
+//     'Cell Function': 'Physiologic Function',
+//     'Molecular Function': 'Physiologic Function',
+//     'Disease or Syndrome': 'Pathologic Function',
+//     'Cell or Molecular Dysfunction': 'Pathologic Function',
+//     'Experimental Model of Disease': 'Pathologic Function',
+// }
+
 const parent_type = {
-    'Chemical': 'Chemical',
-    'Archaeon': 'Organism',
-    'Bacterium': 'Organism',
-    'Eukaryote': 'Organism',
-    'Virus': 'Organism',
-    'Body Part, Organ, or Organ Component': 'Fully Formed Anatomical Structure',
-    'Tissue': 'Fully Formed Anatomical Structure',
-    'Cell': 'Fully Formed Anatomical Structure',
-    'Cell Component': 'Fully Formed Anatomical Structure',
-    'Gene or Genome': 'Fully Formed Anatomical Structure',
-    'Organism Function': 'Physiologic Function',
-    'Organ or Tissue Function': 'Physiologic Function',
-    'Cell Function': 'Physiologic Function',
-    'Molecular Function': 'Physiologic Function',
-    'Disease or Syndrome': 'Pathologic Function',
-    'Cell or Molecular Dysfunction': 'Pathologic Function',
-    'Experimental Model of Disease': 'Pathologic Function',
+    "PERSON": "SPACY_TYPE",
+    "NORP": "SPACY_TYPE",
+    "FAC": "SPACY_TYPE",
+    "ORG": "SPACY_TYPE",
+    "GPE": "SPACY_TYPE",
+    "LOC": "SPACY_TYPE",
+    "PRODUCT": "SPACY_TYPE"
 }

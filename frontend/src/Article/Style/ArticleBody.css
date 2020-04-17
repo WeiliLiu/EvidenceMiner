@@ -10,7 +10,7 @@
 
 .article-body-container h1 {
   font-size: 2.5rem;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .abstract-container {
@@ -23,12 +23,13 @@
 
 .abstract-container h4 {
   font-size: 2rem;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .abstract-container p {
-  font-size: 1.2rem;
-  font-weight: 500;
+  font-size: 1.1rem;
+  font-weight: 300;
+  line-height: 1.8rem;
 }
 
 .body-container {
@@ -36,11 +37,39 @@
 }
 
 .body-container p {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
+  font-weight: 300;
+  line-height: 1.8rem;
+}
+
+.word-segment-container {
+  /* background-color: red; */
+  width: 25rem;
+  float: right;
 }
 
 .word-segment {
   width: 24rem;
-  float: right;
   margin: 0!important;
+  float: right;
+}
+
+.word-segment-header {
+  background-color: rgb(247, 247, 247)!important;
+  font-weight: 800!important;
+  font-size: 1.1rem!important;
+}
+
+.word-segment-list {
+  overflow-y:scroll; 
+  position:relative;
+  height: 300px;
+}
+
+.pattern-segment {
+  width: 24rem;
+  margin: 0!important;
+  float: right;
+  margin-top: 2rem!important;
+  margin-bottom: 2rem!important;
 }
