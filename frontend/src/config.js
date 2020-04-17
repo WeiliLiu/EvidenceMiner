@@ -6,7 +6,7 @@ const dev = {
 }
 
 const staging = {
-  frontUrl: 'https://covid19-dev-deploy.d21sixze5eipkn.amplifyapp.com/',
+  frontUrl: 'https://covid19-dev-deploy.d21sixze5eipkn.amplifyapp.com',
   searchUrl: 'https://search-evidenceminer-lnayeh5s4wbpvgy4jezyqwk2ja.us-west-2.es.amazonaws.com/evidenceminer',
 }
 
