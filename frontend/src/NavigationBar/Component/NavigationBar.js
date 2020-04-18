@@ -60,13 +60,16 @@ export default class NavigationBar extends React.Component {
     }
 
     handleScroll =(e)=>{
-        var header = document.getElementById('header');
-          if(window.pageYOffset > 5){
-            header.classList.add('shadow-sm');
-          } else {
-            header.classList.remove('shadow-sm');
-          }
-      }
+        const { isMobile } = this.state;
+        if (!isMobile) {
+            var header = document.getElementById('header');
+            if(window.pageYOffset > 5){
+                header.classList.add('shadow-sm');
+            } else {
+                header.classList.remove('shadow-sm');
+            }
+        }    
+    }
 
     componentWillMount(){
         window.addEventListener('scroll', this.handleScroll);

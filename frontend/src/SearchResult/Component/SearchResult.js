@@ -16,6 +16,7 @@ class SearchResult extends React.Component {
         }
 
         this.getSearchURL = this.getSearchURL.bind(this);
+        this.resize = this.resize.bind(this);
     }
 
     componentDidMount() {

@@ -18,6 +18,7 @@ export default class AnalyticsGraph extends React.Component {
         this.getDocumentDataPoints = this.getDocumentDataPoints.bind(this);
         this.getPatternDataPoints = this.getPatternDataPoints.bind(this);
         this.getBothDataPoints = this.getBothDataPoints.bind(this);
+        this.resize = this.resize.bind(this);
     }
 
     componentDidMount() {
@@ -35,13 +36,19 @@ export default class AnalyticsGraph extends React.Component {
             entity_type = ""
         }
 
-        console.log(pattern)
+        // Set up screen size listener
+        window.addEventListener("resize", this.resize.bind(this));
+        this.resize();
 
         this.setState({
             entity: entity,
             pattern: pattern,
             entity_type: entity_type,
         });
+    }
+
+    resize() {
+        this.setState({isMobile: window.innerWidth <= 992});
     }
 
     addSymbols(e){
@@ -54,8 +61,6 @@ export default class AnalyticsGraph extends React.Component {
     }
     
     getDataPoints(type) {
-        console.log(this.state.type)
-        console.log(Object.keys(entity_top_counts).includes('Chemical'.toLowerCase()))
         if(Object.keys(entity_top_counts).includes(this.state.entity_type.toLowerCase())) {
             var data = [];
             for(var i = 0; i < Math.min(entity_top_counts[this.state.entity_type.toLowerCase()].length, 10); i++) {
@@ -84,7 +89,6 @@ export default class AnalyticsGraph extends React.Component {
     }
 
     getPatternDataPoints() {
-        // console.log('hello')
         if(Object.keys(pattern_top_counts).includes(this.state.pattern.toLowerCase())) {
             var data = [];
             for(var i = 0; i < Math.min(pattern_top_counts[this.state.pattern.toLowerCase()].length, 10); i++) {
@@ -98,20 +102,15 @@ export default class AnalyticsGraph extends React.Component {
     }
 
     getBothDataPoints() {
-        console.log('hello')
         if(Object.keys(pattern_top_counts).includes(this.state.pattern.toLowerCase())) {
-            console.log('hello_inside')
             var data = [];
             let count = 0;
             for(let i = 0; i < pattern_top_counts[this.state.pattern.toLowerCase()].length; i++) {
-                // console.log(this.state.entity.toLowerCase().split(' ').join('_'))
-                // console.log(pattern_top_counts[this.state.pattern][i]['title'].split('&').includes(this.state.entity.toLowerCase().split(' ').join('_')))
                 var pair = pattern_top_counts[this.state.pattern.toLowerCase()][i]['title'].split('&');
                 pair[0] = pair[0].toLowerCase()
                 pair[1] = pair[1].toLowerCase()
                 if(pair.includes(this.state.entity.toLowerCase().split(' ').join('_'))) {
                     count += 1
-                    // console.log(pattern_top_counts[this.state.pattern][i]['title'].split('&'))
                     var entity_pair = pattern_top_counts[this.state.pattern.toLowerCase()][i]['title'].split('&')
                     if (entity_pair[0].toLowerCase() != this.state.entity.toLowerCase().replace(/ /g, '_')) {
                         data.push({
@@ -254,18 +253,20 @@ export default class AnalyticsGraph extends React.Component {
 				dataPoints: this.getBothDataPoints()
 			}]
         }
+
+        const { isMobile } = this.state;
         
         if (this.state.entity_type !== "" && this.state.entity === "" && this.state.pattern === "") {
             return (
                 <div>
                     <Grid padded style={{ paddingTop: '2rem' }}>
-                        <Grid.Column width={8}>
+                        <Grid.Column width={isMobile? 16 : 8}>
                             <Segment padded>
                                 <h3>Entity Type: {this.state.entity_type.charAt(0).toUpperCase() + this.state.entity_type.slice(1)}</h3>
                                 <CanvasJSChart options = {options} />
                             </Segment>
                         </Grid.Column>
-                        <Grid.Column width={8}>
+                        <Grid.Column width={isMobile? 16 : 8}>
                             <Segment padded>
                                 <h3>Entity Type: {this.state.entity_type.charAt(0).toUpperCase() + this.state.entity_type.slice(1)}</h3>
                                 <CanvasJSChart options = {entity_document_options} />
@@ -280,13 +281,13 @@ export default class AnalyticsGraph extends React.Component {
             return (
                 <div>
                     <Grid padded style={{ paddingTop: '2rem' }}>
-                        <Grid.Column width={8}>
+                        <Grid.Column width={isMobile? 16 : 8}>
                             <Segment padded>
                                 <h3>Pattern: {this.state.pattern.charAt(0).toUpperCase() + this.state.pattern.slice(1)}</h3>
                                 <CanvasJSChart options = {pattern_sentence_options} />
                             </Segment>
                         </Grid.Column>
-                        <Grid.Column width={8}>
+                        <Grid.Column width={isMobile? 16 : 8}>
                             <Segment padded>
                                 <h3>Pattern: {this.state.pattern.charAt(0).toUpperCase() + this.state.pattern.slice(1)}</h3>
                                 <CanvasJSChart options = {pattern_document_options} />
@@ -301,14 +302,14 @@ export default class AnalyticsGraph extends React.Component {
             return (
                 <div>
                     <Grid padded style={{ paddingTop: '2rem' }}>
-                        <Grid.Column width={8}>
+                        <Grid.Column width={isMobile? 16 : 8}>
                             <Segment padded>
                                 <h3>Pattern: {this.state.pattern.charAt(0).toUpperCase() + this.state.pattern.slice(1)},
                                 Entity: {this.state.entity.charAt(0).toUpperCase() + this.state.entity.slice(1)}</h3>
                                 <CanvasJSChart options = {both_sentence_options} />
                             </Segment>
                         </Grid.Column>
-                        <Grid.Column width={8}>
+                        <Grid.Column width={isMobile? 16 : 8}>
                             <Segment padded>
                                 <h3>Pattern: {this.state.pattern.charAt(0).toUpperCase() + this.state.pattern.slice(1)},
                                     Entity: {this.state.entity.charAt(0).toUpperCase() + this.state.entity.slice(1)}</h3>
