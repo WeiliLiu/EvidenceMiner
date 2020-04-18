@@ -2,7 +2,7 @@
 import React from 'react';
 
 // import packages
-import { Image, List, Header, Pagination, Icon, Segment, Label, Divider, Grid, Ref, Rail, Sticky, Container, Menu, FormTextArea } from 'semantic-ui-react'
+import { Image, List, Header, Pagination, Icon, Segment, Label, Divider, Grid, Ref, Rail, Sticky, Container, Menu, FormTextArea, Dropdown } from 'semantic-ui-react'
 
 // import self-made components
 import MajorTypeList from '../../Article/Component/MajorTypeList';
@@ -56,6 +56,81 @@ export default class ResultList extends React.Component {
         window.addEventListener("resize", this.resize.bind(this));
         this.resize();
 
+        var typeDict = {
+            'Organism': {
+                'Archeon': {},
+                'Bacterium': {},
+                'Eukaryote': {},
+                'Virus': {},
+            },
+            'Fully Formed Anatomical Structure': {
+                'Body Part, Organ, or Organ Component': {},
+                'Tissue': {},
+                'Cell': {},
+                'Cell Component': {},
+                'Gene or Genome': {},
+            },
+            'Chemical': {
+                'Chemical': {},
+            },
+            'Physiologic Function': {
+                'Organism Function': {},
+                'Organ or Tissue Function': {},
+                'Cell Function': {},
+                'Molecular Function': {},
+            },
+            'Pathologic Function': {
+                'Disease or Syndrome': {},
+                'Cell or Molecular Dysfunction': {},
+                'Experimental Model of Disease': {},
+            }
+        };
+        var entities = [];
+        for (let i = 0; i < searchResult.hits.hits.length; i++) {
+            for (let j = 0; j < searchResult.hits.hits[i]._source.entities.length; j++) {
+                entities.push(searchResult.hits.hits[i]._source.entities[j]);
+            }
+        }
+        console.log(entities)
+        for(let i = 0; i < entities.length; i++) {
+            if(parent_type[entities[i].type] in typeDict === false) {
+                typeDict[parent_type[entities[i].type]] = {}
+            }
+            if(entities[i].type in typeDict[parent_type[entities[i].type]] === false) {
+                typeDict[parent_type[entities[i].type]][entities[i].type] = {}
+            }
+            if(entities[i].name in typeDict[parent_type[entities[i].type]][entities[i].type] === false) {
+                typeDict[parent_type[entities[i].type]][entities[i].type][entities[i].name] = 0;
+            }
+            typeDict[parent_type[entities[i].type]][entities[i].type][entities[i].name] += 1;
+        }
+
+        var cleaned_type_dict = {};
+        var major_types = Object.keys(typeDict);
+        for(let i = 0; i < major_types.length; i++) {
+            var minor_types = Object.keys(typeDict[major_types[i]])
+            var should_include_major_type = false;
+            for(let j = 0; j < minor_types.length; j++) {
+                if(Object.keys(typeDict[major_types[i]][minor_types[j]]).length !== 0) {
+                    should_include_major_type = true;
+                    break;
+                }
+            }
+
+            if(should_include_major_type === true) {
+                cleaned_type_dict[major_types[i]] = {};
+                for(let j = 0; j < minor_types.length; j++) {
+                    if(Object.keys(typeDict[major_types[i]][minor_types[j]]).length !== 0) {
+                        cleaned_type_dict[major_types[i]][minor_types[j]] = typeDict[major_types[i]][minor_types[j]]
+                    } else {
+                        continue;
+                    }
+                }
+            }else {
+                continue;
+            }
+        }
+
         // Modify states based on search results
         this.setState({
             responseTime: searchResult.took,
@@ -64,124 +139,12 @@ export default class ResultList extends React.Component {
             currentPage: currPage,
             keyword: searchKeyword,
             resultLength: numSearchResults,
-            // typeDict: cleaned_type_dict,
+            typeDict: cleaned_type_dict,
         })
-
-        // const searchParams = new URLSearchParams(window.location.search);
-        // var keyword = searchParams.get('kw');
-        // var should_array = [];
-        // var curr_obj = {
-        //     "match": {
-        //         "searchKey": keyword
-        //     }
-        // }
-        // should_array.push(curr_obj)
-        // var query = {"query":{"bool":{"must":[],"must_not":[],"should":should_array}},"from":0,"size":15,"sort":[],"aggs":{}};
-        // console.log(query)
-
-        // axios.get(config.searchUrl + '/_search', {
-        //     params: {
-        //         source: JSON.stringify(query),
-        //         source_content_type: 'application/json'
-        //     }
-        // })
-        //     .then(response => {
-        //         console.log(response.data.hits.hits)
-                // var typeDict = {
-                //     'Organism': {
-                //         'Archeon': {},
-                //         'Bacterium': {},
-                //         'Eukaryote': {},
-                //         'Virus': {},
-                //     },
-                //     'Fully Formed Anatomical Structure': {
-                //         'Body Part, Organ, or Organ Component': {},
-                //         'Tissue': {},
-                //         'Cell': {},
-                //         'Cell Component': {},
-                //         'Gene or Genome': {},
-                //     },
-                //     'Chemical': {
-                //         'Chemical': {},
-                //     },
-                //     'Physiologic Function': {
-                //         'Organism Function': {},
-                //         'Organ or Tissue Function': {},
-                //         'Cell Function': {},
-                //         'Molecular Function': {},
-                //     },
-                //     'Pathologic Function': {
-                //         'Disease or Syndrome': {},
-                //         'Cell or Molecular Dysfunction': {},
-                //         'Experimental Model of Disease': {},
-                //     }
-                // };
-        //         var entities = [];
-        //         for (let i = 0; i < response.data.hits.hits.length; i++) {
-        //             for (let j = 0; j < response.data.hits.hits[i]._source.entities.length; j++) {
-        //                 entities.push(response.data.hits.hits[i]._source.entities[j]);
-        //             }
-        //         }
-        //         console.log(entities)
-        //         for(let i = 0; i < entities.length; i++) {
-        //             if(parent_type[entities[i].type] in typeDict === false) {
-        //                 typeDict[parent_type[entities[i].type]] = {}
-        //             }
-        //             if(entities[i].type in typeDict[parent_type[entities[i].type]] === false) {
-        //                 typeDict[parent_type[entities[i].type]][entities[i].type] = {}
-        //             }
-        //             if(entities[i].name in typeDict[parent_type[entities[i].type]][entities[i].type] === false) {
-        //                 typeDict[parent_type[entities[i].type]][entities[i].type][entities[i].name] = 0;
-        //             }
-        //             typeDict[parent_type[entities[i].type]][entities[i].type][entities[i].name] += 1;
-        //         }
-
-        //         var cleaned_type_dict = {};
-        //         var major_types = Object.keys(typeDict);
-        //         for(let i = 0; i < major_types.length; i++) {
-        //             var minor_types = Object.keys(typeDict[major_types[i]])
-        //             var should_include_major_type = false;
-        //             for(let j = 0; j < minor_types.length; j++) {
-        //                 if(Object.keys(typeDict[major_types[i]][minor_types[j]]).length !== 0) {
-        //                     should_include_major_type = true;
-        //                     break;
-        //                 }
-        //             }
-
-        //             if(should_include_major_type === true) {
-        //                 cleaned_type_dict[major_types[i]] = {};
-        //                 for(let j = 0; j < minor_types.length; j++) {
-        //                     if(Object.keys(typeDict[major_types[i]][minor_types[j]]).length !== 0) {
-        //                         cleaned_type_dict[major_types[i]][minor_types[j]] = typeDict[major_types[i]][minor_types[j]]
-        //                     } else {
-        //                         continue;
-        //                     }
-        //                 }
-        //             }else {
-        //                 continue;
-        //             }
-        //         }
-        //         console.log(cleaned_type_dict);
-
-        //         var result_list = response.data.hits.hits;
-        //         var num_results = Object.keys(response.data.hits.hits).length;
-        //         var total_pages = Math.ceil(num_results / 10);
-        //         const searchParams = new URLSearchParams(window.location.search);
-        //         var curr_page = searchParams.get('page')
-        //         this.setState({
-        //             responseTime: response.data.took,
-        //             searchResults: result_list,
-        //             resultLength: Object.keys(result_list).length,
-        //             totalPage: total_pages,
-        //             currentPage: curr_page,
-        //             keyword: keyword,
-        //             typeDict: cleaned_type_dict,
-        //         })
-        //     })
     }
 
     resize() {
-        this.setState({isMobile: window.innerWidth <= 992});
+        this.setState({isMobile: window.innerWidth < 768});
     }
 
     showSearchResults = () => {
@@ -211,15 +174,15 @@ export default class ResultList extends React.Component {
         return table;
     }
 
-    // showWordList() {
-    //     var table = [];
-    //     console.log(this.state.typeDict);
-    //     var types = Object.keys(this.state.typeDict);
-    //     for(let i = 0; i < types.length; i++) {
-    //         table.push(<MajorTypeList Type={types[i]} List={this.state.typeDict[types[i]]} sortMode={'Frequency'}/>)
-    //     }
-    //     return table;
-    // }
+    showWordList() {
+        var table = [];
+        console.log(this.state.typeDict);
+        var types = Object.keys(this.state.typeDict);
+        for(let i = 0; i < types.length; i++) {
+            table.push(<MajorTypeList Type={types[i]} List={this.state.typeDict[types[i]]} sortMode={'Frequency'}/>)
+        }
+        return table;
+    }
 
     getSearchURL = (keyword, nextPage) => {
         return config.frontUrl + "/search" + '?kw=' + keyword + "&page=" + nextPage;
@@ -229,15 +192,24 @@ export default class ResultList extends React.Component {
         window.location.href = this.getSearchURL(keyword, nextPage);
     }
 
+    showWordList() {
+        var table = [];
+        var types = Object.keys(this.state.typeDict);
+        for(let i = 0; i < types.length; i++) {
+            table.push(<MajorTypeList Type={types[i]} List={this.state.typeDict[types[i]]} sortMode={this.state.sortMode}/>)
+        }
+        return table;
+    }
+
     render() {
         const { isMobile } = this.state;
 
         return(
             <div className="resultlist-container">
-                <Grid stretched className="search-meta-info">
+                <Grid className="search-meta-info">
                     <Grid.Row className="search-meta-info-row">
-                        <Grid.Column width={isMobile? 0 : 1}/>
-                        <Grid.Column width={isMobile? 16 : 10} >
+                        <Grid.Column only='computer' computer={1}/>
+                        <Grid.Column mobile={16} tablet={11} computer={10} widescreen={6} className="search-meta-info-column">
                             <Container fluid className="search-meta-container">
                                 <span> "{this.state.keyword}" </span>
                                 <span>(Total: <strong>{this.state.resultLength}</strong>, Took: <strong>{this.state.responseTime}ms</strong>)</span>
@@ -245,11 +217,11 @@ export default class ResultList extends React.Component {
                                 <small>~ At most 10 results are shown per page ~</small>
                             </Container>
                         </Grid.Column>
-                        <Grid.Column width={isMobile? 0 : 5} />
+                        <Grid.Column computer={5} widescreen={9}/>
                     </Grid.Row>
                     <Grid.Row className="search-meta-info-row">
-                        <Grid.Column width={this.state.isMobile? 0 : 1} />
-                        <Grid.Column width={this.state.isMobile? 16 : 10} className="segment-list">
+                        <Grid.Column only='computer' computer={1} />
+                        <Grid.Column mobile={16} tablet={11} computer={10} widescreen={6} className="segment-list">
                             <List divided verticalAlign='middle' size={'big'}>
                                 {this.showSearchResults()}
                             </List>
@@ -268,17 +240,27 @@ export default class ResultList extends React.Component {
                                 />
                             </Segment>
                         </Grid.Column>
-                        {/* <Grid.Column width={4} style={{ backgroundColor: '', height: 'auto' }}>
-                            <div style={{ color: 'black', padding: '1rem', borderLeft: "1px solid rgb(225, 225, 225)" }}>
-                                <Header as='h6'>Label Coloring & Frequent Associated Entities</Header>
-                                <Segment basic className='resultlist-word-list'>
+                        <Grid.Column mobile={16} tablet={5} computer={4} widescreen={3} className="wordlist-column">
+                            <Segment.Group className="resultlist-word-segment">
+                                <Segment className="resultlist-word-segment-header">Label Coloring & Entity Counts</Segment>
+                                <Segment className="sortmode-text">
+                                    <Dropdown placeholder={'Sorted By: ' + this.state.sortMode} selection fluid className='icon'>
+                                            <Dropdown.Menu>
+                                                <Dropdown.Header icon='hand pointer' content={'Choose a method'} />
+                                                <Dropdown.Divider />
+                                                <Dropdown.Item label={{ color: 'red', empty: true, circular: true }} text='Frequency' onClick={() => this.setState({ sortMode: 'Frequency' })}/>
+                                                <Dropdown.Item label={{ color: 'blue', empty: true, circular: true }} text='Alphabet' onClick={() => this.setState({ sortMode: 'Alphabet' })}/>
+                                            </Dropdown.Menu>
+                                        </Dropdown>
+                                </Segment>
+                                <Segment className="resultlist-word-segment-list" >
                                     <List>
                                         {this.showWordList()}
                                     </List>
                                 </Segment>
-                            </div>
-                        </Grid.Column> */}
-                        <Grid.Column width={1} />
+                            </Segment.Group>
+                        </Grid.Column>
+                        <Grid.Column computer={1} widescreen={6}/>
                     </Grid.Row>
                 </Grid>
                 

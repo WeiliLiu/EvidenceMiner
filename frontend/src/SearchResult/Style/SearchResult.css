@@ -1,5 +1,4 @@
 .search-grid-container {
-    max-width: 2000px;
     padding-top: 4rem;
 }
 
@@ -18,12 +17,29 @@
 }
 
 .search-menu {
-    padding: 0 0.5rem !important;
+    padding: 0!important;
     border: 0!important;
 }
 
-@media (max-width: 992px) {
+@media (min-width: 1920px) {
+    .search-menu {
+        padding-right: 1rem!important;
+    }
+}
+
+@media (max-width: 990px) {
     .search-grid-container {
         padding-top: 0;
+    }
+
+    .search-menu {
+        padding-left: 1rem!important;
+        padding-right: 1rem!important;
+    }
+}
+
+@media (max-width: 767) {
+    .search-menu {
+        padding-left: 0!important;
     }
 }

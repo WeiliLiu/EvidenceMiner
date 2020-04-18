@@ -41,10 +41,10 @@
     color: green;
 }
 
-@media (max-width: 992px) {
+@media (max-width: 990px) {
     .search-segment {
-        padding: 1.5rem!important;
-        margin: 0.5rem!important;
+        padding: 0 1rem!important;
+        margin: 0!important;
     }
 
     .result-header {
@@ -53,5 +53,12 @@
 
     .small-title {
         margin-top: 1rem!important;
+    }
+}
+
+@media (max-width: 767px) {
+    .search-segment {
+        padding: 1.5rem!important;
+        margin: 0.5rem!important;
     }
 }

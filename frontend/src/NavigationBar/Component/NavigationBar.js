@@ -21,7 +21,7 @@ export default class NavigationBar extends React.Component {
 
         this.state = {
             searchBarFocused: false,
-            isMobile: false,
+            isTablet: false,
             searchValue: '',
             shouldRedirect: false,
             isFlushed: false,
@@ -56,12 +56,12 @@ export default class NavigationBar extends React.Component {
     }
 
     resize() {
-        this.setState({isMobile: window.innerWidth <= 992});
+        this.setState({isTablet: window.innerWidth < 992});
     }
 
     handleScroll =(e)=>{
-        const { isMobile } = this.state;
-        if (!isMobile) {
+        const { isTablet } = this.state;
+        if (!isTablet) {
             var header = document.getElementById('header');
             if(window.pageYOffset > 5){
                 header.classList.add('shadow-sm');
@@ -179,12 +179,12 @@ export default class NavigationBar extends React.Component {
     }
 
     render() {
-        const { isLoading, value, results, isMobile } = this.state
+        const { isLoading, value, results } = this.state
 
         return(
             <Navbar id="header" bg="light" expand="lg" style={{ padding: '0px', backgroundColor: 'red' }} className={'main-navbar'}>
-                <Grid style={{ width: '100%', maxWidth: "2000px" }} padded stretched>
-                    <Grid.Column width={isMobile? 16 : 0} className="logo-column" textAlign="middle" verticalAlign="middle">
+                <Grid style={{ width: '100%' }} padded stretched>
+                    <Grid.Column mobile={16} tablet={16} computer={1} className="logo-column" textAlign="middle" verticalAlign="middle">
                         <Link to={{
                             pathname: `/`
                         }} >
@@ -193,7 +193,7 @@ export default class NavigationBar extends React.Component {
                             />
                         </Link>
                     </Grid.Column>
-                    <Grid.Column width={isMobile? 16 : 6} className={'searchbar-grid'}>
+                    <Grid.Column mobile={16} tablet={16} computer={6} className={'searchbar-grid'}>
                         <Search
                             fluid
                             loading={false}

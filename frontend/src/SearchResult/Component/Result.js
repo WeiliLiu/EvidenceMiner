@@ -34,7 +34,7 @@ export default class Result extends React.Component {
     }
 
     resize() {
-        this.setState({isMobile: window.innerWidth <= 992});
+        this.setState({isMobile: window.innerWidth < 768});
     }
 
     showAuthors = () => {

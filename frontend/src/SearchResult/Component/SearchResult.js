@@ -12,20 +12,14 @@ class SearchResult extends React.Component {
 
         this.state = {
             keyword: "",
-            isMobile: false,
         }
 
         this.getSearchURL = this.getSearchURL.bind(this);
-        this.resize = this.resize.bind(this);
     }
 
     componentDidMount() {
         const searchParams = new URLSearchParams(window.location.search);
         var keyword = searchParams.get('kw');
-
-        // Set up screen size listener
-        window.addEventListener("resize", this.resize.bind(this));
-        this.resize();
 
         this.setState({
             keyword: keyword,
@@ -34,25 +28,19 @@ class SearchResult extends React.Component {
         this.getSearchURL = this.getSearchURL.bind(this);
     }
 
-    resize() {
-        this.setState({isMobile: window.innerWidth <= 992});
-    }
-
     getSearchURL() {
         return config.frontUrl + '/analytics?' + this.state.keyword;
     }
 
     render() {
-        const {isMobile} = this.state;
-
         return(
             <div>
                 <NavigationBar history={this.props.history} type="search" />
                 <div className="search-grid-container">
                     <Grid className="search-grid">
                         <Grid.Row className="search-grid-row">
-                            <Grid.Column width={isMobile? 0 : 1} />
-                            <Grid.Column width={isMobile? 16 : 10} className="menu-column">
+                            <Grid.Column only='computer' computer={1} />
+                            <Grid.Column mobile={16} tablet={16} computer={10} widescreen={6} className="menu-column">
                                 <Menu pointing secondary className="search-menu">
                                     <Menu.Item
                                         name='Sentence'
@@ -68,7 +56,7 @@ class SearchResult extends React.Component {
                                     />
                                 </Menu>
                             </Grid.Column>
-                            <Grid.Column width={isMobile? 0 : 5} />
+                            <Grid.Column computer={5} widescreen={9} />
                         </Grid.Row>
                     </Grid>
                 </div>
