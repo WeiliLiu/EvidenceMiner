@@ -151,7 +151,7 @@ export default class Result extends React.Component {
                         <Label.Detail as='a' onClick={() => this.setState({showAllAuthors: !this.state.showAllAuthors})}><Icon name='angle double down' fitted/></Label.Detail>
                     </Label>
                 </div>
-                {this.props.isTitle === 1? "":<small style={{ color: 'green' }}>Title: {this.props.title}</small>}
+                <div className="small-title">{this.props.isTitle === 1? "":<small>Title: {this.props.title}</small>}</div>
                 <Transition visible={this.state.showAllAuthors} animation='scale' duration={500}>
                     <Message className={'author-section'}  onDismiss={() => this.setState({showAllAuthors: !this.state.showAllAuthors})}>
                         <Message.Content>

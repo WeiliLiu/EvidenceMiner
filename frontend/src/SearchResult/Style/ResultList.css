@@ -47,12 +47,6 @@
     font-size: 0.85rem;
 }
 
-/* .resultlist-word-list {
-    overflow-x: hidden!important;
-    padding: 0!important;
-    max-height: 28rem!important;
-} */
-
 .resultlist-container {
     padding-top: 2rem;
     width: 100%!important;
@@ -66,6 +60,7 @@
 
 .search-meta-info-row {
     width: 100%!important;
+    padding-top: 0!important;
 }
 
 .result-list-row {
@@ -100,5 +95,9 @@
 
     .segment-list {
         padding: 0!important;
+    }
+
+    .resultlist-container {
+        padding-top: 1rem!important;
     }
 }

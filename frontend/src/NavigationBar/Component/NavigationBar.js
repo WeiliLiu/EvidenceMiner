@@ -21,6 +21,7 @@ export default class NavigationBar extends React.Component {
 
         this.state = {
             searchBarFocused: false,
+            isMobile: false,
             searchValue: '',
             shouldRedirect: false,
             isFlushed: false,
@@ -36,10 +37,13 @@ export default class NavigationBar extends React.Component {
     }
 
     componentDidMount() {
-        console.log(window.location.search)
         const searchParams = new URLSearchParams(window.location.search);
-        console.log(decodeURI(window.location.search))
         var keyword = searchParams.get('kw')
+
+        // Set up screen size listener
+        window.addEventListener("resize", this.resize.bind(this));
+        this.resize();
+
         if (this.props.type === "analytics") {
             this.setState({
                 value: decodeURI(window.location.search.substring(1, window.location.search.length)),
@@ -49,6 +53,10 @@ export default class NavigationBar extends React.Component {
                 value: keyword,
             })
         }
+    }
+
+    resize() {
+        this.setState({isMobile: window.innerWidth <= 992});
     }
 
     handleScroll =(e)=>{
@@ -168,21 +176,21 @@ export default class NavigationBar extends React.Component {
     }
 
     render() {
-        const { isLoading, value, results } = this.state
+        const { isLoading, value, results, isMobile } = this.state
 
         return(
-            <Navbar id="header" bg="light" expand="lg" style={{ padding: '0px' }} className={'main-navbar'}>
+            <Navbar id="header" bg="light" expand="lg" style={{ padding: '0px', backgroundColor: 'red' }} className={'main-navbar'}>
                 <Grid style={{ width: '100%', maxWidth: "2000px" }} padded stretched>
-                    <Grid.Column width={1} style={{ backgroundColor: '', padding: "0" }} textAlign="middle" verticalAlign="middle">
+                    <Grid.Column width={isMobile? 16 : 0} className="logo-column" textAlign="middle" verticalAlign="middle">
                         <Link to={{
                             pathname: `/`
                         }} >
-                            <Container fluid content="EM" textAlign='right'
+                            <Container fluid text content="EM" textAlign='center'
                                        style={{ backgroundColor: '', fontSize: "2.5rem", padding: "0" }}
                             />
                         </Link>
                     </Grid.Column>
-                    <Grid.Column width={6} className={'searchbar-grid'}>
+                    <Grid.Column width={isMobile? 16 : 6} className={'searchbar-grid'}>
                         <Search
                             fluid
                             loading={false}
@@ -201,9 +209,9 @@ export default class NavigationBar extends React.Component {
                             {...this.props}
                         />
                     </Grid.Column>
-                    <Grid.Column width={9} verticalAlign='middle' style={{ padding: '0' }}>
+                    {/* <Grid.Column width={9} verticalAlign='middle' style={{ padding: '0' }}>
                       {this.showExample(this.props.type)}
-                    </Grid.Column>
+                    </Grid.Column> */}
                 </Grid>
             </Navbar>
         )

@@ -37,6 +37,10 @@
     margin-left: 1rem;
 }
 
+.small-title {
+    color: green;
+}
+
 @media (max-width: 992px) {
     .search-segment {
         padding: 1.5rem!important;
@@ -45,5 +49,9 @@
 
     .result-header {
         font-size: 1rem!important;
+    }
+
+    .small-title {
+        margin-top: 1rem!important;
     }
 }

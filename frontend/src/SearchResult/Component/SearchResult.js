@@ -11,7 +11,8 @@ class SearchResult extends React.Component {
         super(props);
 
         this.state = {
-            keyword: ""
+            keyword: "",
+            isMobile: false,
         }
 
         this.getSearchURL = this.getSearchURL.bind(this);
@@ -21,6 +22,10 @@ class SearchResult extends React.Component {
         const searchParams = new URLSearchParams(window.location.search);
         var keyword = searchParams.get('kw');
 
+        // Set up screen size listener
+        window.addEventListener("resize", this.resize.bind(this));
+        this.resize();
+
         this.setState({
             keyword: keyword,
         });
@@ -28,34 +33,42 @@ class SearchResult extends React.Component {
         this.getSearchURL = this.getSearchURL.bind(this);
     }
 
+    resize() {
+        this.setState({isMobile: window.innerWidth <= 992});
+    }
+
     getSearchURL() {
         return config.frontUrl + '/analytics?' + this.state.keyword;
     }
 
     render() {
+        const {isMobile} = this.state;
+
         return(
             <div>
                 <NavigationBar history={this.props.history} type="search" />
-                <div className={"search-grid-container"}>
-                    <Grid style={{ paddingLeft: "1rem", borderBottom: "solid 1.2px rgb(239, 239, 239)" }}>
-                        <Grid.Column width={1} />
-                        <Grid.Column width={10} style={{ paddingBottom: "0", paddingTop: "0.7rem" }}>
-                            <Menu pointing secondary style={{ paddingLeft: "0.5rem", border: "0" }}>
-                                <Menu.Item
-                                    name='Sentence'
-                                    icon="archive"
-                                    color="blue"
-                                    active={true}
-                                />
-                                <Menu.Item
-                                    name='Analytics'
-                                    icon="chart line"
-                                    active={false}
-                                    onClick={() => window.location.href = this.getSearchURL()}
-                                />
-                            </Menu>
-                        </Grid.Column>
-                        <Grid.Column width={5} />
+                <div className="search-grid-container">
+                    <Grid className="search-grid">
+                        <Grid.Row className="search-grid-row">
+                            <Grid.Column width={isMobile? 0 : 1} />
+                            <Grid.Column width={isMobile? 16 : 10} className="menu-column">
+                                <Menu pointing secondary className="search-menu">
+                                    <Menu.Item
+                                        name='Sentence'
+                                        icon="archive"
+                                        color="blue"
+                                        active={true}
+                                    />
+                                    <Menu.Item
+                                        name='Analytics'
+                                        icon="chart line"
+                                        active={false}
+                                        onClick={() => window.location.href = this.getSearchURL()}
+                                    />
+                                </Menu>
+                            </Grid.Column>
+                            <Grid.Column width={isMobile? 0 : 5} />
+                        </Grid.Row>
                     </Grid>
                 </div>
 

@@ -1,4 +1,29 @@
 .search-grid-container {
     max-width: 2000px;
-    padding-top: 5rem;
+    padding-top: 4rem;
+}
+
+.search-grid {
+    border-bottom: solid 1.2px rgb(239, 239, 239);
+    margin: 0!important;
+}
+
+.search-grid-row {
+    padding: 0!important;
+    margin: 0!important;
+}
+
+.menu-column {
+    padding: 0!important;
+}
+
+.search-menu {
+    padding: 0 0.5rem !important;
+    border: 0!important;
+}
+
+@media (max-width: 992px) {
+    .search-grid-container {
+        padding-top: 0;
+    }
 }
