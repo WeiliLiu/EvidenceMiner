@@ -22,6 +22,7 @@ export default class ResultList extends React.Component {
         super(props);
 
         this.state = {
+            isMobile: false,
             searchResults: [],
             totalPage: 1,
             currentPage: 1,
@@ -50,7 +51,10 @@ export default class ResultList extends React.Component {
         // Call the api to query elasticsearch
         const resultSize = 10;
         const searchResult = await api.getSearchResult(searchKeyword, resultSize, currPage);
-        console.log(searchResult);
+
+        // Set up screen size listener
+        window.addEventListener("resize", this.resize.bind(this));
+        this.resize();
 
         // Modify states based on search results
         this.setState({
@@ -176,6 +180,10 @@ export default class ResultList extends React.Component {
         //     })
     }
 
+    resize() {
+        this.setState({isMobile: window.innerWidth <= 992});
+    }
+
     showSearchResults = () => {
         var table = [];
 
@@ -193,6 +201,7 @@ export default class ResultList extends React.Component {
                 authors={resultObj.author_list}
                 date={resultObj.date}
                 journal={resultObj.journal_name}
+                documentId={resultObj.documentId}
                 score={result._score}
                 key={result._id} 
                 ranking={this.state.searchResults.indexOf(result)} 
@@ -221,55 +230,58 @@ export default class ResultList extends React.Component {
     }
 
     render() {
-        // return(
-        //     <div>SearchResult</div>
-        // )
+        const { isMobile } = this.state;
+
         return(
-            <div style={{ paddingTop: "2rem" }}>
-                <Grid stretched style={{ paddingLeft: "1rem" }}>
-                    <Grid.Column width={1}/>
-                    <Grid.Column width={10}>
-                        <Container fluid style={{ color: 'grey', paddingLeft: '0.5rem' }}>
-                            <span> "{this.state.keyword}" </span>
-                            <span>(Total: <strong>{this.state.resultLength}</strong>, Took: <strong>{this.state.responseTime}ms</strong>)</span>
-                            <br />
-                            <small>~ At most 10 results are shown per page ~</small>
-                        </Container>
-                    </Grid.Column>
-                    <Grid.Column width={5} />
-                </Grid>
-                <Grid padded>
-                    <Grid.Column width={1} />
-                    <Grid.Column width={10}>
-                        <List divided verticalAlign='middle' size={'big'}>
-                            {this.showSearchResults()}
-                        </List>
-                        <Segment basic>
-                            <Pagination className={'result-list-pagination'}
-                                defaultActivePage={1}
-                                ellipsisItem={{ content: <Icon name='ellipsis horizontal' />, icon: true }}
-                                firstItem={{ content: <Icon name='angle double left' />, icon: true }}
-                                lastItem={{ content: <Icon name='angle double right' />, icon: true }}
-                                prevItem={{ content: <Icon name='angle left' />, icon: true }}
-                                nextItem={{ content: <Icon name='angle right' />, icon: true }}
-                                totalPages={this.state.totalPage}
-                                activePage={this.state.currentPage}
-                                onPageChange={(e, { activePage }) => this.handleKeyPress(this.state.keyword.replace(/=/g, '%3D').replace(/&/g, '%26'), activePage)}
-                            />
-                        </Segment>
-                    </Grid.Column>
-                    {/* <Grid.Column width={4} style={{ backgroundColor: '', height: 'auto' }}>
-                        <div style={{ color: 'black', padding: '1rem', borderLeft: "1px solid rgb(225, 225, 225)" }}>
-                            <Header as='h6'>Label Coloring & Frequent Associated Entities</Header>
-                            <Segment basic className='resultlist-word-list'>
-                                <List>
-                                    {this.showWordList()}
-                                </List>
+            <div className="resultlist-container">
+                <Grid stretched className="search-meta-info">
+                    <Grid.Row className="search-meta-info-row">
+                        <Grid.Column width={isMobile? 0 : 1}/>
+                        <Grid.Column width={isMobile? 16 : 10} >
+                            <Container fluid className="search-meta-container">
+                                <span> "{this.state.keyword}" </span>
+                                <span>(Total: <strong>{this.state.resultLength}</strong>, Took: <strong>{this.state.responseTime}ms</strong>)</span>
+                                <br />
+                                <small>~ At most 10 results are shown per page ~</small>
+                            </Container>
+                        </Grid.Column>
+                        <Grid.Column width={isMobile? 0 : 5} />
+                    </Grid.Row>
+                    <Grid.Row className="search-meta-info-row">
+                        <Grid.Column width={this.state.isMobile? 0 : 1} />
+                        <Grid.Column width={this.state.isMobile? 16 : 10} className="segment-list">
+                            <List divided verticalAlign='middle' size={'big'}>
+                                {this.showSearchResults()}
+                            </List>
+                            <Segment basic textAlign={isMobile? "center" : ""} className="pagination-container">
+                                <Pagination className={'result-list-pagination'}
+                                    defaultActivePage={1}
+                                    ellipsisItem={{ content: <Icon name='ellipsis horizontal' />, icon: true }}
+                                    firstItem={isMobile? null : { content: <Icon name='angle double left' />, icon: true }}
+                                    lastItem={isMobile? null : { content: <Icon name='angle double right' />, icon: true }}
+                                    prevItem={{ content: <Icon name='angle left' />, icon: true }}
+                                    nextItem={{ content: <Icon name='angle right' />, icon: true }}
+                                    totalPages={this.state.totalPage}
+                                    activePage={this.state.currentPage}
+                                    boundaryRange={isMobile? 0 : 1}
+                                    onPageChange={(e, { activePage }) => this.handleKeyPress(this.state.keyword.replace(/=/g, '%3D').replace(/&/g, '%26'), activePage)}
+                                />
                             </Segment>
-                        </div>
-                    </Grid.Column> */}
-                    <Grid.Column width={1} />
+                        </Grid.Column>
+                        {/* <Grid.Column width={4} style={{ backgroundColor: '', height: 'auto' }}>
+                            <div style={{ color: 'black', padding: '1rem', borderLeft: "1px solid rgb(225, 225, 225)" }}>
+                                <Header as='h6'>Label Coloring & Frequent Associated Entities</Header>
+                                <Segment basic className='resultlist-word-list'>
+                                    <List>
+                                        {this.showWordList()}
+                                    </List>
+                                </Segment>
+                            </div>
+                        </Grid.Column> */}
+                        <Grid.Column width={1} />
+                    </Grid.Row>
                 </Grid>
+                
             </div>
         )
     }

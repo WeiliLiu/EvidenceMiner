@@ -37,29 +37,29 @@ class SearchResult extends React.Component {
             <div>
                 <NavigationBar history={this.props.history} type="search" />
                 <div className={"search-grid-container"}>
-                <Grid style={{ paddingLeft: "1rem", borderBottom: "solid 1.2px rgb(239, 239, 239)" }}>
-                    <Grid.Column width={1} />
-                    <Grid.Column width={10} style={{ paddingBottom: "0", paddingTop: "0.7rem" }}>
-                        <Menu pointing secondary style={{ paddingLeft: "0.5rem", border: "0" }}>
-                            <Menu.Item
-                                name='Sentence'
-                                icon="archive"
-                                color="blue"
-                                active={true}
-                                // onClick={this.handleItemClick}
-                            />
-                            <Menu.Item
-                                name='Analytics'
-                                icon="chart line"
-                                active={false}
-                                onClick={() => window.location.href = this.getSearchURL()}
-                            />
-                        </Menu>
-                    </Grid.Column>
-                    <Grid.Column width={5} />
-                </Grid></div>
+                    <Grid style={{ paddingLeft: "1rem", borderBottom: "solid 1.2px rgb(239, 239, 239)" }}>
+                        <Grid.Column width={1} />
+                        <Grid.Column width={10} style={{ paddingBottom: "0", paddingTop: "0.7rem" }}>
+                            <Menu pointing secondary style={{ paddingLeft: "0.5rem", border: "0" }}>
+                                <Menu.Item
+                                    name='Sentence'
+                                    icon="archive"
+                                    color="blue"
+                                    active={true}
+                                />
+                                <Menu.Item
+                                    name='Analytics'
+                                    icon="chart line"
+                                    active={false}
+                                    onClick={() => window.location.href = this.getSearchURL()}
+                                />
+                            </Menu>
+                        </Grid.Column>
+                        <Grid.Column width={5} />
+                    </Grid>
+                </div>
 
-                <ResultList history={this.props.history} className="search-results-container"/>
+                <ResultList history={this.props.history} />
             </div>
         )
     }

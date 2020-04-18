@@ -52,7 +52,7 @@ export default class Article extends React.Component {
         console.log(this.props.match.params.id.replace('#', ' ').split(' ')[0]);
         var query = {
             "query": {
-                "match": {"pmid": this.props.match.params.id.replace('#', ' ').split(' ')[0]}
+                "match": {"documentId": this.props.match.params.id.replace('#', ' ').split(' ')[0]}
             },
             "from":0,
             "size":10000,

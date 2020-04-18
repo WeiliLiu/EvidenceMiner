@@ -1,7 +1,15 @@
+// import react
 import React from 'react';
+
+// import packages
 import {Header, Label, Segment, Button, Icon, Message, ontainer, Divider, Popup, List, Transition} from "semantic-ui-react";
 import {Link} from "react-router-dom";
+
+// import css style
 import '../Style/Result.css';
+
+// import utils functions
+import utils from '../../utils';
 
 export default class Result extends React.Component {
     constructor(props) {
@@ -9,10 +17,9 @@ export default class Result extends React.Component {
 
         this.state = {
             showAllAuthors: false,
+            isMobile: false,
         };
 
-        this.showAbstract = this.showAbstract.bind(this);
-        this.showButtonContent = this.showButtonContent.bind(this);
         this.showAuthors = this.showAuthors.bind(this);
         this.showSentence = this.showSentence.bind(this);
         this.addAnchor = this.addAnchor.bind(this);
@@ -20,76 +27,33 @@ export default class Result extends React.Component {
         this.decideScoreSize = this.decideScoreSize.bind(this);
     }
 
-    showAbstract() {
-        if(this.props.abstract !== undefined) {
-            if(this.props.abstract.length > 300) {
-                if (this.state.truncated === false) {
-                    return this.props.abstract.substring(0, 300) + '...';
-                } else {
-                    return this.props.abstract;
-                }
-            }else {
-                if(this.props.abstract.length === 0) {
-                    return <Message warning className={'result-error-message'}>
-                        <Message.Header>We're sorry we can't find the abstract for this message</Message.Header>
-                        <p>Try again later</p>
-                    </Message>
-                }
-                return this.props.abstract;
-            }
-        }
+    componentDidMount() {
+        // Set up screen size listener
+        window.addEventListener("resize", this.resize.bind(this));
+        this.resize();
     }
 
-    showButtonContent() {
-        if(this.state.truncated === false) {
-            return 'Show more';
-        } else {
-            return 'Show less';
-        }
+    resize() {
+        this.setState({isMobile: window.innerWidth <= 992});
     }
 
-    showButtonIcon() {
-        if(this.state.truncated === false) {
-            return 'down arrow';
-        } else {
-            return 'up arrow';
-        }
-    }
-
-    showButton() {
-        if(this.props.abstract !== undefined) {
-            if(this.props.abstract.length > 300) {
-                return <Button compact content={this.showButtonContent()} icon={this.showButtonIcon()} labelPosition='right'
-                        className={'read-more-button'}
-                        onClick={() => this.setState({
-                            truncated: !this.state.truncated,
-                        })}/>
-            }
-        }
-    }
-
-    showAuthors() {
+    showAuthors = () => {
         var table = [];
-        // for(let i = 0; i < Object.keys(this.props.authors).length; i++) {
         for(let i = 0; i < 1; i++) {
             table.push(<Label className={'author-label'} as='a'>
-                {/*<Icon name='male' />*/}
                 {this.props.authors[i]}
             </Label>)
         }
         return table;
     }
 
-    showSentence() {
-        // console.log(this.props.title)
-        // console.log(this.props.entities)
+    showSentence = () => {
         var entities = this.props.entities;
         var sentence = this.props.sentence;
         var start = 0;
         var end = 0;
         var table = [];
         for (let i = 0; i < entities.length; i++) {
-            // console.log(i)
             end = entities[i].start;
             table.push(sentence.substring(start, end))
             table.push(
@@ -103,7 +67,7 @@ export default class Result extends React.Component {
                 >
                     <List>
                         <div className={'author-names'}><a style={{ color: '#7e7e7e' }}>Type:</a> <a>{parent_type[entities[i].type]} {entities[i].type === "Chemical" ? '' : '- ' + entities[i].type}</a></div>
-                        <div className={'author-names'}><a style={{ color: '#7e7e7e' }}>Source:</a> <a>{entities[i].source === '' ? 'Unknown':entities[i].source}</a></div>
+                        <div className={'author-names'}><a style={{ color: '#7e7e7e' }}>Source:</a> <a>{entities[i].source === '' || !entities[i].source? 'Unknown':entities[i].source}</a></div>
                     </List>
                 </Popup>
             );
@@ -147,11 +111,12 @@ export default class Result extends React.Component {
     }
 
     render() {
-        console.log(this.props.authors)
+        const { isMobile } = this.state;
+
         return(
-            <Segment basic className={'search-segment'}>
+            <Segment basic={!isMobile} raised={isMobile} className={'search-segment'}>
                 <Link to={{
-                    pathname: this.addAnchor(this.props.sentID, this.props.pmid),
+                    pathname: this.addAnchor(this.props.sentID, this.props.documentId),
                     state: {
                         sentence: this.props.sentID,
                         isTitle: this.props.isTitle,
@@ -168,7 +133,6 @@ export default class Result extends React.Component {
                     <Popup content='Evidence score indicates the confidence of the retrieved sentence being a supporting evidence of the input query.' 
                         style={style} inverted mouseEnterDelay={300} mouseLeaveDelay={300}
                         trigger={<Label as='a' size={this.decideScoreSize(this.props.ranking, this.props.page)} color={this.decideScoreColor(this.props.ranking, this.props.page)} image>
-                        {/* <img src='https://react.semantic-ui.com/images/avatar/small/jenny.jpg' /> */}
                         <Icon name='check'/>
                         Evidence Score
                         <Label.Detail>{this.props.score.toFixed(2)}</Label.Detail>
@@ -179,10 +143,10 @@ export default class Result extends React.Component {
                     <Label size="mini" className={'metadata-label'}>
                         <Icon name='book' />{this.props.journal}
                     </Label>
-                    <Label size="mini" className={'metadata-label'}>
+                    <Label size="mini" className={'metadata-label'} hidden={this.props.pmid === ""}>
                         <Icon name='linkify'/>PMID{this.props.pmid}
                     </Label>
-                    <Label size="mini" className={'metadata-label'} image className={this.state.showAllAuthors? 'invisible-label' : ''}>
+                    <Label size="mini" className={'metadata-label'} image className={this.state.showAllAuthors? 'invisible-label' : ''} hidden={this.props.authors.length === 0}>
                         <Icon name='user' />{this.props.authors[0]}
                         <Label.Detail as='a' onClick={() => this.setState({showAllAuthors: !this.state.showAllAuthors})}><Icon name='angle double down' fitted/></Label.Detail>
                     </Label>
