@@ -240,7 +240,7 @@ export default class ResultList extends React.Component {
                                 />
                             </Segment>
                         </Grid.Column>
-                        <Grid.Column mobile={16} tablet={16} computer={4} widescreen={3} className="wordlist-column">
+                        <Grid.Column mobile={16} tablet={16} computer={4} widescreen={4} className="wordlist-column">
                             <Segment.Group className="resultlist-word-segment">
                                 <Segment className="resultlist-word-segment-header">Label Coloring & Entity Counts</Segment>
                                 <Segment className="sortmode-text">
@@ -260,7 +260,7 @@ export default class ResultList extends React.Component {
                                 </Segment>
                             </Segment.Group>
                         </Grid.Column>
-                        <Grid.Column computer={1} widescreen={6}/>
+                        <Grid.Column computer={1} widescreen={5}/>
                     </Grid.Row>
                 </Grid>
                 

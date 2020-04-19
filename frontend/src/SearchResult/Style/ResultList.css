@@ -113,6 +113,12 @@
     padding-right: 0!important;
 }
 
+@media (min-width: 1920px) {
+    .wordlist-column {
+        padding-left: 5rem!important;
+    }
+}
+
 @media (min-width: 991px) {
     .pagination-container {
         padding-left: 0!important;
