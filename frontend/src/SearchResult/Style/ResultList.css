@@ -130,7 +130,7 @@
     }
 
     .segment-list {
-        padding: 1rem 0 0 0!important;
+        padding: 0!important;
     }
 
     .resultlist-container {
@@ -160,11 +160,5 @@
     .sortmode-text {
         font-size: 0.7rem!important;;
         background-color: red;
-    }
-}
-
-@media (max-width: 767px) {
-    .segment-list {
-        padding: 0!important;
     }
 }

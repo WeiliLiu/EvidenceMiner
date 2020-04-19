@@ -144,7 +144,7 @@ export default class ResultList extends React.Component {
     }
 
     resize() {
-        this.setState({isMobile: window.innerWidth < 768});
+        this.setState({isMobile: window.innerWidth < 992});
     }
 
     showSearchResults = () => {
@@ -221,7 +221,7 @@ export default class ResultList extends React.Component {
                     </Grid.Row>
                     <Grid.Row className="search-meta-info-row">
                         <Grid.Column only='computer' computer={1} />
-                        <Grid.Column mobile={16} tablet={11} computer={10} widescreen={6} className="segment-list">
+                        <Grid.Column mobile={16} tablet={16} computer={10} widescreen={6} className="segment-list">
                             <List divided verticalAlign='middle' size={'big'}>
                                 {this.showSearchResults()}
                             </List>
@@ -240,7 +240,7 @@ export default class ResultList extends React.Component {
                                 />
                             </Segment>
                         </Grid.Column>
-                        <Grid.Column mobile={16} tablet={5} computer={4} widescreen={3} className="wordlist-column">
+                        <Grid.Column mobile={16} tablet={16} computer={4} widescreen={3} className="wordlist-column">
                             <Segment.Group className="resultlist-word-segment">
                                 <Segment className="resultlist-word-segment-header">Label Coloring & Entity Counts</Segment>
                                 <Segment className="sortmode-text">

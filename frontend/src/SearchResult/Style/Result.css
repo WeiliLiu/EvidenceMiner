@@ -54,9 +54,7 @@
     .small-title {
         margin-top: 1rem!important;
     }
-}
 
-@media (max-width: 767px) {
     .search-segment {
         padding: 1.5rem!important;
         margin: 0.5rem!important;
