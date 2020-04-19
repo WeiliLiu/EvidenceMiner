@@ -2,7 +2,7 @@
 import React from 'react';
 
 // import packages
-import { Image, List, Header, Pagination, Icon, Segment, Label, Divider, Grid, Ref, Rail, Sticky, Container, Menu, FormTextArea, Dropdown } from 'semantic-ui-react'
+import { Image, List, Header, Pagination, Icon, Segment, Label, Divider, Grid, Ref, Rail, Sticky, Container, Menu, FormTextArea, Dropdown, TransitionablePortal, Button } from 'semantic-ui-react';
 
 // import self-made components
 import MajorTypeList from '../../Article/Component/MajorTypeList';
@@ -23,6 +23,7 @@ export default class ResultList extends React.Component {
 
         this.state = {
             isMobile: false,
+            showFloatingList: false,
             searchResults: [],
             totalPage: 1,
             currentPage: 1,
@@ -201,8 +202,12 @@ export default class ResultList extends React.Component {
         return table;
     }
 
+    handleOpen = () => this.setState({ showFloatingList: true })
+
+    handleClose = () => this.setState({ showFloatingList: false })
+
     render() {
-        const { isMobile } = this.state;
+        const { isMobile, showFloatingList } = this.state;
 
         return(
             <div className="resultlist-container">
@@ -240,7 +245,7 @@ export default class ResultList extends React.Component {
                                 />
                             </Segment>
                         </Grid.Column>
-                        <Grid.Column mobile={16} tablet={16} computer={4} widescreen={4} className="wordlist-column">
+                        <Grid.Column hidden={isMobile} mobile={16} tablet={16} computer={4} widescreen={4} className="wordlist-column">
                             <Segment.Group className="resultlist-word-segment">
                                 <Segment className="resultlist-word-segment-header">Label Coloring & Entity Counts</Segment>
                                 <Segment className="sortmode-text">
@@ -263,7 +268,39 @@ export default class ResultList extends React.Component {
                         <Grid.Column computer={1} widescreen={5}/>
                     </Grid.Row>
                 </Grid>
-                
+
+                <TransitionablePortal
+                    closeOnTriggerClick
+                    onOpen={this.handleOpen}
+                    onClose={this.handleClose}
+                    transition={{
+                        animation: 'slide up',
+                        duration: 400,
+                    }}
+                    openOnTriggerClick
+                    trigger={
+                        <Button hidden={!isMobile} size="huge" circular icon='list' className="word-list-open-button"/>
+                    }
+                >
+                    <Segment.Group className="floating-resultlist-word-segment" style={{ backgroundColor: 'white' }}>
+                        <Segment className="resultlist-word-segment-header">Label Coloring & Entity Counts</Segment>
+                        <Segment className="sortmode-text">
+                            <Dropdown placeholder={'Sorted By: ' + this.state.sortMode} selection fluid className='icon'>
+                                <Dropdown.Menu>
+                                    <Dropdown.Header icon='hand pointer' content={'Choose a method'} />
+                                    <Dropdown.Divider />
+                                    <Dropdown.Item label={{ color: 'red', empty: true, circular: true }} text='Frequency' onClick={() => this.setState({ sortMode: 'Frequency' })}/>
+                                    <Dropdown.Item label={{ color: 'blue', empty: true, circular: true }} text='Alphabet' onClick={() => this.setState({ sortMode: 'Alphabet' })}/>
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </Segment>
+                        <Segment className="floating-resultlist-word-segment-list" >
+                            <List>
+                                {this.showWordList()}
+                            </List>
+                        </Segment>
+                    </Segment.Group>
+                </TransitionablePortal>
             </div>
         )
     }

@@ -1,4 +1,4 @@
-const env = 'staging'
+const env = 'dev'
 
 const dev = {
   searchUrl: 'https://search-evidenceminer-lnayeh5s4wbpvgy4jezyqwk2ja.us-west-2.es.amazonaws.com/evidenceminer',

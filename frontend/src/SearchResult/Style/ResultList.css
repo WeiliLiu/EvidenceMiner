@@ -113,6 +113,28 @@
     padding-right: 0!important;
 }
 
+.word-list-open-button {
+    position: fixed;
+    bottom: 5%;
+    right: 5%;
+    background-color: rgb(65, 131, 196)!important;
+    color: white!important;
+}
+
+.floating-resultlist-word-segment {
+    position: fixed!important;
+    width: 300px;
+    max-width: calc(100% - 1rem);
+    bottom: calc(5% + 5rem);
+    right: 1rem;
+}
+
+.floating-resultlist-word-segment-list {
+    height: 300px;
+    overflow-y: scroll; 
+    position: relative;
+}
+
 @media (min-width: 1920px) {
     .wordlist-column {
         padding-left: 5rem!important;
@@ -147,24 +169,11 @@
         margin-bottom: 5rem!important;
     }
 
-    .resultlist-word-segment-header {
-        font-size: 0.8rem!important;
-    }
-
-    .resultlist-word-segment-list {
-        font-size: 0.7rem!important;
-    }
-
     .search-meta-info-column {
         padding-left: 1rem!important;
     }
 
     .wordlist-column {
         padding-right: 1rem!important;
-    }
-
-    .sortmode-text {
-        font-size: 0.7rem!important;;
-        background-color: red;
     }
 }
