@@ -1,5 +1,5 @@
 .article-container {
-  margin: 0!important;
+  margin: 0 0 10rem 0!important;
   padding: 5rem 0 0 0!important;
 }
 
@@ -21,10 +21,6 @@
 .article-content-column {
   margin: 0!important;
   padding: 0 2rem 0 0!important;
-}
-
-.pub-date {
-  /* margin-top: 2rem; */
 }
 
 .meta-info {
