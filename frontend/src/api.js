@@ -38,4 +38,36 @@ export default {
         })
             .then(r => r.data.hits.total.value)
     },
+    getDocSentences(docId, size) {
+        const query = {
+            "query": {
+                "match": {"documentId": docId}
+            },
+            "from": 0,
+            "size": size,
+        };
+        return api.get('/_search', {
+            params: {
+                source: JSON.stringify(query),
+                source_content_type: 'application/json'
+            }
+        })
+            .then(r => r.data)
+    },
+    getDocSentencesCount(docId) {
+        const query = {
+            "query": {
+                "match": {"documentId": docId}
+            },
+            "from": 0,
+            "size": 0,
+        };
+        return api.get('/_search', {
+            params: {
+                source: JSON.stringify(query),
+                source_content_type: 'application/json'
+            }
+        })
+            .then(r => r.data.hits.total.value)
+    }
 };

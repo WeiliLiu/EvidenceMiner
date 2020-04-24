@@ -17,6 +17,9 @@ import {Link} from "react-router-dom";
 import PatternTable from '../Component/PatternTable.js';
 import config from '../../config';
 
+// import api endpoints
+import api from '../../api';
+
 export default class Article extends React.Component {
     contextRef = createRef();
 
@@ -34,8 +37,9 @@ export default class Article extends React.Component {
             patterns: [],
             typeDict: {},
             sentences: [],
-            sentColors: [],
+            sentColors: {},
             sortMode: 'None',
+            jumpTarget: '',
         };
 
         this.componentDidMount = this.componentDidMount.bind(this);
@@ -46,150 +50,100 @@ export default class Article extends React.Component {
         this.scrollToAnchor = this.scrollToAnchor.bind(this);
     }
 
-    componentDidMount() {
-        // var query = {"query":{"bool":{"must":[{"match":{"pmid":this.props.match.params.id.replace('#', ' ').split(' ')[0]}}],"must_not":[],"should":[]}},"from":0,"size":250,"sort":[],"aggs":{}};
-        // var query = {"query":{"bool":{"must":[{"match":{"pmid":this.props.match.params.id.replace('#', ' ').split(' ')[0]}}],"must_not":[],"should":[]}},"from":0,"size":250,"sort":[],"aggs":{}};
-        console.log(this.props.match.params.id.replace('#', ' ').split(' ')[0]);
-        var query = {
-            "query": {
-                "match": {"documentId": this.props.match.params.id.replace('#', ' ').split(' ')[0]}
-            },
-            "from":0,
-            "size":10000,
-        }
-        console.log(config.searchUrl + '_search')
+    async componentDidMount() {
+        // Get query from the url querystring
+        const jumpTarget = new URLSearchParams(window.location.search).get('jt');
 
-        axios.get(config.searchUrl + '/_search', {
-            params: {
-                source: JSON.stringify(query),
-                source_content_type: 'application/json'
+        // Get the total number of sentences in this article
+        const docSentencesCount = await api.getDocSentencesCount(this.props.match.params.id);
+
+        // Get all the sentences for this article
+        const docSentences = await api.getDocSentences(this.props.match.params.id, docSentencesCount);
+        console.log(docSentences)
+
+        // Process the returned results for display
+        let sentences = [];
+        let entities = [];
+        let patterns = [];
+        let sentColors = {};
+        for(let i = 0; i < docSentencesCount; i++) {
+            sentColors[docSentences.hits.hits[i]._source.sentId] = ''
+            sentences.push(docSentences.hits.hits[i]._source);
+            for (let j = 0; j < docSentences.hits.hits[i]._source.entities.length; j++) {
+                entities.push(docSentences.hits.hits[i]._source.entities[j]);
             }
-        })
-            .then(response => {
-                console.log(response.data);
-                var sentences = [];
-                var entities = [];
-                var patterns = [];
-                var sentColors = [];
-                for (let i = 0; i < response.data.hits.hits.length; i++) {
-                    sentColors.push('');
-                    sentences.push(response.data.hits.hits[i]._source);
-                    for (let j = 0; j < response.data.hits.hits[i]._source.entities.length; j++) {
-                        entities.push(response.data.hits.hits[i]._source.entities[j]);
-                    }
-                    for (let j = 0; j < response.data.hits.hits[i]._source.patterns.length; j++) {
-                        patterns.push(response.data.hits.hits[i]._source.patterns[j]);
-                    }
-                }
-                console.log(patterns);
-                var entities_length = entities.length;
-                var type_dict = {
-                    'Organism': {
-                        'Archeon': {},
-                        'Bacterium': {},
-                        'Eukaryote': {},
-                        'Virus': {},
-                    },
-                    'Fully Formed Anatomical Structure': {
-                        'Body Part, Organ, or Organ Component': {},
-                        'Tissue': {},
-                        'Cell': {},
-                        'Cell Component': {},
-                        'Gene or Genome': {},
-                    },
-                    'Chemical': {
-                        'Chemical': {},
-                    },
-                    'Physiologic Function': {
-                        'Organism Function': {},
-                        'Organ or Tissue Function': {},
-                        'Cell Function': {},
-                        'Molecular Function': {},
-                    },
-                    'Pathologic Function': {
-                        'Disease or Syndrome': {},
-                        'Cell or Molecular Dysfunction': {},
-                        'Experimental Model of Disease': {},
-                    }
-                };
-                for(let i = 0; i < entities_length; i++) {
-                    if(parent_type[entities[i].type] in type_dict === false) {
-                        type_dict[parent_type[entities[i].type]] = {}
-                    }
-                    if(entities[i].type in type_dict[parent_type[entities[i].type]] === false) {
-                        type_dict[parent_type[entities[i].type]][entities[i].type] = {}
-                    }
-                    if(entities[i].name in type_dict[parent_type[entities[i].type]][entities[i].type] === false) {
-                        type_dict[parent_type[entities[i].type]][entities[i].type][entities[i].name] = 0;
-                    }
-                    type_dict[parent_type[entities[i].type]][entities[i].type][entities[i].name] += 1;
-                }
+            for (let j = 0; j < docSentences.hits.hits[i]._source.patterns.length; j++) {
+                patterns.push(docSentences.hits.hits[i]._source.patterns[j]);
+            }
+        }
 
-                var cleaned_type_dict = {};
-                var major_types = Object.keys(type_dict);
-                for(let i = 0; i < major_types.length; i++) {
-                    var minor_types = Object.keys(type_dict[major_types[i]])
-                    var should_include_major_type = false;
-                    for(let j = 0; j < minor_types.length; j++) {
-                        if(Object.keys(type_dict[major_types[i]][minor_types[j]]).length !== 0) {
-                            should_include_major_type = true;
-                            break;
-                        }
-                    }
+        var typeDict = {};
+        
+        for(let i = 0; i < entities.length; i++) {
+            if(parent_type[entities[i].type] in typeDict === false) {
+                typeDict[parent_type[entities[i].type]] = {}
+            }
+            if(entities[i].type in typeDict[parent_type[entities[i].type]] === false) {
+                typeDict[parent_type[entities[i].type]][entities[i].type] = {}
+            }
+            if(entities[i].name in typeDict[parent_type[entities[i].type]][entities[i].type] === false) {
+                typeDict[parent_type[entities[i].type]][entities[i].type][entities[i].name] = 0;
+            }
+            typeDict[parent_type[entities[i].type]][entities[i].type][entities[i].name] += 1;
+        }
 
-                    if(should_include_major_type === true) {
-                        cleaned_type_dict[major_types[i]] = {};
-                        for(let j = 0; j < minor_types.length; j++) {
-                            if(Object.keys(type_dict[major_types[i]][minor_types[j]]).length !== 0) {
-                                cleaned_type_dict[major_types[i]][minor_types[j]] = type_dict[major_types[i]][minor_types[j]]
-                            } else {
-                                continue;
-                            }
-                        }
-                    }else {
+        var cleaned_type_dict = {};
+        var major_types = Object.keys(typeDict);
+        for(let i = 0; i < major_types.length; i++) {
+            var minor_types = Object.keys(typeDict[major_types[i]])
+            var should_include_major_type = false;
+            for(let j = 0; j < minor_types.length; j++) {
+                if(Object.keys(typeDict[major_types[i]][minor_types[j]]).length !== 0) {
+                    should_include_major_type = true;
+                    break;
+                }
+            }
+
+            if(should_include_major_type === true) {
+                cleaned_type_dict[major_types[i]] = {};
+                for(let j = 0; j < minor_types.length; j++) {
+                    if(Object.keys(typeDict[major_types[i]][minor_types[j]]).length !== 0) {
+                        cleaned_type_dict[major_types[i]][minor_types[j]] = typeDict[major_types[i]][minor_types[j]]
+                    } else {
                         continue;
                     }
                 }
+            }else {
+                continue;
+            }
+        }
 
-                this.setState({
-                    sentences: sentences,
-                    pmid: sentences[0].pmid,
-                    authors: sentences[0].author_list,
-                    journal: sentences[0].journal_name,
-                    publish_date: sentences[0].date,
-                    entities: entities,
-                    patterns: patterns,
-                    typeDict: cleaned_type_dict,
-                    sentColors: sentColors,
-                });
-            })
-            .catch(error => {
-                console.log(error);
-            })
+        this.setState({
+            sentences: sentences,
+            pmid: sentences[0].pmid,
+            authors: sentences[0].author_list,
+            journal: sentences[0].journal_name,
+            publish_date: sentences[0].date,
+            entities: entities,
+            patterns: patterns,
+            typeDict: cleaned_type_dict,
+            sentColors: sentColors,
+            jumpTarget: jumpTarget,
+        });
     }
 
     scrollToAnchor = (anchorName) => {
         console.log(anchorName)
         if (anchorName) {
-            var abstractSentences = this.state.sentences.filter(function(x) {
-                return x.isTitle === 0;
-            })
-            if (anchorName >= abstractSentences.length) {
-                let anchorElement = document.getElementById('body' + String(anchorName - abstractSentences.length));
-                if(anchorElement) { anchorElement.scrollIntoView({behavior: 'smooth'}); }
-            } else {
-                let anchorElement = document.getElementById('sent' + String(anchorName));
-                if(anchorElement) { anchorElement.scrollIntoView({behavior: 'smooth'}); }
-            }
-
-            
+            let anchorElement = document.getElementById(String(anchorName));
+            if(anchorElement) { anchorElement.scrollIntoView({behavior: 'smooth'}); }
         }
       }
 
     clearSentColor = () => {
         var sentColors = this.state.sentColors;
-        for (let i = 0; i < sentColors.length; i++) {
-            sentColors[i] = '';
+        for (let i = 0; i < this.state.sentences.length; i++) {
+            sentColors[this.state.sentences[i].sentId] = '';
         }
         this.setState({
             sentColors: sentColors,
@@ -197,13 +151,12 @@ export default class Article extends React.Component {
     }
 
     changeSentColor = (sentId) => {
-        console.log(sentId)
         var sentColors = this.state.sentColors;
-        for (let i = 0; i < sentColors.length; i++) {
-            if (String(i) === sentId) {
-                sentColors[i] = 'rgb(252, 242, 171)';
+        for (let i = 0; i < this.state.sentences.length; i++) {
+            if (this.state.sentences[i].sentId === sentId) {
+                sentColors[this.state.sentences[i].sentId] = 'rgb(252, 242, 171)';
             } else {
-                sentColors[i] = '';
+                sentColors[this.state.sentences[i].sentId] = '';
             }
         }
         this.setState({
@@ -228,54 +181,16 @@ export default class Article extends React.Component {
     render() {
         return (
             <div>
-                {/* <Menu vertical fixed="left" size="big" className="article-left-segment">
-                    <Menu.Item>
-                        <Link to={{
-                                pathname: `/`
-                            }} >
-                                <Container fluid content="EvidenceMiner" textAlign='center'
-                                        style={{ backgroundColor: '', fontSize: "1.5rem", padding: "0" }}
-                                />
-                        </Link>
-                    </Menu.Item>
-                    <Menu.Item>
-                        <Segment >
-                            <Header as='h4'>Label Coloring & Entity Counts</Header>
-                            <Divider/>
-                            <div>
-                                <Dropdown placeholder={'Sorted By: ' + this.state.sortMode} selection fluid className='icon'>
-                                    <Dropdown.Menu>
-                                        <Dropdown.Header icon='hand pointer' content={'Choose a method'} />
-                                        <Dropdown.Divider />
-                                        <Dropdown.Item label={{ color: 'red', empty: true, circular: true }} text='Frequency' onClick={() => this.setState({ sortMode: 'Frequency' })}/>
-                                        <Dropdown.Item label={{ color: 'blue', empty: true, circular: true }} text='Alphabet' onClick={() => this.setState({ sortMode: 'Alphabet' })}/>
-                                    </Dropdown.Menu>
-                                </Dropdown>
-                                <List>
-                                    {this.showWordList()}
-                                </List>
-                            </div>
-                        </Segment>
-                    </Menu.Item>
-                </Menu> */}
+                <NavigationBar history={this.props.history} type="search" />
 
-                <div className="article-body-wrapper">
-                    <ArticleBody sentences={this.state.sentences}
-                                title={this.state.title}  abstract={this.state.abstract} authors={this.state.authors}
-                                date={this.state.publish_date} pmid={this.state.pmid} journal={this.state.journal}
-                                entities={this.state.entities} typeDict={this.state.typeDict} patterns={this.state.patterns}
-                                state={this.props.location.state === undefined? "None": this.props.location.state}
-                                sentColors={this.state.sentColors} changeSentColor={this.changeSentColor}
-                                clearSentColor={this.clearSentColor} showWordList={this.showWordList} scrollToAnchor={this.scrollToAnchor}/>
-                </div>
-
-                {/* <Menu vertical fixed="right" size="big" className="article-left-segment">
-                    <Menu.Item>
-                        <Header as='h4'>Meta-pattern Extractions </Header>
-                        <PatternTable patterns={this.state.patterns} changeSentColor={this.changeSentColor}
-                            scrollToAnchor={this.scrollToAnchor}/>
-                    </Menu.Item>
-                </Menu> */}
+                <ArticleBody sentences={this.state.sentences}
+                            title={this.state.title}  abstract={this.state.abstract} authors={this.state.authors}
+                            date={this.state.publish_date} pmid={this.state.pmid} journal={this.state.journal}
+                            entities={this.state.entities} typeDict={this.state.typeDict} patterns={this.state.patterns}
+                            state={this.props.location.state === undefined? "None": this.props.location.state}
+                            sentColors={this.state.sentColors} changeSentColor={this.changeSentColor}
+                            clearSentColor={this.clearSentColor} showWordList={this.showWordList} 
+                            scrollToAnchor={this.scrollToAnchor} jumpTarget={this.state.jumpTarget} />
             </div>
         )
     }
@@ -298,6 +213,7 @@ const color = {
     'CONCEPTUAL_ENTITY': '#8E24AA',
     'ACTIVITY': '#F3D250',
     'PHENOMENON_OR_PROCESS': '#374785',
+    'OTHERS': '#f7941d'
 };
 
 // const parent_type = {
@@ -321,11 +237,80 @@ const color = {
 // }
 
 const parent_type = {
-    "PERSON": "SPACY_TYPE",
-    "NORP": "SPACY_TYPE",
-    "FAC": "SPACY_TYPE",
-    "ORG": "SPACY_TYPE",
-    "GPE": "SPACY_TYPE",
-    "LOC": "SPACY_TYPE",
-    "PRODUCT": "SPACY_TYPE"
+    "PERSON": "SPACY TYPE",
+    "NORP": "SPACY TYPE",
+    "FAC": "SPACY TYPE",
+    "ORG": "SPACY TYPE",
+    "GPE": "SPACY TYPE",
+    "LOC": "SPACY TYPE",
+    "PRODUCT": "SPACY TYPE",
+    "EVENT": "SPACY TYPE",
+    "WORK OF ART": "SPACY TYPE",
+    "LAW": "SPACY TYPE",
+    "LANGUAGE": "SPACY TYPE",
+    "DATE": "SPACY TYPE",
+    "TIME": "SPACY TYPE",
+    "PERCENT": "SPACY TYPE",
+    "MONEY": "SPACY TYPE",
+    "QUANTITY": "SPACY TYPE",
+    "ORDINAL": "SPACY TYPE",
+    "CARDINAL": "SPACY TYPE",
+    "CORONAVIRUS": "NEW TYPE",
+    "VIRAL PROTEIN": "NEW TYPE",
+    "LIVESTOCK": "NEW TYPE",
+    "WILDLIFE": "NEW TYPE",
+    "EVOLUTION": "NEW TYPE",
+    "PHYSICAL SCIENCE": "NEW TYPE",
+    "SUBSTRATE": "NEW TYPE",
+    "MATERIAL": "NEW TYPE",
+    "IMMUNE RESPONSE": "NEW TYPE",
+    "ORGANISM": "PHYSICAL OBJECT",
+    "ARCHAEON": "PHYSICAL OBJECT",
+    "BACTERIUM": "PHYSICAL OBJECT",
+    "EUKARYOTE": "PHYSICAL OBJECT",
+    "VIRUS": "PHYSICAL OBJECT",
+    "ANATOMICAL STRUCTURE": "PHYSICAL OBJECT",
+    "BODY PART ORGAN OR ORGAN COMPONENT": "PHYSICAL OBJECT",
+    "TISSUE": "PHYSICAL OBJECT",
+    "CELL": "PHYSICAL OBJECT",
+    "CELL COMPONENT": "PHYSICAL OBJECT",
+    "GENE OR GENOME": "PHYSICAL OBJECT",
+    "MANUFACTURED_OBJECT": "PHYSICAL OBJECT",
+    "CHEMICAL": "PHYSICAL OBJECT",
+    "BODY_SUBSTANCE": "PHYSICAL OBJECT",
+    "FOOD": "PHYSICAL OBJECT",
+    "TEMPORAL CONCEPT": "CONCEPTUAL ENTITY",
+    "QUALITATIVE CONCEPT": "CONCEPTUAL ENTITY",
+    "QUANTITATIVE CONCEPT": "CONCEPTUAL ENTITY",
+    "FUNCTIONAL CONCEPT": "CONCEPTUAL ENTITY",
+    "SPATIAL CONCEPT": "CONCEPTUAL ENTITY",
+    "LABORATORY OR TEST RESULT": "CONCEPTUAL ENTITY",
+    "SIGN OR SYMPTOM": "CONCEPTUAL ENTITY",
+    "ORGANISM ATTRIBUTE": "CONCEPTUAL ENTITY",
+    "INTELLECTUAL PRODUCT": "CONCEPTUAL ENTITY",
+    "LANGUAGE": "CONCEPTUAL ENTITY",
+    "OCCUPATION OR DISCIPLINE": "CONCEPTUAL ENTITY",
+    "ORGANIZATION": "CONCEPTUAL ENTITY",
+    "GROUP ATTRIBUTE": "CONCEPTUAL ENTITY",
+    "GROUP": "CONCEPTUAL ENTITY",
+    "SOCIAL BEHAVIOR": "ACTIVITY",
+    "INDIVIDUAL BEHAVIOR": "ACTIVITY",
+    "DAILY OR RECREATIONAL ACTIVITY": "ACTIVITY",
+    "LABORATORY PROCEDURE": "ACTIVITY",
+    "DIAGNOSTIC PROCEDURE": "ACTIVITY",
+    "THERAPEUTIC OR PREVENTIVE PROCEDURE": "ACTIVITY",
+    "RESEARCH ACTIVITY": "ACTIVITY",
+    "GOVERNMENTAL OR REGULATORY ACTIVITY": "ACTIVITY",
+    "EDUCATIONAL ACTIVITY": "ACTIVITY",
+    "MACHINE ACTIVITY": "ACTIVITY",
+    "HUMAN-CAUSED PHENOMENON OR PROCESS": "PHENOMENON OR PROCESS",
+    "ORGANISM FUNCTION": "PHENOMENON OR PROCESS",
+    "ORGAN OR TISSUE FUNCTION": "PHENOMENON OR PROCESS",
+    "CELL FUNCTION": "PHENOMENON OR PROCESS",
+    "MOLECULAR FUNCTION": "PHENOMENON OR PROCESS",
+    "DISEASE OR SYNDROME": "PHENOMENON OR PROCESS",
+    "CELL OR MOLECULAR DYSFUNCTION": "PHENOMENON OR PROCESS",
+    "EXPERIMENTAL MODEL OF DISEASE": "PHENOMENON OR PROCESS",
+    "INJURY OR POISONING": "PHENOMENON OR PROCESS",
+    "BODY SUBSTANCE": "OTHERS"
 }

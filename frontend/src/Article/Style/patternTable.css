@@ -1,7 +1,20 @@
-.pattern-table {
-  font-size: 1rem!important;
+.table-container tbody {
+  display: block;
+  height: 300px;
+  overflow: auto;
 }
 
-.table-row {
-  background-color: rgb(249,250,251);
+.table-container thead,
+tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.table-container tr {
+  cursor: pointer;
+}
+
+.column-header {
+  background-color: rgb(247, 247, 247);
 }

@@ -9,7 +9,7 @@ if __name__ == '__main__':
 
     INDEX_NAME = "evidenceminer"
 
-    es = Elasticsearch()
+    es = Elasticsearch("https://search-evidenceminer-lnayeh5s4wbpvgy4jezyqwk2ja.us-west-2.es.amazonaws.com/")
 
     with open(inputFilePath, "r") as fin, open(logFilePath, "w") as fout:
         start = time.time()
@@ -24,7 +24,7 @@ if __name__ == '__main__':
             data_dict = {}
             
             # update PMID
-            data_dict["pmid"] = paperInfo.get("PMID", "-1")
+            data_dict["pmid"] = paperInfo.get("pmid", "-1")
 
             # update sentId
             data_dict["sentId"] = paperInfo.get("sentId", "-1")
@@ -38,17 +38,11 @@ if __name__ == '__main__':
             # update title
             data_dict["title"] = paperInfo.get("title", "")
 
-            # update PMID
-            data_dict["pmid"] = paperInfo.get("PMID", "-1")
-
             # update sentence
             data_dict["sentence"] = paperInfo.get("sentence", "")
 
-            #  update entities
-            data_dict["entities"] = paperInfo.get("entities", "[]")
-
             # update patterns
-            data_dict["patterns"] = paperInfo.get("pattern", "[]")
+            data_dict["patterns"] = paperInfo.get("patterns", [])
 
             # update searchKey
             data_dict["searchKey"] = paperInfo.get("searchKey", "")
@@ -63,42 +57,40 @@ if __name__ == '__main__':
             data_dict['nextSent'] = paperInfo.get("nextSent", "")
 
             # update mesh_heading
-            data_dict["mesh_heading"] = " ".join(paperInfo["MeshHeadingList"])
+            data_dict["mesh_heading"] = " ".join(paperInfo.get("mesh_heading", []))
 
             # update journal name
-            data_dict["journal_name"] = paperInfo.get("Journal", "No Journal Name")
+            data_dict["journal_name"] = paperInfo.get("journal_name", "No Journal Name")
 
             # update author list
-            if paperInfo["AuthorList"]:
-                author_list = []
-                for author in paperInfo["AuthorList"]:
-                    collective_name = author.get("CollectiveName", "")
-                    if collective_name:
-                        author_list.append(collective_name)
-                    else:
-                        author_name = author.get("ForeName", "") + ", " + author.get("LastName", "")
-                        author_list.append(author_name)
-                data_dict["author_list"] = author_list
-            else:
-                data_dict["author_list"] = []
+            data_dict["author_list"] = paperInfo.get("author_list", [])
+
+            # update documentId
+            data_dict["documentId"] = paperInfo.get("documentId", -1)
             
             # update date
-            if paperInfo["PubDate"]["Year"]:
-                if len(paperInfo["PubDate"]["Year"]) != 4 or paperInfo["PubDate"]["Year"].isdigit() == False:
-                    data_dict["date"] = -1
-                else:
-                    data_dict["date"] = int(paperInfo["PubDate"]["Year"])
-            elif paperInfo["PubDate"]["MedlineDate"]:
-                m = re.search(r".*?(\d\d\d\d).*?", paperInfo["PubDate"]["MedlineDate"])
-                if m:
-                    data_dict["date"] = int(m.group(1))
-                else:
-                    data_dict["date"] = -1
+            if isinstance(paperInfo["date"], unicode):
+                data_dict["date"] = paperInfo["date"]
+            elif isinstance(paperInfo["date"], int):
+                data_dict["date"] = str(paperInfo["date"])
             else:
-                data_dict["date"] = -1
+                # print(paperInfo["PubDate"])
+                if paperInfo["date"]["Year"]:
+                    if len(paperInfo["date"]["Year"]) != 4 or paperInfo["date"]["Year"].isdigit() == False:
+                        data_dict["date"] = -1
+                    else:
+                        data_dict["date"] = int(paperInfo["date"]["Year"])
+                elif paperInfo["date"]["MedlineDate"]:
+                    m = re.search(r".*?(\d\d\d\d).*?", paperInfo["date"]["MedlineDate"])
+                    if m:
+                        data_dict["date"] = int(m.group(1))
+                    else:
+                        data_dict["date"] = -1
+                else:
+                    data_dict["date"] = -1
 
             # update journal name
-            data_dict["journal_name"] = paperInfo.get("journal", "No journal info")
+            data_dict["journal_name"] = paperInfo.get("journal_name", "No journal info")
             if isinstance(data_dict["journal_name"], int):
                 data_dict["journal_name"] = "No journal info"
             

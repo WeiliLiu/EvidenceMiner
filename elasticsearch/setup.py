@@ -14,7 +14,7 @@ if __name__ == '__main__':
             "type": "keyword"
         },
         "sentId": {
-            "type": "long"
+            "type": "text"
         },
         "entities": {
             "type": "object"
@@ -32,10 +32,10 @@ if __name__ == '__main__':
             "type": "text"
         },
         "date": {
-            "type": "long"
+            "type": "text"
         },
         "author_list": {
-            "type": "keyword"
+            "type": "text"
         },
         "journal_name": {
             "type": "keyword"
@@ -56,6 +56,9 @@ if __name__ == '__main__':
         },
         "metaPattern": {
             "type": "search_as_you_type"
+        },
+        "documentId": {
+            "type": "long"
         }
     }
 
@@ -69,7 +72,7 @@ if __name__ == '__main__':
         }
     }
 
-    es = Elasticsearch()
+    es = Elasticsearch("https://search-evidenceminer-lnayeh5s4wbpvgy4jezyqwk2ja.us-west-2.es.amazonaws.com/")
     if es.indices.exists(INDEX_NAME):
         res = es.indices.delete(index = INDEX_NAME)
         print("Deleting index %s , Response: %s" % (INDEX_NAME, res))

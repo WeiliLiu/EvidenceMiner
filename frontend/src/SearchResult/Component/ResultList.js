@@ -57,42 +57,14 @@ export default class ResultList extends React.Component {
         window.addEventListener("resize", this.resize.bind(this));
         this.resize();
 
-        var typeDict = {
-            'Organism': {
-                'Archeon': {},
-                'Bacterium': {},
-                'Eukaryote': {},
-                'Virus': {},
-            },
-            'Fully Formed Anatomical Structure': {
-                'Body Part, Organ, or Organ Component': {},
-                'Tissue': {},
-                'Cell': {},
-                'Cell Component': {},
-                'Gene or Genome': {},
-            },
-            'Chemical': {
-                'Chemical': {},
-            },
-            'Physiologic Function': {
-                'Organism Function': {},
-                'Organ or Tissue Function': {},
-                'Cell Function': {},
-                'Molecular Function': {},
-            },
-            'Pathologic Function': {
-                'Disease or Syndrome': {},
-                'Cell or Molecular Dysfunction': {},
-                'Experimental Model of Disease': {},
-            }
-        };
+        var typeDict = {};
         var entities = [];
         for (let i = 0; i < searchResult.hits.hits.length; i++) {
             for (let j = 0; j < searchResult.hits.hits[i]._source.entities.length; j++) {
                 entities.push(searchResult.hits.hits[i]._source.entities[j]);
             }
         }
-        console.log(entities)
+        
         for(let i = 0; i < entities.length; i++) {
             if(parent_type[entities[i].type] in typeDict === false) {
                 typeDict[parent_type[entities[i].type]] = {}
@@ -323,6 +295,7 @@ const color = {
     'CONCEPTUAL_ENTITY': '#8E24AA',
     'ACTIVITY': '#F3D250',
     'PHENOMENON_OR_PROCESS': '#374785',
+    'OTHERS': '#f7941d'
 };
 
 // const parent_type = {
@@ -346,22 +319,80 @@ const color = {
 // }
 
 const parent_type = {
-    "PERSON": "SPACY_TYPE",
-    "NORP": "SPACY_TYPE",
-    "FAC": "SPACY_TYPE",
-    "ORG": "SPACY_TYPE",
-    "GPE": "SPACY_TYPE",
-    "LOC": "SPACY_TYPE",
-    "PRODUCT": "SPACY_TYPE",
-    "EVENT": "SPACY_TYPE",
-    "WORK_OF_ART": "SPACY_TYPE",
-    "LAW": "SPACY_TYPE",
-    "LANGUAGE": "SPACY_TYPE",
-    "DATE": "SPACY_TYPE",
-    "TIME": "SPACY_TYPE",
-    "PERCENT": "SPACY_TYPE",
-    "MONEY": "SPACY_TYPE",
-    "QUANTITY": "SPACY_TYPE",
-    "ORDINAL": "SPACY_TYPE",
-    "CARDINAL": "SPACY_TYPE"
+    "PERSON": "SPACY TYPE",
+    "NORP": "SPACY TYPE",
+    "FAC": "SPACY TYPE",
+    "ORG": "SPACY TYPE",
+    "GPE": "SPACY TYPE",
+    "LOC": "SPACY TYPE",
+    "PRODUCT": "SPACY TYPE",
+    "EVENT": "SPACY TYPE",
+    "WORK OF ART": "SPACY TYPE",
+    "LAW": "SPACY TYPE",
+    "LANGUAGE": "SPACY TYPE",
+    "DATE": "SPACY TYPE",
+    "TIME": "SPACY TYPE",
+    "PERCENT": "SPACY TYPE",
+    "MONEY": "SPACY TYPE",
+    "QUANTITY": "SPACY TYPE",
+    "ORDINAL": "SPACY TYPE",
+    "CARDINAL": "SPACY TYPE",
+    "CORONAVIRUS": "NEW TYPE",
+    "VIRAL PROTEIN": "NEW TYPE",
+    "LIVESTOCK": "NEW TYPE",
+    "WILDLIFE": "NEW TYPE",
+    "EVOLUTION": "NEW TYPE",
+    "PHYSICAL SCIENCE": "NEW TYPE",
+    "SUBSTRATE": "NEW TYPE",
+    "MATERIAL": "NEW TYPE",
+    "IMMUNE RESPONSE": "NEW TYPE",
+    "ORGANISM": "PHYSICAL OBJECT",
+    "ARCHAEON": "PHYSICAL OBJECT",
+    "BACTERIUM": "PHYSICAL OBJECT",
+    "EUKARYOTE": "PHYSICAL OBJECT",
+    "VIRUS": "PHYSICAL OBJECT",
+    "ANATOMICAL STRUCTURE": "PHYSICAL OBJECT",
+    "BODY PART ORGAN OR ORGAN COMPONENT": "PHYSICAL OBJECT",
+    "TISSUE": "PHYSICAL OBJECT",
+    "CELL": "PHYSICAL OBJECT",
+    "CELL COMPONENT": "PHYSICAL OBJECT",
+    "GENE OR GENOME": "PHYSICAL OBJECT",
+    "MANUFACTURED_OBJECT": "PHYSICAL OBJECT",
+    "CHEMICAL": "PHYSICAL OBJECT",
+    "BODY_SUBSTANCE": "PHYSICAL OBJECT",
+    "FOOD": "PHYSICAL OBJECT",
+    "TEMPORAL CONCEPT": "CONCEPTUAL ENTITY",
+    "QUALITATIVE CONCEPT": "CONCEPTUAL ENTITY",
+    "QUANTITATIVE CONCEPT": "CONCEPTUAL ENTITY",
+    "FUNCTIONAL CONCEPT": "CONCEPTUAL ENTITY",
+    "SPATIAL CONCEPT": "CONCEPTUAL ENTITY",
+    "LABORATORY OR TEST RESULT": "CONCEPTUAL ENTITY",
+    "SIGN OR SYMPTOM": "CONCEPTUAL ENTITY",
+    "ORGANISM ATTRIBUTE": "CONCEPTUAL ENTITY",
+    "INTELLECTUAL PRODUCT": "CONCEPTUAL ENTITY",
+    "LANGUAGE": "CONCEPTUAL ENTITY",
+    "OCCUPATION OR DISCIPLINE": "CONCEPTUAL ENTITY",
+    "ORGANIZATION": "CONCEPTUAL ENTITY",
+    "GROUP ATTRIBUTE": "CONCEPTUAL ENTITY",
+    "GROUP": "CONCEPTUAL ENTITY",
+    "SOCIAL BEHAVIOR": "ACTIVITY",
+    "INDIVIDUAL BEHAVIOR": "ACTIVITY",
+    "DAILY OR RECREATIONAL ACTIVITY": "ACTIVITY",
+    "LABORATORY PROCEDURE": "ACTIVITY",
+    "DIAGNOSTIC PROCEDURE": "ACTIVITY",
+    "THERAPEUTIC OR PREVENTIVE PROCEDURE": "ACTIVITY",
+    "RESEARCH ACTIVITY": "ACTIVITY",
+    "GOVERNMENTAL OR REGULATORY ACTIVITY": "ACTIVITY",
+    "EDUCATIONAL ACTIVITY": "ACTIVITY",
+    "MACHINE ACTIVITY": "ACTIVITY",
+    "HUMAN-CAUSED PHENOMENON OR PROCESS": "PHENOMENON OR PROCESS",
+    "ORGANISM FUNCTION": "PHENOMENON OR PROCESS",
+    "ORGAN OR TISSUE FUNCTION": "PHENOMENON OR PROCESS",
+    "CELL FUNCTION": "PHENOMENON OR PROCESS",
+    "MOLECULAR FUNCTION": "PHENOMENON OR PROCESS",
+    "DISEASE OR SYNDROME": "PHENOMENON OR PROCESS",
+    "CELL OR MOLECULAR DYSFUNCTION": "PHENOMENON OR PROCESS",
+    "EXPERIMENTAL MODEL OF DISEASE": "PHENOMENON OR PROCESS",
+    "INJURY OR POISONING": "PHENOMENON OR PROCESS",
+    "BODY SUBSTANCE": "OTHERS"
 }

@@ -29,34 +29,28 @@ export default class ArticleBody extends React.Component {
             let anchorElement = document.getElementById(anchorName);
             if(anchorElement) { anchorElement.scrollIntoView({behavior: 'smooth'}); }
         }
-      }
+    }
 
     scrollToLocation = () => {
-        const { hash } = window.location;
-        if (hash !== '' && hash !== '#title') {
-          let retries = 0;
-          const id = hash.replace('#', '');
-          console.log(id)
-          const scroll = () => {
+        let retries = 0;
+        const scroll = () => {
             retries += 0;
             if (retries > 50) return;
-            const element = document.getElementById(id);
+            const element = document.getElementById(this.props.jumpTarget);
             if (element) {
               setTimeout(() => element.scrollIntoView(), 0);
             } else {
               setTimeout(scroll, 100);
             }
-          };
-          scroll();
-        }
-      }
+        };
+        scroll();
+    }
 
     showAuthors() {
         var table = [];
         for(let i = 0; i < Object.keys(this.props.authors).length; i++) {
-            table.push(<Label className={'author-label'}>
-                {this.props.authors[i]}
-            </Label>)
+            table.push(this.props.authors[i])
+            table.push('; ')
         }
         return table;
     }
@@ -64,12 +58,15 @@ export default class ArticleBody extends React.Component {
     highlightText(isTitle) {
         if (this.props.sentences[0] !== undefined) {
             var table = [];
-            console.log(this.props.sentences)
+
             var titleSentences = this.props.sentences.filter(function(x) {
                 return x.isTitle === isTitle;
             })
-            console.log(isTitle)
-            console.log(titleSentences.length)
+
+            if (titleSentences.length === 0) {
+                return "No text for this section."
+            }
+
             for (let j = 0; j < titleSentences.length; j++) {
                 var entities = titleSentences[j].entities;
                 var sentence = titleSentences[j].sentence;
@@ -95,49 +92,47 @@ export default class ArticleBody extends React.Component {
                 }
                 end = sentence.length;
                 curr_table.push(sentence.substring(start, end));
-                console.log(this.props.state.sentence)
+
                 var abstractSentences = this.props.sentences.filter(function(x) {
                     return x.isTitle === 0;
                 })
                 if (isTitle === 0) {
-                    if (this.props.state.sentence === j && this.props.state.isTitle === isTitle) {
-                        // table.push(<span style={{ paddingTop: "50vh", marginTop: "-50vh" }} id={'sent' + j}></span>)
+                    if (this.props.jumpTarget === 'abstract' + j) {
                         table.push(
                             <Animated style={{ border: "1px solid black", padding: '0.5rem', paddingRight: '2rem' }} animationIn="rubberBand" animationInDelay={300}>
-                                <span id={'sent' + j} style={{ paddingTop: "50vh", marginTop: "-50vh" }} />
-                                {/* <Label corner='right' size='mini' color='black' icon='search' className="corner-search"/> */}
+                                <span id={'abstract' + j} style={{ paddingTop: "50vh", marginTop: "-50vh" }} />
                                 <Icon name="search" corner="top right"/>
-                                <span style={{ backgroundColor: this.props.sentColors[j] }} >{curr_table}</span>
+                                <span style={{ backgroundColor: this.props.sentColors['abstract' + j] }} >{curr_table}</span>
                             </Animated>
                         )
                     } else {
-                        table.push(<span style={{ paddingTop: "50vh", marginTop: "-50vh" }} id={'sent' + j}></span>)
-                        table.push(<span style={{ backgroundColor: this.props.sentColors[j] }}>{curr_table}</span>)
+                        table.push(<span style={{ paddingTop: "50vh", marginTop: "-50vh" }} id={'abstract' + j}></span>)
+                        table.push(<span style={{ backgroundColor: this.props.sentColors['abstract' + j] }}>{curr_table}</span>)
                     }
                 } else if (isTitle === 1) {
-                    if (this.props.state.sentence === j && this.props.state.isTitle === isTitle) {
+                    if (this.props.jumpTarget === 'title' + j) {
                         table.push(
                             <Animated style={{ border: "1px solid black", padding: '0.5rem', paddingRight: '2rem' }} animationIn="rubberBand" animationInDelay={300}>
-                                {/* <Label corner='right' size='mini' color='black' icon='search' className="corner-search"/> */}
+                                <span id={'title' + j} style={{ paddingTop: "50vh", marginTop: "-50vh" }} />
                                 <Icon name="search" />
-                                <span id={"title"}>{curr_table}</span>
+                                <span style={{ backgroundColor: this.props.sentColors['title' + j] }}>{curr_table}</span>
                             </Animated>
                         )
                     } else {
-                        table.push(<span id={"title"} >{curr_table}</span>)
+                        table.push(<span id={'title' + j} style={{ backgroundColor: this.props.sentColors['title' + j] }}>{curr_table}</span>)
                     }
                 } else {
-                    if (this.props.state.sentence === j && this.props.state.isTitle === isTitle) {
+                    if (this.props.jumpTarget === String('body' + j)) {
                         table.push(
                             <Animated style={{ border: "1px solid black", padding: '0.5rem', paddingRight: '2rem' }} animationIn="rubberBand" animationInDelay={300}>
                                 <span id={'body' + j} style={{ paddingTop: "50vh", marginTop: "-50vh" }} />
                                 <Icon name="search" />
-                                <span style={{ backgroundColor: this.props.sentColors[j + abstractSentences.length] }}>{curr_table}</span>
+                                <span style={{ backgroundColor: this.props.sentColors['body' + j] }}>{curr_table}</span>
                             </Animated>
                         )
                     } else {
                         table.push(<span style={{ paddingTop: "50vh", marginTop: "-50vh" }} id={'body' + j}></span>)
-                        table.push(<span style={{ backgroundColor: this.props.sentColors[j + abstractSentences.length] }}>{curr_table}</span>)
+                        table.push(<span style={{ backgroundColor: this.props.sentColors['body' + j] }}>{curr_table}</span>)
                     }
                 }
                 table.push(' ');
@@ -152,50 +147,64 @@ export default class ArticleBody extends React.Component {
 
     render() {
         return(
-            <Container className={'article-body-container'} fluid style={{ backgroundColor: "" }}>
-                <h1>{this.highlightText(1)}</h1>
-                {/* <div className={'author-names'}><a style={{ color: '#7e7e7e' }}>PMID:</a> <a href={'#'}>{this.props.pmid}</a></div>
-                <div className={'author-names'}><a style={{ color: '#7e7e7e' }}>Authors:</a> {this.showAuthors()}</div>
-                <div className={'author-names'}><a style={{ color: '#7e7e7e' }}>Journal:</a> <i>{this.props.journal}</i></div>
-                <div className={'author-names'}><a style={{ color: '#7e7e7e' }}>Publish Year:</a> {this.props.date}</div> */}
-                
-                <div className="word-segment-container">
-                    <Segment.Group className="word-segment">
-                        <Segment className="word-segment-header">Label Coloring & Entity Counts</Segment>
-                        <Segment>
-                        <Dropdown placeholder={'Sorted By: ' + this.state.sortMode} selection fluid className='icon'>
-                                <Dropdown.Menu>
-                                    <Dropdown.Header icon='hand pointer' content={'Choose a method'} />
-                                    <Dropdown.Divider />
-                                    <Dropdown.Item label={{ color: 'red', empty: true, circular: true }} text='Frequency' onClick={() => this.setState({ sortMode: 'Frequency' })}/>
-                                    <Dropdown.Item label={{ color: 'blue', empty: true, circular: true }} text='Alphabet' onClick={() => this.setState({ sortMode: 'Alphabet' })}/>
-                                </Dropdown.Menu>
-                            </Dropdown>
-                            </Segment>
-                        <Segment className="word-segment-list">
-                            <List>
-                                {this.props.showWordList()}
-                            </List>
-                        </Segment>
-                    </Segment.Group>
+            <Grid className="article-container">
+                <Grid.Row className="article-container-row">
+                    <Grid.Column only='computer' computer={1}/>
+                    <Grid.Column mobile={16} tablet={16} computer={14} widescreen={10} className="article-container-column">
+                        <h1 className="title-text">{this.highlightText(1)}</h1>
+                        <div className={'author-names'}>{this.showAuthors()}</div>
+                        <div className='meta-info'>
+                            {this.props.journal? <span><strong>Journal: </strong><i>{this.props.journal}</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> : ""}
+                            <strong>Published: </strong>{this.props.date}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            {this.props.pmid? <span><strong>PMID: </strong><a href={`https://www.ncbi.nlm.nih.gov/pubmed/?term=${this.props.pmid}`}>{this.props.pmid}</a></span> : ""}
+                        </div>
+                    </Grid.Column>
+                    <Grid.Column computer={1} widescreen={5}/>
+                </Grid.Row>
+                <Grid.Row style={{ padding: '0', margin: '0' }}>
+                    <Grid.Column only='computer' computer={1}/>
+                    <Grid.Column mobile={16} tablet={16} computer={10} widescreen={7} className="article-content-column">
+                        <div className="abstract-container">
+                            <h4>Abstract</h4>
+                            <p>
+                                {this.highlightText(0)}
+                            </p>
+                        </div>
 
-                    <Menu.Item className="pattern-segment">
-                        {/* <Header as='h4'>Meta-pattern Extractions </Header> */}
-                        <PatternTable patterns={this.props.patterns} changeSentColor={this.props.changeSentColor}
-                            scrollToAnchor={this.props.scrollToAnchor}/>
-                    </Menu.Item>
-                </div>
+                        <div className="body-container">
+                            <p>{this.highlightText(2)}</p>
+                        </div>
+                    </Grid.Column>
+                    <Grid.Column mobile={16} tablet={16} computer={4} widescreen={3} style={{ margin: '0', padding: '0' }}>
+                        <div className="word-segment-container">
+                            <Segment.Group className="word-segment">
+                                <Segment className="word-segment-header">Label Coloring & Entity Counts</Segment>
+                                <Segment>
+                                <Dropdown placeholder={'Sorted By: ' + this.state.sortMode} selection fluid className='icon'>
+                                        <Dropdown.Menu>
+                                            <Dropdown.Header icon='hand pointer' content={'Choose a method'} />
+                                            <Dropdown.Divider />
+                                            <Dropdown.Item label={{ color: 'red', empty: true, circular: true }} text='Frequency' onClick={() => this.setState({ sortMode: 'Frequency' })}/>
+                                            <Dropdown.Item label={{ color: 'blue', empty: true, circular: true }} text='Alphabet' onClick={() => this.setState({ sortMode: 'Alphabet' })}/>
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                    </Segment>
+                                <Segment className="word-segment-list">
+                                    <List>
+                                        {this.props.showWordList()}
+                                    </List>
+                                </Segment>
+                            </Segment.Group>
 
-                <div className="abstract-container">
-                    <h4>Abstract</h4>
-                    <p>
-                        {this.highlightText(0)}
-                    </p>
-                </div>
-                <div className="body-container">
-                    <p>{this.highlightText(2)}</p>
-                </div>
-            </Container>
+                            <Menu.Item className="pattern-segment">
+                                <PatternTable patterns={this.props.patterns} changeSentColor={this.props.changeSentColor}
+                                    scrollToAnchor={this.props.scrollToAnchor} />
+                            </Menu.Item>
+                        </div>
+                    </Grid.Column>
+                    <Grid.Column computer={1} widescreen={5}/>
+                </Grid.Row>
+            </Grid>
         )
     }
 }

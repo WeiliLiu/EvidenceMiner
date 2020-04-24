@@ -115,13 +115,7 @@ export default class Result extends React.Component {
 
         return(
             <Segment basic={!isMobile} raised={isMobile} className={'search-segment'}>
-                <Link to={{
-                    pathname: this.addAnchor(this.props.sentID, this.props.documentId),
-                    state: {
-                        sentence: this.props.sentID,
-                        isTitle: this.props.isTitle,
-                    }
-                }} ><a className={'result-header'}>{this.showSentence()}</a></Link>
+                <a className={'result-header'} href={`/articles/${this.props.documentId}?jt=${this.props.sentID}`} >{this.showSentence()}</a>
                 <span style={{ color: 'rgb(33, 133, 208)', fontSize: "0.8rem", marginLeft: '0.3rem' }}>
                     <Popup style={style} inverted mouseEnterDelay={300}
                             mouseLeaveDelay={300} content='context' 
