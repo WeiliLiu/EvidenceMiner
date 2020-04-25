@@ -1,21 +1,10 @@
 import React, {createRef} from 'react';
 import 'semantic-ui-css/semantic.min.css';
-import {
-    Divider, Image,
-    Grid, Header, Rail,
-    Ref, Input, Container, Search,
-    Segment, Sticky, Dropdown, List, Label, Message, Sidebar, Menu, Icon
-} from 'semantic-ui-react'
-import { Button } from 'react-bootstrap';
-import axios from 'axios';
+import { Dimmer, Loader, Image, Segment } from 'semantic-ui-react'
 import ArticleBody from '../Component/ArticleBody';
 import '../Style/Article.css';
 import NavigationBar from "../../NavigationBar/Component/NavigationBar";
 import MajorTypeList from '../Component/MajorTypeList';
-import MinorTypeList from "./MinorTypeList";
-import {Link} from "react-router-dom";
-import PatternTable from '../Component/PatternTable.js';
-import config from '../../config';
 
 // import api endpoints
 import api from '../../api';
@@ -40,6 +29,7 @@ export default class Article extends React.Component {
             sentColors: {},
             sortMode: 'None',
             jumpTarget: '',
+            isLoading: true,
         };
 
         this.componentDidMount = this.componentDidMount.bind(this);
@@ -59,7 +49,6 @@ export default class Article extends React.Component {
 
         // Get all the sentences for this article
         const docSentences = await api.getDocSentences(this.props.match.params.id, docSentencesCount);
-        console.log(docSentences)
 
         // Process the returned results for display
         let sentences = [];
@@ -129,6 +118,7 @@ export default class Article extends React.Component {
             typeDict: cleaned_type_dict,
             sentColors: sentColors,
             jumpTarget: jumpTarget,
+            isLoading: false,
         });
     }
 
@@ -179,18 +169,22 @@ export default class Article extends React.Component {
     }
 
     render() {
+        const { isLoading } = this.state;
+
         return (
             <div>
-                <NavigationBar history={this.props.history} type="search" />
+                <NavigationBar history={this.props.history} type="search"/>
 
-                <ArticleBody sentences={this.state.sentences}
+                {isLoading? <Segment className="loading-screen">
+                                <Loader active size='huge'>Setting Up Article</Loader>
+                            </Segment> : <ArticleBody sentences={this.state.sentences}
                             title={this.state.title}  abstract={this.state.abstract} authors={this.state.authors}
                             date={this.state.publish_date} pmid={this.state.pmid} journal={this.state.journal}
                             entities={this.state.entities} typeDict={this.state.typeDict} patterns={this.state.patterns}
                             state={this.props.location.state === undefined? "None": this.props.location.state}
                             sentColors={this.state.sentColors} changeSentColor={this.changeSentColor}
                             clearSentColor={this.clearSentColor} showWordList={this.showWordList} 
-                            scrollToAnchor={this.scrollToAnchor} jumpTarget={this.state.jumpTarget} />
+                            scrollToAnchor={this.scrollToAnchor} jumpTarget={this.state.jumpTarget} />}
             </div>
         )
     }

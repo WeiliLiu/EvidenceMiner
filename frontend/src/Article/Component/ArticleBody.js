@@ -4,6 +4,7 @@ import '../Style/ArticleBody.css';
 import PatternTable from '../Component/PatternTable.js';
 import {Animated} from "react-animated-css";
 import {Link} from "react-router-dom";
+import Footer from '../../Footer/Component/Footer';
 
 export default class ArticleBody extends React.Component {
     constructor(props) {
@@ -147,64 +148,75 @@ export default class ArticleBody extends React.Component {
 
     render() {
         return(
-            <Grid className="article-container">
-                <Grid.Row className="article-container-row">
-                    <Grid.Column only='computer' computer={1}/>
-                    <Grid.Column mobile={16} tablet={16} computer={14} widescreen={10} className="article-container-column">
-                        <h1 className="title-text">{this.highlightText(1)}</h1>
-                        <div className={'author-names'}>{this.showAuthors()}</div>
-                        <div className='meta-info'>
-                            {this.props.journal? <span><strong>Journal: </strong><i>{this.props.journal}</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> : ""}
-                            <strong>Published: </strong>{this.props.date}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            {this.props.pmid? <span><strong>PMID: </strong><a href={`https://www.ncbi.nlm.nih.gov/pubmed/?term=${this.props.pmid}`}>{this.props.pmid}</a></span> : ""}
-                        </div>
-                    </Grid.Column>
-                    <Grid.Column computer={1} widescreen={5}/>
-                </Grid.Row>
-                <Grid.Row style={{ padding: '0', margin: '0' }}>
-                    <Grid.Column only='computer' computer={1}/>
-                    <Grid.Column mobile={16} tablet={16} computer={10} widescreen={7} className="article-content-column">
-                        <div className="abstract-container">
-                            <h4>Abstract</h4>
-                            <p>
-                                {this.highlightText(0)}
-                            </p>
-                        </div>
+            <div>
+                <Grid className="article-container">
+                    <Grid.Row className="article-container-row">
+                        <Grid.Column only='computer' computer={1}/>
+                        <Grid.Column mobile={16} tablet={16} computer={14} widescreen={10} className="article-container-column">
+                            <h1 className="title-text">{this.highlightText(1)}</h1>
+                            <div className={'author-names'}>{this.showAuthors()}</div>
+                            <div className='meta-info'>
+                                {this.props.journal? <span><strong>Journal: </strong><i>{this.props.journal}</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> : ""}
+                                <strong>Published: </strong>{this.props.date}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                {this.props.pmid? <span><strong>PMID: </strong><a href={`https://www.ncbi.nlm.nih.gov/pubmed/?term=${this.props.pmid}`}>{this.props.pmid}</a></span> : ""}
+                            </div>
+                        </Grid.Column>
+                        <Grid.Column computer={1} widescreen={5}/>
+                    </Grid.Row>
+                    <Grid.Row style={{ padding: '0', margin: '0' }}>
+                        <Grid.Column only='computer' computer={1}/>
+                        <Grid.Column mobile={16} tablet={16} computer={10} widescreen={7} className="article-content-column">
+                            <div className="abstract-container">
+                                <h4>Abstract</h4>
+                                <p>
+                                    {this.highlightText(0)}
+                                </p>
+                            </div>
 
-                        <div className="body-container">
-                            <p>{this.highlightText(2)}</p>
-                        </div>
-                    </Grid.Column>
-                    <Grid.Column mobile={16} tablet={16} computer={4} widescreen={3} style={{ margin: '0', padding: '0' }}>
-                        <div className="word-segment-container">
-                            <Segment.Group className="word-segment">
-                                <Segment className="word-segment-header">Label Coloring & Entity Counts</Segment>
-                                <Segment>
-                                <Dropdown placeholder={'Sorted By: ' + this.state.sortMode} selection fluid className='icon'>
-                                        <Dropdown.Menu>
-                                            <Dropdown.Header icon='hand pointer' content={'Choose a method'} />
-                                            <Dropdown.Divider />
-                                            <Dropdown.Item label={{ color: 'red', empty: true, circular: true }} text='Frequency' onClick={() => this.setState({ sortMode: 'Frequency' })}/>
-                                            <Dropdown.Item label={{ color: 'blue', empty: true, circular: true }} text='Alphabet' onClick={() => this.setState({ sortMode: 'Alphabet' })}/>
-                                        </Dropdown.Menu>
-                                    </Dropdown>
+                            <div className="body-container">
+                                <p>{this.highlightText(2)}</p>
+                            </div>
+                        </Grid.Column>
+                        <Grid.Column mobile={16} tablet={16} computer={4} widescreen={3} style={{ margin: '0', padding: '0' }}>
+                            <div className="word-segment-container">
+                                <Segment.Group className="word-segment">
+                                    <Segment className="word-segment-header">Label Coloring & Entity Counts</Segment>
+                                    <Segment>
+                                    <Dropdown placeholder={'Sorted By: ' + this.state.sortMode} selection fluid className='icon'>
+                                            <Dropdown.Menu>
+                                                <Dropdown.Header icon='hand pointer' content={'Choose a method'} />
+                                                <Dropdown.Divider />
+                                                <Dropdown.Item label={{ color: 'red', empty: true, circular: true }} text='Frequency' onClick={() => this.setState({ sortMode: 'Frequency' })}/>
+                                                <Dropdown.Item label={{ color: 'blue', empty: true, circular: true }} text='Alphabet' onClick={() => this.setState({ sortMode: 'Alphabet' })}/>
+                                            </Dropdown.Menu>
+                                        </Dropdown>
+                                        </Segment>
+                                    <Segment className="word-segment-list">
+                                        <List>
+                                            {this.props.showWordList()}
+                                        </List>
                                     </Segment>
-                                <Segment className="word-segment-list">
-                                    <List>
-                                        {this.props.showWordList()}
-                                    </List>
-                                </Segment>
-                            </Segment.Group>
+                                </Segment.Group>
 
-                            <Menu.Item className="pattern-segment">
-                                <PatternTable patterns={this.props.patterns} changeSentColor={this.props.changeSentColor}
-                                    scrollToAnchor={this.props.scrollToAnchor} />
-                            </Menu.Item>
-                        </div>
-                    </Grid.Column>
-                    <Grid.Column computer={1} widescreen={5}/>
-                </Grid.Row>
-            </Grid>
+                                <Menu.Item className="pattern-segment">
+                                    <PatternTable patterns={this.props.patterns} changeSentColor={this.props.changeSentColor}
+                                        scrollToAnchor={this.props.scrollToAnchor} />
+                                </Menu.Item>
+                            </div>
+                        </Grid.Column>
+                        <Grid.Column computer={1} widescreen={5}/>
+                    </Grid.Row>
+                </Grid>
+                <Grid>
+                    <Grid.Row className="footer-row">
+                        <Grid.Column only='computer' computer={1}/>
+                        <Grid.Column mobile={16} tablet={16} computer={14} widescreen={10} className="footer-column">
+                            <Footer />
+                        </Grid.Column>
+                        <Grid.Column computer={1} widescreen={5}/>
+                    </Grid.Row>
+                </Grid>
+            </div>
         )
     }
 }

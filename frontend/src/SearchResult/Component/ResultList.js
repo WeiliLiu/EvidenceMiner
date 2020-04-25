@@ -2,11 +2,12 @@
 import React from 'react';
 
 // import packages
-import { Image, List, Header, Pagination, Icon, Segment, Label, Divider, Grid, Ref, Rail, Sticky, Container, Menu, FormTextArea, Dropdown, TransitionablePortal, Button } from 'semantic-ui-react';
+import { Loader, Image, List, Header, Pagination, Icon, Segment, Label, Divider, Grid, Ref, Rail, Sticky, Container, Menu, FormTextArea, Dropdown, TransitionablePortal, Button } from 'semantic-ui-react';
 
 // import self-made components
 import MajorTypeList from '../../Article/Component/MajorTypeList';
 import Result from './Result';
+import Footer from '../../Footer/Component/Footer';
 
 // import api endpoints
 import api from '../../api';
@@ -31,6 +32,7 @@ export default class ResultList extends React.Component {
             keyword: "",
             responseTime: 0,
             typeDict: {},
+            isLoading: true,
         }
 
         this.showSearchResults = this.showSearchResults.bind(this);
@@ -113,6 +115,7 @@ export default class ResultList extends React.Component {
             keyword: searchKeyword,
             resultLength: numSearchResults,
             typeDict: cleaned_type_dict,
+            isLoading: false,
         })
     }
 
@@ -179,100 +182,138 @@ export default class ResultList extends React.Component {
     handleClose = () => this.setState({ showFloatingList: false })
 
     render() {
-        const { isMobile, showFloatingList } = this.state;
+        const { isMobile, isLoading } = this.state;
 
         return(
-            <div className="resultlist-container">
-                <Grid className="search-meta-info">
-                    <Grid.Row className="search-meta-info-row">
-                        <Grid.Column only='computer' computer={1}/>
-                        <Grid.Column mobile={16} tablet={11} computer={10} widescreen={6} className="search-meta-info-column">
-                            <Container fluid className="search-meta-container">
-                                <span> "{this.state.keyword}" </span>
-                                <span>(Total: <strong>{this.state.resultLength}</strong>, Took: <strong>{this.state.responseTime}ms</strong>)</span>
-                                <br />
-                                <small>~ At most 10 results are shown per page ~</small>
-                            </Container>
-                        </Grid.Column>
-                        <Grid.Column computer={5} widescreen={9}/>
-                    </Grid.Row>
-                    <Grid.Row className="search-meta-info-row">
-                        <Grid.Column only='computer' computer={1} />
-                        <Grid.Column mobile={16} tablet={16} computer={10} widescreen={6} className="segment-list">
-                            <List divided verticalAlign='middle' size={'big'}>
-                                {this.showSearchResults()}
-                            </List>
-                            <Segment basic textAlign={isMobile? "center" : ""} className="pagination-container">
-                                <Pagination className={'result-list-pagination'}
-                                    defaultActivePage={1}
-                                    ellipsisItem={{ content: <Icon name='ellipsis horizontal' />, icon: true }}
-                                    firstItem={isMobile? null : { content: <Icon name='angle double left' />, icon: true }}
-                                    lastItem={isMobile? null : { content: <Icon name='angle double right' />, icon: true }}
-                                    prevItem={{ content: <Icon name='angle left' />, icon: true }}
-                                    nextItem={{ content: <Icon name='angle right' />, icon: true }}
-                                    totalPages={this.state.totalPage}
-                                    activePage={this.state.currentPage}
-                                    boundaryRange={isMobile? 0 : 1}
-                                    onPageChange={(e, { activePage }) => this.handleKeyPress(this.state.keyword.replace(/=/g, '%3D').replace(/&/g, '%26'), activePage)}
-                                />
-                            </Segment>
-                        </Grid.Column>
-                        <Grid.Column hidden={isMobile} mobile={16} tablet={16} computer={4} widescreen={4} className="wordlist-column">
-                            <Segment.Group className="resultlist-word-segment">
+            <div>
+                <div className="search-grid-container" style={isLoading? {position: 'fixed', width: '100%'} : {}}>
+                    <Grid className="search-grid">
+                        <Grid.Row className="search-grid-row">
+                            <Grid.Column only='computer' computer={1} />
+                            <Grid.Column mobile={16} tablet={16} computer={10} widescreen={6} className="menu-column">
+                                <Menu pointing secondary className="search-menu">
+                                    <Menu.Item
+                                        name='Sentence'
+                                        icon="archive"
+                                        color="blue"
+                                        active={true}
+                                    />
+                                    <Menu.Item
+                                        name='Analytics'
+                                        icon="chart line"
+                                        active={false}
+                                        onClick={() => window.location.href = this.getSearchURL()}
+                                    />
+                                </Menu>
+                            </Grid.Column>
+                            <Grid.Column computer={5} widescreen={9} />
+                        </Grid.Row>
+                    </Grid>
+                </div>
+                {isLoading? 
+                    <Segment className="search-loading-screen">
+                        <Loader active={isLoading} size='huge'>Loading</Loader>
+                    </Segment> :
+                    <div>
+                        <Grid className="search-meta-info">
+                            <Grid.Row className="search-meta-info-row">
+                                <Grid.Column only='computer' computer={1}/>
+                                <Grid.Column mobile={16} tablet={11} computer={10} widescreen={6} className="search-meta-info-column">
+                                    <Container fluid className="search-meta-container">
+                                        <span> "{this.state.keyword}" </span>
+                                        <span>(Total: <strong>{this.state.resultLength}</strong>, Took: <strong>{this.state.responseTime}ms</strong>)</span>
+                                        <br />
+                                        <small>~ At most 10 results are shown per page ~</small>
+                                    </Container>
+                                </Grid.Column>
+                                <Grid.Column computer={5} widescreen={9}/>
+                            </Grid.Row>
+                            <Grid.Row className="search-meta-info-row">
+                                <Grid.Column only='computer' computer={1} />
+                                <Grid.Column mobile={16} tablet={16} computer={10} widescreen={6} className="segment-list">
+                                    <List divided verticalAlign='middle' size={'big'}>
+                                        {this.showSearchResults()}
+                                    </List>
+                                    <Segment basic textAlign={isMobile? "center" : ""} className="pagination-container">
+                                        <Pagination className={'result-list-pagination'}
+                                            defaultActivePage={1}
+                                            ellipsisItem={{ content: <Icon name='ellipsis horizontal' />, icon: true }}
+                                            firstItem={isMobile? null : { content: <Icon name='angle double left' />, icon: true }}
+                                            lastItem={isMobile? null : { content: <Icon name='angle double right' />, icon: true }}
+                                            prevItem={{ content: <Icon name='angle left' />, icon: true }}
+                                            nextItem={{ content: <Icon name='angle right' />, icon: true }}
+                                            totalPages={this.state.totalPage}
+                                            activePage={this.state.currentPage}
+                                            boundaryRange={isMobile? 0 : 1}
+                                            onPageChange={(e, { activePage }) => this.handleKeyPress(this.state.keyword.replace(/=/g, '%3D').replace(/&/g, '%26'), activePage)}
+                                        />
+                                    </Segment>
+                                </Grid.Column>
+                                <Grid.Column hidden={isMobile} mobile={16} tablet={16} computer={4} widescreen={4} className="wordlist-column">
+                                    <Segment.Group className="resultlist-word-segment">
+                                        <Segment className="resultlist-word-segment-header">Label Coloring & Entity Counts</Segment>
+                                        <Segment className="sortmode-text">
+                                            <Dropdown placeholder={'Sorted By: ' + this.state.sortMode} selection fluid className='icon'>
+                                                    <Dropdown.Menu>
+                                                        <Dropdown.Header icon='hand pointer' content={'Choose a method'} />
+                                                        <Dropdown.Divider />
+                                                        <Dropdown.Item label={{ color: 'red', empty: true, circular: true }} text='Frequency' onClick={() => this.setState({ sortMode: 'Frequency' })}/>
+                                                        <Dropdown.Item label={{ color: 'blue', empty: true, circular: true }} text='Alphabet' onClick={() => this.setState({ sortMode: 'Alphabet' })}/>
+                                                    </Dropdown.Menu>
+                                                </Dropdown>
+                                        </Segment>
+                                        <Segment className="resultlist-word-segment-list" >
+                                            <List>
+                                                {this.showWordList()}
+                                            </List>
+                                        </Segment>
+                                    </Segment.Group>
+                                </Grid.Column>
+                                <Grid.Column computer={1} widescreen={5}/>
+                            </Grid.Row>
+                            <Grid.Row className="footer-row">
+                                <Grid.Column only='computer' computer={1}/>
+                                <Grid.Column mobile={16} tablet={11} computer={10} widescreen={6} className="footer-column">
+                                    <Footer />
+                                </Grid.Column>
+                                <Grid.Column computer={5} widescreen={9}/>
+                            </Grid.Row>
+                        </Grid>
+
+                        <TransitionablePortal
+                            closeOnTriggerClick
+                            onOpen={this.handleOpen}
+                            onClose={this.handleClose}
+                            transition={{
+                                animation: 'slide up',
+                                duration: 400,
+                            }}
+                            openOnTriggerClick
+                            trigger={
+                                <Button hidden={!isMobile} size="huge" circular icon='list' className="word-list-open-button"/>
+                            }
+                        >
+                            <Segment.Group className="floating-resultlist-word-segment" style={{ backgroundColor: 'white' }}>
                                 <Segment className="resultlist-word-segment-header">Label Coloring & Entity Counts</Segment>
                                 <Segment className="sortmode-text">
                                     <Dropdown placeholder={'Sorted By: ' + this.state.sortMode} selection fluid className='icon'>
-                                            <Dropdown.Menu>
-                                                <Dropdown.Header icon='hand pointer' content={'Choose a method'} />
-                                                <Dropdown.Divider />
-                                                <Dropdown.Item label={{ color: 'red', empty: true, circular: true }} text='Frequency' onClick={() => this.setState({ sortMode: 'Frequency' })}/>
-                                                <Dropdown.Item label={{ color: 'blue', empty: true, circular: true }} text='Alphabet' onClick={() => this.setState({ sortMode: 'Alphabet' })}/>
-                                            </Dropdown.Menu>
-                                        </Dropdown>
+                                        <Dropdown.Menu>
+                                            <Dropdown.Header icon='hand pointer' content={'Choose a method'} />
+                                            <Dropdown.Divider />
+                                            <Dropdown.Item label={{ color: 'red', empty: true, circular: true }} text='Frequency' onClick={() => this.setState({ sortMode: 'Frequency' })}/>
+                                            <Dropdown.Item label={{ color: 'blue', empty: true, circular: true }} text='Alphabet' onClick={() => this.setState({ sortMode: 'Alphabet' })}/>
+                                        </Dropdown.Menu>
+                                    </Dropdown>
                                 </Segment>
-                                <Segment className="resultlist-word-segment-list" >
+                                <Segment className="floating-resultlist-word-segment-list" >
                                     <List>
                                         {this.showWordList()}
                                     </List>
                                 </Segment>
                             </Segment.Group>
-                        </Grid.Column>
-                        <Grid.Column computer={1} widescreen={5}/>
-                    </Grid.Row>
-                </Grid>
-
-                <TransitionablePortal
-                    closeOnTriggerClick
-                    onOpen={this.handleOpen}
-                    onClose={this.handleClose}
-                    transition={{
-                        animation: 'slide up',
-                        duration: 400,
-                    }}
-                    openOnTriggerClick
-                    trigger={
-                        <Button hidden={!isMobile} size="huge" circular icon='list' className="word-list-open-button"/>
-                    }
-                >
-                    <Segment.Group className="floating-resultlist-word-segment" style={{ backgroundColor: 'white' }}>
-                        <Segment className="resultlist-word-segment-header">Label Coloring & Entity Counts</Segment>
-                        <Segment className="sortmode-text">
-                            <Dropdown placeholder={'Sorted By: ' + this.state.sortMode} selection fluid className='icon'>
-                                <Dropdown.Menu>
-                                    <Dropdown.Header icon='hand pointer' content={'Choose a method'} />
-                                    <Dropdown.Divider />
-                                    <Dropdown.Item label={{ color: 'red', empty: true, circular: true }} text='Frequency' onClick={() => this.setState({ sortMode: 'Frequency' })}/>
-                                    <Dropdown.Item label={{ color: 'blue', empty: true, circular: true }} text='Alphabet' onClick={() => this.setState({ sortMode: 'Alphabet' })}/>
-                                </Dropdown.Menu>
-                            </Dropdown>
-                        </Segment>
-                        <Segment className="floating-resultlist-word-segment-list" >
-                            <List>
-                                {this.showWordList()}
-                            </List>
-                        </Segment>
-                    </Segment.Group>
-                </TransitionablePortal>
+                        </TransitionablePortal>
+                    </div>
+                }
             </div>
         )
     }

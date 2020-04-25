@@ -34,3 +34,9 @@ html, body {
     max-width: 1500px;
     margin: 0 auto;
 }
+
+.loading-screen {
+    padding: 0!important;
+    margin: 0!important;
+    height: 100vh;
+}

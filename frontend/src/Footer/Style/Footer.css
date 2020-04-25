@@ -1,0 +1,16 @@
+.footer-container {
+    font-size: 0.9rem;
+    padding: 1rem 0 5rem 0;
+}
+
+.footer-container a {
+    color: rgb(180, 180, 180);
+    text-decoration: underline;
+}
+
+@media (max-width: 990px) {
+    .footer-container {
+        padding: 0 1rem 5rem 1rem;
+        text-align: center;
+    }
+}

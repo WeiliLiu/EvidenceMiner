@@ -1,5 +1,5 @@
 .article-container {
-  margin: 0 0 10rem 0!important;
+  margin: 0 0 0 0!important;
   padding: 5rem 0 0 0!important;
 }
 
@@ -72,6 +72,16 @@
 .word-segment-list {
   overflow-y:scroll; 
   height: 280px;
+}
+
+.footer-column {
+  padding: 0!important;
+  margin: 0!important;
+}
+
+.footer-row {
+  margin: 5rem 0 0 0!important;
+  background-color: rgb(245, 245, 245);
 }
 
 @media (max-width: 990px) {
