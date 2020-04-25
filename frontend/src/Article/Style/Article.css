@@ -2,13 +2,6 @@ html, body {
     font-family: 'Merriweather', serif;
 }
 
-.article-container {
-    /*background-color: red;*/
-    align-content: center;
-    justify-content: center;
-    display: flex;
-}
-
 .article-grid {
     margin-top: 1.5rem!important;
     width: 1500px!important;

@@ -1,10 +1,21 @@
-.article-container {
+.article-container, .article-footer-container {
   margin: 0 0 0 0!important;
-  padding: 5rem 0 0 0!important;
+  padding: 0!important;
+}
+
+.article-footer-container {
+  margin: 5rem 0 0 0!important;
+  padding: 0!important;
+  background-color: rgb(245, 245, 245);
 }
 
 .article-container-row {
   margin: 0 0 1.5rem 0!important;
+  width: 100%;
+}
+
+.article-footer-row {
+  margin: 0!important;
   width: 100%;
 }
 
@@ -77,11 +88,6 @@
 .footer-column {
   padding: 0!important;
   margin: 0!important;
-}
-
-.footer-row {
-  margin: 5rem 0 0 0!important;
-  background-color: rgb(245, 245, 245);
 }
 
 @media (max-width: 990px) {

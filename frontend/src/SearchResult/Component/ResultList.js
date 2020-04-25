@@ -271,7 +271,9 @@ export default class ResultList extends React.Component {
                                 </Grid.Column>
                                 <Grid.Column computer={1} widescreen={5}/>
                             </Grid.Row>
-                            <Grid.Row className="footer-row">
+                        </Grid>
+                        <Grid className="resultlist-footer-container">
+                            <Grid.Row className="resultlist-footer-row">
                                 <Grid.Column only='computer' computer={1}/>
                                 <Grid.Column mobile={16} tablet={11} computer={10} widescreen={6} className="footer-column">
                                     <Footer />

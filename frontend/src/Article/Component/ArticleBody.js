@@ -207,12 +207,13 @@ export default class ArticleBody extends React.Component {
                         <Grid.Column computer={1} widescreen={5}/>
                     </Grid.Row>
                 </Grid>
-                <Grid>
-                    <Grid.Row className="footer-row">
+                <Grid className="article-footer-container" >
+                    <Grid.Row className="article-footer-row">
                         <Grid.Column only='computer' computer={1}/>
-                        <Grid.Column mobile={16} tablet={16} computer={14} widescreen={10} className="footer-column">
+                        <Grid.Column mobile={16} tablet={16} computer={10} widescreen={7} className="article-content-column" >
                             <Footer />
                         </Grid.Column>
+                        <Grid.Column mobile={16} tablet={16} computer={4} widescreen={3} style={{ margin: '0', padding: '0' }}/>
                         <Grid.Column computer={1} widescreen={5}/>
                     </Grid.Row>
                 </Grid>

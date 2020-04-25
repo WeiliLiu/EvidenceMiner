@@ -167,6 +167,16 @@
     border: 0!important;
 }
 
+.resultlist-footer-container {
+    margin: 2rem 0 0 0!important;
+    padding: 0!important;
+    background-color: rgb(245, 245, 245);
+}
+
+.resultlist-footer-row {
+    margin: 0!important;
+}
+
 @media (min-width: 1920px) {
     .wordlist-column {
         padding-left: 5rem!important;
