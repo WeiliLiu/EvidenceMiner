@@ -3,11 +3,14 @@ import React from 'react';
 // import ui elements
 import { List, Label } from 'semantic-ui-react';
 
-// import css
-import './styles.css';
-
 // import components
 import SecondaryList from '../SecondaryList';
+
+// import util functions
+import utils from '../../../utils';
+
+// import css
+import './styles.css';
 
 class PrimaryList extends React.Component {
     constructor(props) {
@@ -17,18 +20,6 @@ class PrimaryList extends React.Component {
 
         this.handleListDisplay = this.handleListDisplay.bind(this);
         this.handleOnClickListItem = this.handleOnClickListItem.bind(this);
-        this.sum = this.sum.bind(this);
-    }
-
-    sum = (obj) => {
-        if (obj === {}) return 0;
-        if (obj === parseInt(obj, 10)) return 1;
-
-        let result = 0;
-        for(var el in obj) {
-          result += this.sum(obj[el])
-        }
-        return result;
     }
 
     handleOnClickListItem = (type) => {
@@ -37,7 +28,7 @@ class PrimaryList extends React.Component {
         this.setState({ [type]: !this.state[type] })
     }
 
-    handleListDisplay = (type) => {
+    handleListDisplay = (type, index) => {
         const { typeDict } = this.props;
 
         let table = [];
@@ -45,13 +36,19 @@ class PrimaryList extends React.Component {
         table.push(
             <List.Item id={type} key={type} className="primary-list-item" onClick={() => this.handleOnClickListItem(type)}>
                 <List.Icon name={this.state[type]? 'caret square up' : 'caret square down outline'} className="list-icon"/>
-                <List.Content style={{ color: color[type] }}>
-                    <List.Header>{type}&nbsp;&nbsp;&nbsp;&nbsp;<Label circular empty style={{ backgroundColor: color[type] }}/></List.Header>
+                <List.Content style={{ color: utils.getColor()[type] }}>
+                    <List.Header>
+                        <Label color={index === 0? 'red' : (index === 1? 'orange' : '')}>
+                            {index + 1}
+                        </Label>
+                        &nbsp;&nbsp;&nbsp;&nbsp;{type}&nbsp;&nbsp;&nbsp;&nbsp;
+                        <Label circular empty style={{ backgroundColor: utils.getColor()[type] }}/>
+                    </List.Header>
                     <List.Description className="list-item-description">
                         {Object.keys(typeDict[type]).length}&nbsp;
                         {Object.keys(typeDict[type]).length === 1? 'subtype' : 'subtypes'},&nbsp;
-                        {this.sum(typeDict[type])}&nbsp;
-                        {this.sum(typeDict[type]) === 1? 'entity' : 'entities'}
+                        {utils.sum(typeDict[type])}&nbsp;
+                        {utils.sum(typeDict[type]) === 1? 'entity' : 'entities'}
                     </List.Description>
                 </List.Content>
             </List.Item>
@@ -59,7 +56,7 @@ class PrimaryList extends React.Component {
 
         // Put in the minor types if expanded
         table.push(
-            Object.keys(typeDict[type]).map(
+            utils.sortByEntityCount(typeDict[type]).map(
                 minorType => <SecondaryList key={minorType} 
                                             id={minorType} 
                                             type={minorType} 
@@ -81,21 +78,12 @@ class PrimaryList extends React.Component {
 
         return(
             <List>
-                {
-                    Object.keys(typeDict).map(type => this.handleListDisplay(type))
+                {   
+                    utils.sortByEntityCount(typeDict).map((type, index) => this.handleListDisplay(type, index))
                 }
             </List>
         )
     }
 }
-
-const color = {
-    'SPACY TYPE': '#F44336',
-    'NEW TYPE': '#3399ff',
-    'PHYSICAL OBJECT': '#009688',
-    'CONCEPTUAL ENTITY': '#8E24AA',
-    'ACTIVITY': '#F3D250',
-    'PHENOMENON OR PROCESS': '#374785',
-};
 
 export default PrimaryList;

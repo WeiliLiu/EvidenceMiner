@@ -3,6 +3,9 @@ import React from 'react';
 // import UI elements
 import { List, Transition, Label, Button } from 'semantic-ui-react';
 
+// import util functions
+import utils from '../../../utils';
+
 // import css
 import './styles.css';
 
@@ -31,7 +34,7 @@ class SecondaryList extends React.Component {
                     </List.Content>
                     <Transition visible={isExpanded} animation='scale' duration={500} unmountOnHide>
                         <List verticalAlign='middle'>
-                            {Object.keys(typeDict).map(word => 
+                            {utils.sortByWordFrequency(typeDict).map(word => 
                                 <List.Item key={word} className="tertiary-list-item">
                                     <List.Content floated='right'>
                                         <Label>{typeDict[word]}</Label>

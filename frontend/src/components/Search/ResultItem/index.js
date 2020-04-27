@@ -2,14 +2,10 @@
 import React from 'react';
 
 // import packages
-import {Header, Label, Segment, Button, Icon, Message, ontainer, Divider, Popup, List, Transition} from "semantic-ui-react";
-import {Link} from "react-router-dom";
+import {Header, Label, Segment, Icon, Message, Popup, List, Transition} from "semantic-ui-react";
 
 // import css style
-import '../Style/Result.css';
-
-// import utils functions
-import utils from '../../utils';
+import './styles.css';
 
 export default class Result extends React.Component {
     constructor(props) {
@@ -182,7 +178,6 @@ const color = {
     'PHYSICAL OBJECT': '#009688',
     'CONCEPTUAL ENTITY': '#8E24AA',
     'ACTIVITY': '#F3D250',
-    'PHENOMENON OR PROCESS': '#374785',
 };
 
 // const parent_type = {
@@ -246,7 +241,7 @@ const parent_type = {
     "GENE OR GENOME": "PHYSICAL OBJECT",
     "MANUFACTURED_OBJECT": "PHYSICAL OBJECT",
     "CHEMICAL": "PHYSICAL OBJECT",
-    "BODY_SUBSTANCE": "PHYSICAL OBJECT",
+    "BODY SUBSTANCE": "PHYSICAL OBJECT",
     "FOOD": "PHYSICAL OBJECT",
     "TEMPORAL CONCEPT": "CONCEPTUAL ENTITY",
     "QUALITATIVE CONCEPT": "CONCEPTUAL ENTITY",

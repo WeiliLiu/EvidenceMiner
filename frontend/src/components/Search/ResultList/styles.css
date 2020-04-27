@@ -1,54 +1,5 @@
-.chemical-color {
-    background-color: #F44336!important;
-}
-
-.organism-color {
-    background-color: #3399ff!important;
-}
-
-.structure-color {
-    background-color: #009688!important;
-}
-
-.physiologic-color {
-    background-color: #8E24AA!important;
-}
-
-.pathologic-color {
-    background-color: #F3D250!important;
-}
-
-.gene-color {
-    background-color: #374785!important;
-}
-
-.disease-color {
-    background-color: #f7941d!important;
-}
-
-.list-item {
-    padding-top: 2rem!important;
-    padding-bottom: 2rem!important;
-    padding-left: 3rem!important;
-    padding-right: 3rem!important;
-}
-
-.list-header {
-    font-size: 2rem!important;
-}
-
 .result-list-pagination {
     margin-left: 0!important;
-}
-
-.page-note {
-    color: gray;
-    font-size: 0.85rem;
-}
-
-.resultlist-container {
-    padding-top: 2rem;
-    width: 100%!important;
 }
 
 .search-meta-info {
@@ -63,41 +14,29 @@
     margin: 0!important;
 }
 
-.result-list-row {
-    margin: 0!important;
-    padding: 0!important;
-}
-
-.resultlist-grid {
-    width: 100%!important;
-}
-
 .search-meta-container {
     color: grey;
     padding-left: 0!important;
-}
-
-.resultlist-word-segment-container {
-    width: 25rem;
-}
-  
-.resultlist-word-segment {
-    width: 24rem;
-    max-width: 100%;
-    margin: 0!important;
-}
-  
-.resultlist-word-segment-header {
-    background-color: rgb(247, 247, 247)!important;
-    font-weight: 800!important;
-    font-size: 1.1rem!important;
-    border-radius: 0!important;
 }
   
 .resultlist-word-segment-list {
     overflow-y: auto; 
     position:relative;
     max-height: 300px;
+    background-color: white;
+    padding: 0;
+}
+
+.resultlist-word-segment-header {
+    background-color: white;
+    padding: 1.5rem 1rem;
+    border-top: 1.4px solid rgb(33, 133, 208);
+}
+
+.resultlist-word-segment-vis {
+    background-color: rgb(247, 247, 247);
+    padding: 1.5rem;
+    height: 300px;
 }
 
 .segment-list {
@@ -155,7 +94,7 @@
 }
 
 .word-container {
-    max-width: 28rem;
+    max-width: 26rem;
     width: 100%;
     border: solid 1px rgb(230, 230, 230);
 }
@@ -198,16 +137,8 @@
         padding: 0!important;
     }
 
-    .resultlist-container {
-        padding-top: 1rem!important;
-    }
-
     .search-meta-info-column {
         padding-left: 1rem!important;
-    }
-
-    .wordlist-column {
-        padding-right: 1rem!important;
     }
 
     .search-grid-container {
@@ -220,7 +151,7 @@
     }
 
     .wordlist-column {
-        padding: 1rem;
+        padding: 1rem!important;
     }
 }
 
