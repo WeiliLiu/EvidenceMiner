@@ -5,6 +5,7 @@ import PatternTable from '../Component/PatternTable.js';
 import {Animated} from "react-animated-css";
 import {Link} from "react-router-dom";
 import Footer from '../../Footer/Component/Footer';
+import PrimaryList from '../../components/TypeList/PrimaryList';
 
 export default class ArticleBody extends React.Component {
     constructor(props) {
@@ -175,6 +176,7 @@ export default class ArticleBody extends React.Component {
 
                             <div className="body-container">
                                 <p>{this.highlightText(2)}</p>
+                                {/* <p>{this.props.sentence}</p> */}
                             </div>
                         </Grid.Column>
                         <Grid.Column mobile={16} tablet={16} computer={4} widescreen={3} style={{ margin: '0', padding: '0' }}>
@@ -192,9 +194,10 @@ export default class ArticleBody extends React.Component {
                                         </Dropdown>
                                         </Segment>
                                     <Segment className="word-segment-list">
-                                        <List>
+                                        {/* <List>
                                             {this.props.showWordList()}
-                                        </List>
+                                        </List> */}
+                                        <PrimaryList typeDict={this.props.typeDict}/>
                                     </Segment>
                                 </Segment.Group>
 
@@ -207,6 +210,7 @@ export default class ArticleBody extends React.Component {
                         <Grid.Column computer={1} widescreen={5}/>
                     </Grid.Row>
                 </Grid>
+                <hr style={{ padding: '0', margin: '0' }}/>
                 <Grid className="article-footer-container" >
                     <Grid.Row className="article-footer-row">
                         <Grid.Column only='computer' computer={1}/>

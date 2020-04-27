@@ -5,7 +5,7 @@ import React from 'react';
 import { Loader, Image, List, Header, Pagination, Icon, Segment, Label, Divider, Grid, Ref, Rail, Sticky, Container, Menu, FormTextArea, Dropdown, TransitionablePortal, Button } from 'semantic-ui-react';
 
 // import self-made components
-import MajorTypeList from '../../Article/Component/MajorTypeList';
+import PrimaryList from '../../components/TypeList/PrimaryList';
 import Result from './Result';
 import Footer from '../../Footer/Component/Footer';
 
@@ -150,31 +150,12 @@ export default class ResultList extends React.Component {
         return table;
     }
 
-    showWordList() {
-        var table = [];
-        console.log(this.state.typeDict);
-        var types = Object.keys(this.state.typeDict);
-        for(let i = 0; i < types.length; i++) {
-            table.push(<MajorTypeList Type={types[i]} List={this.state.typeDict[types[i]]} sortMode={'Frequency'}/>)
-        }
-        return table;
-    }
-
     getSearchURL = (keyword, nextPage) => {
-        return config.frontUrl + "/search" + '?kw=' + keyword + "&page=" + nextPage;
+        return "/search" + '?kw=' + keyword + "&page=" + nextPage;
     }
 
     handleKeyPress = (keyword, nextPage) => {
         window.location.href = this.getSearchURL(keyword, nextPage);
-    }
-
-    showWordList() {
-        var table = [];
-        var types = Object.keys(this.state.typeDict);
-        for(let i = 0; i < types.length; i++) {
-            table.push(<MajorTypeList Type={types[i]} List={this.state.typeDict[types[i]]} sortMode={this.state.sortMode}/>)
-        }
-        return table;
     }
 
     handleOpen = () => this.setState({ showFloatingList: true })
@@ -182,7 +163,7 @@ export default class ResultList extends React.Component {
     handleClose = () => this.setState({ showFloatingList: false })
 
     render() {
-        const { isMobile, isLoading } = this.state;
+        const { isMobile, isLoading, typeDict } = this.state;
 
         return(
             <div>
@@ -249,29 +230,30 @@ export default class ResultList extends React.Component {
                                         />
                                     </Segment>
                                 </Grid.Column>
-                                <Grid.Column hidden={isMobile} mobile={16} tablet={16} computer={4} widescreen={4} className="wordlist-column">
-                                    <Segment.Group className="resultlist-word-segment">
-                                        <Segment className="resultlist-word-segment-header">Label Coloring & Entity Counts</Segment>
-                                        <Segment className="sortmode-text">
+                                <Grid.Column mobile={16} tablet={16} computer={4} widescreen={4} className="wordlist-column">
+                                    <div className="word-container shadow-sm">
+                                        <div style={{ backgroundColor: 'white', padding: '1.5rem 1rem', borderTop: '1.4px solid rgb(33, 133, 208)' }}>
+                                            <h4>Label Coloring & Entity Counts</h4>
+                                        </div>
+                                        <div style={{ backgroundColor: 'rgb(247, 247, 247)', padding: '1rem 1.2rem'}}>
                                             <Dropdown placeholder={'Sorted By: ' + this.state.sortMode} selection fluid className='icon'>
-                                                    <Dropdown.Menu>
-                                                        <Dropdown.Header icon='hand pointer' content={'Choose a method'} />
-                                                        <Dropdown.Divider />
-                                                        <Dropdown.Item label={{ color: 'red', empty: true, circular: true }} text='Frequency' onClick={() => this.setState({ sortMode: 'Frequency' })}/>
-                                                        <Dropdown.Item label={{ color: 'blue', empty: true, circular: true }} text='Alphabet' onClick={() => this.setState({ sortMode: 'Alphabet' })}/>
-                                                    </Dropdown.Menu>
-                                                </Dropdown>
-                                        </Segment>
-                                        <Segment className="resultlist-word-segment-list" >
-                                            <List>
-                                                {this.showWordList()}
-                                            </List>
-                                        </Segment>
-                                    </Segment.Group>
+                                                <Dropdown.Menu>
+                                                    <Dropdown.Header icon='hand pointer' content={'Choose a method'} />
+                                                    <Dropdown.Divider />
+                                                    <Dropdown.Item label={{ color: 'red', empty: true, circular: true }} text='Frequency' onClick={() => this.setState({ sortMode: 'Frequency' })}/>
+                                                    <Dropdown.Item label={{ color: 'blue', empty: true, circular: true }} text='Alphabet' onClick={() => this.setState({ sortMode: 'Alphabet' })}/>
+                                                </Dropdown.Menu>
+                                            </Dropdown>
+                                        </div>
+                                        <div className="resultlist-word-segment-list" style={{ backgroundColor: 'white', padding: '0'}}>
+                                            <PrimaryList typeDict={typeDict}/>
+                                        </div>
+                                    </div>
                                 </Grid.Column>
                                 <Grid.Column computer={1} widescreen={5}/>
                             </Grid.Row>
                         </Grid>
+                        <hr style={{ padding: '0', margin: '0' }}/>
                         <Grid className="resultlist-footer-container">
                             <Grid.Row className="resultlist-footer-row">
                                 <Grid.Column only='computer' computer={1}/>
@@ -281,39 +263,6 @@ export default class ResultList extends React.Component {
                                 <Grid.Column computer={5} widescreen={9}/>
                             </Grid.Row>
                         </Grid>
-
-                        <TransitionablePortal
-                            closeOnTriggerClick
-                            onOpen={this.handleOpen}
-                            onClose={this.handleClose}
-                            transition={{
-                                animation: 'slide up',
-                                duration: 400,
-                            }}
-                            openOnTriggerClick
-                            trigger={
-                                <Button hidden={!isMobile} size="huge" circular icon='list' className="word-list-open-button"/>
-                            }
-                        >
-                            <Segment.Group className="floating-resultlist-word-segment" style={{ backgroundColor: 'white' }}>
-                                <Segment className="resultlist-word-segment-header">Label Coloring & Entity Counts</Segment>
-                                <Segment className="sortmode-text">
-                                    <Dropdown placeholder={'Sorted By: ' + this.state.sortMode} selection fluid className='icon'>
-                                        <Dropdown.Menu>
-                                            <Dropdown.Header icon='hand pointer' content={'Choose a method'} />
-                                            <Dropdown.Divider />
-                                            <Dropdown.Item label={{ color: 'red', empty: true, circular: true }} text='Frequency' onClick={() => this.setState({ sortMode: 'Frequency' })}/>
-                                            <Dropdown.Item label={{ color: 'blue', empty: true, circular: true }} text='Alphabet' onClick={() => this.setState({ sortMode: 'Alphabet' })}/>
-                                        </Dropdown.Menu>
-                                    </Dropdown>
-                                </Segment>
-                                <Segment className="floating-resultlist-word-segment-list" >
-                                    <List>
-                                        {this.showWordList()}
-                                    </List>
-                                </Segment>
-                            </Segment.Group>
-                        </TransitionablePortal>
                     </div>
                 }
             </div>
@@ -330,16 +279,6 @@ export default class ResultList extends React.Component {
 //     'Gene or Genome': '#374785',
 //     'Disease or Syndrome': '#f7941d',
 // };
-
-const color = {
-    'SPACY_TYPE': '#F44336',
-    'NEW_TYPE': '#3399ff',
-    'PHYSICAL_OBJECT': '#009688',
-    'CONCEPTUAL_ENTITY': '#8E24AA',
-    'ACTIVITY': '#F3D250',
-    'PHENOMENON_OR_PROCESS': '#374785',
-    'OTHERS': '#f7941d'
-};
 
 // const parent_type = {
 //     'Chemical': 'Chemical',

@@ -1,16 +1,22 @@
 .footer-container {
     font-size: 0.9rem;
-    padding: 1rem 0 5rem 0;
+    padding: 1rem 0 1rem 0;
+    color: black;
 }
 
 .footer-container a {
-    color: rgb(180, 180, 180);
+    color: black;
+}
+
+.footer-container a:hover {
     text-decoration: underline;
+    transition: all 0.5s;
 }
 
 @media (max-width: 990px) {
     .footer-container {
-        padding: 0 1rem 5rem 1rem;
+        padding: 1.5rem;
+        width: 100vw;
         text-align: center;
     }
 }

@@ -1,0 +1,22 @@
+.secondary-list-item {
+    padding: 1rem 1.2rem!important;
+}
+
+.secondary-list-item:hover {
+    background-color: rgb(247, 247, 247)!important;
+    cursor: pointer;
+    transition: all 0.5s;
+}
+
+.vertical-center {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+  }
+
+.tertiary-list-item {
+    position: relative;
+    padding: 0.5rem 0!important;
+}

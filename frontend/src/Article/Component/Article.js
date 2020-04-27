@@ -4,7 +4,7 @@ import { Dimmer, Loader, Image, Segment } from 'semantic-ui-react'
 import ArticleBody from '../Component/ArticleBody';
 import '../Style/Article.css';
 import NavigationBar from "../../NavigationBar/Component/NavigationBar";
-import MajorTypeList from '../Component/MajorTypeList';
+import TypeList from '../../components/TypeList/PrimaryList';
 
 // import api endpoints
 import api from '../../api';
@@ -34,7 +34,6 @@ export default class Article extends React.Component {
 
         this.componentDidMount = this.componentDidMount.bind(this);
         this.currentSortMode = this.currentSortMode.bind(this);
-        this.showWordList = this.showWordList.bind(this);
         this.changeSentColor = this.changeSentColor.bind(this);
         this.clearSentColor = this.clearSentColor.bind(this);
         this.scrollToAnchor = this.scrollToAnchor.bind(this);
@@ -159,14 +158,14 @@ export default class Article extends React.Component {
         return ret_string;
     }
 
-    showWordList() {
-        var table = [];
-        var types = Object.keys(this.state.typeDict);
-        for(let i = 0; i < types.length; i++) {
-            table.push(<MajorTypeList Type={types[i]} List={this.state.typeDict[types[i]]} sortMode={this.state.sortMode}/>)
-        }
-        return table;
-    }
+    // showWordList() {
+    //     var table = [];
+    //     var types = Object.keys(this.state.typeDict);
+    //     for(let i = 0; i < types.length; i++) {
+    //         table.push(<MajorTypeList Type={types[i]} List={this.state.typeDict[types[i]]} sortMode={this.state.sortMode}/>)
+    //     }
+    //     return table;
+    // }
 
     render() {
         const { isLoading } = this.state;
@@ -183,8 +182,7 @@ export default class Article extends React.Component {
                             entities={this.state.entities} typeDict={this.state.typeDict} patterns={this.state.patterns}
                             state={this.props.location.state === undefined? "None": this.props.location.state}
                             sentColors={this.state.sentColors} changeSentColor={this.changeSentColor}
-                            clearSentColor={this.clearSentColor} showWordList={this.showWordList} 
-                            scrollToAnchor={this.scrollToAnchor} jumpTarget={this.state.jumpTarget} />}
+                            clearSentColor={this.clearSentColor} scrollToAnchor={this.scrollToAnchor} jumpTarget={this.state.jumpTarget} />}
             </div>
         )
     }

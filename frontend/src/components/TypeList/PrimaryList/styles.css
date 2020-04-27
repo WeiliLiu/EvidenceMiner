@@ -1,0 +1,23 @@
+.primary-list-item {
+    padding: 1.2rem!important;
+}
+
+.primary-list-item:hover {
+    background-color: rgb(247, 247, 247);
+    cursor: pointer;
+    transition: all 0.5s;
+}
+
+.list-icon {
+    float: right;
+}
+
+hr {
+    margin: 0 1.2rem;
+    padding: 0;
+}
+
+.list-item-description {
+    color: rgb(190, 190, 190)!important;
+    font-size: 0.9rem;
+}
