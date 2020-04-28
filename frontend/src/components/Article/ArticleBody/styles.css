@@ -55,6 +55,9 @@
 .abstract-container {
   padding: 1.2rem;
   background-color: rgb(240, 240, 240);
+  font-size: 1.1rem;
+  font-weight: 300;
+  line-height: 1.8rem;
 }
 
 .abstract-container h4 {
@@ -62,17 +65,8 @@
   font-weight: 400;
 }
 
-.abstract-container p {
-  font-size: 1.1rem;
-  font-weight: 300;
-  line-height: 1.8rem;
-}
-
 .body-container {
   padding-top: 2rem;
-}
-
-.body-container p {
   font-size: 1.1rem;
   font-weight: 300;
   line-height: 1.8rem;
@@ -89,9 +83,18 @@
   height: 280px;
 }
 
+.empty-div {
+  height: 2rem;
+}
+
 .footer-column {
   padding: 0!important;
   margin: 0!important;
+}
+
+.animated-sentence {
+  border: 1px solid black;
+  padding: 0.5rem 2rem 0.5rem 0.5rem;
 }
 
 @media (max-width: 990px) {

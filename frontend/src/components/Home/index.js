@@ -1,10 +1,16 @@
 import React from 'react';
-import '../Style/Home.css';
-import { Navbar, Nav, NavDropdown, InputGroup, Form, FormControl, Button } from 'react-bootstrap';
-import { Icon, Image, Message, Embed } from 'semantic-ui-react';
+
+// import downloaded packages
+import { Navbar, Nav, InputGroup, Form, FormControl, Button } from 'react-bootstrap';
+import { Icon, Embed } from 'semantic-ui-react';
+
+// import config
 import config from '../../config';
 
-export default class Home extends React.Component {
+// import css
+import './styles.css';
+
+class Home extends React.Component {
     constructor(props) {
         super(props);
 
@@ -30,7 +36,7 @@ export default class Home extends React.Component {
     }
 
     handleKeyPress(target) {
-        if(target.charCode==13){
+        if(target.charCode === 13){
             target.preventDefault();
             this.setState({
                 searchValue: ''
@@ -92,15 +98,14 @@ export default class Home extends React.Component {
                                 iframe={{
                                     allowFullScreen: true,
                                   }}
-                                // placeholder='https://firebasestorage.googleapis.com/v0/b/evidenceminer.appspot.com/o/sample.png?alt=media&token=eb614b1d-3e12-4b42-afa0-b6d11026c8c3'
                                 source='youtube'
                             />
                         </div>
-                        {/* <Image className={'home-image'}
-                            src={'https://firebasestorage.googleapis.com/v0/b/evidenceminer.appspot.com/o/sample.png?alt=media&token=eb614b1d-3e12-4b42-afa0-b6d11026c8c3'}></Image> */}
                     </div>
                 </div>
             </div>
         )
     }
 }
+
+export default Home;

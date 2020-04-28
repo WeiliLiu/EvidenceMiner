@@ -1,15 +1,18 @@
 import React from 'react';
+
+// import downloaded packages
 import _ from 'lodash';
-import { Navbar, Nav, NavDropdown, Form, FormControl, Button } from 'react-bootstrap';
-import { Search, Grid, Header, Segment, Label, Input, Icon, Container, Menu } from 'semantic-ui-react'
-import '../Style/NavigationBar.css';
-import 'semantic-ui-css/semantic.min.css';
-import {Redirect, Link} from "react-router-dom";
+import { Navbar } from 'react-bootstrap';
+import { Search, Grid, Input, Container } from 'semantic-ui-react'
 import axios from "axios";
+
+// import config
 import config from '../../config';
 
+// import css
+import './styles.css';
+
 const resultRenderer = ({ title }) => {
-    console.log(title)
     return(
         <div style={{ 'font-size': '0.9rem' }}>{title}</div>
     )
@@ -25,7 +28,8 @@ export default class NavigationBar extends React.Component {
             searchValue: '',
             shouldRedirect: false,
             isFlushed: false,
-            isLoading: false, results: [], value: new URLSearchParams(window.location.search).get('kw'),
+            isLoading: false, results: [], 
+            value: new URLSearchParams(window.location.search).get('kw'),
             source: [],
         }
 
@@ -71,11 +75,11 @@ export default class NavigationBar extends React.Component {
         }    
     }
 
-    componentWillMount(){
+    UNSAFE_componentWillMount(){
         window.addEventListener('scroll', this.handleScroll);
     }
 
-    componentWillUnmount(){
+    UNSAFE_componentWillUnmount(){
         window.removeEventListener('scroll',this.handleScroll);
     }
 
@@ -87,10 +91,9 @@ export default class NavigationBar extends React.Component {
         }
     }
 
-    handleKeyPress(target) {
-        if(target.charCode==13){
+    handleKeyPress = (target) => {
+        if(target.charCode === 13){
             target.preventDefault();
-            // console.log(this.state.value)
             if(this.state.searchBarFocused && this.state.value !== '') {
                 window.location.href = this.getSearchURL();
             }
@@ -106,16 +109,12 @@ export default class NavigationBar extends React.Component {
     }
 
     handleResultSelect = (e, { result }) => {
-        // console.log(result.title)
-        // console.log(this.state.value)
         let value = this.state.value.split(',')
         value[value.length - 1] = value.length > 1? ' ' + result.title : result.title;
-        // console.log(value[value.length - 1])
         this.setState({ value: value.join(',') })
     }
 
     handleSearchChange = (e, { value }) => {
-        console.log(this.state.searchBarFocused)
         this.setState({ isLoading: true, value })
 
         var query = {
@@ -179,25 +178,21 @@ export default class NavigationBar extends React.Component {
     }
 
     render() {
-        const { isLoading, value, results } = this.state
+        const { value, results } = this.state
 
         return(
             <Navbar id="header" bg="light" expand="lg" style={{ padding: '0px', backgroundColor: 'red' }} className={'main-navbar'}>
                 <Grid style={{ width: '100%' }} padded stretched>
-                    <Grid.Column mobile={16} tablet={16} computer={1} className="logo-column" textAlign="middle" verticalAlign="middle">
-                        <Link to={{
-                            pathname: `/`
-                        }} >
-                            <Container fluid text content="EM" textAlign='center'
-                                       style={{ backgroundColor: '', fontSize: "2.5rem", padding: "0" }}
-                            />
-                        </Link>
+                    <Grid.Column mobile={16} tablet={16} computer={1} className="logo-column" textAlign="center" verticalAlign="middle">
+                        <Container fluid text textAlign='center' style={{ backgroundColor: '', fontSize: "2.5rem", padding: "0" }}>
+                            <a href="/">EM</a>
+                        </Container>
                     </Grid.Column>
                     <Grid.Column mobile={16} tablet={16} computer={6} className={'searchbar-grid'}>
                         <Search
                             fluid
                             loading={false}
-                            input={<Input fluid icon='search' placeholder='Search...' />}
+                            input={<Input fluid icon='search' placeholder='Search...' value={value || ''}/>}
                             onResultSelect={this.handleResultSelect}
                             onSearchChange={_.debounce(this.handleSearchChange, 500, {
                             leading: true,

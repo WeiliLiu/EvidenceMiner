@@ -41,6 +41,22 @@
     color: green;
 }
 
+.popup-container {
+    color: rgb(33, 133, 208);
+    font-size: 0.8rem;
+    margin-left: 0.3rem;
+}
+
+.result-popup {
+    border-radius: 0!important;
+    font-size: 0.8rem!important;
+    opacity: 0.9!important;
+}
+
+.popup-header {
+    color: #7e7e7e;
+}
+
 @media (max-width: 990px) {
     .search-segment {
         padding: 0 1rem!important;

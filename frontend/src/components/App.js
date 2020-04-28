@@ -1,10 +1,10 @@
 import React from 'react';
 
 // import components
-import Article from '../Article/Component/Article';
+import Article from './Article/ArticleContainer';
 import Search from './Search/SearchContainer';
-import Analytics from '../Analytics/Component/Analytics';
-import Home from '../Home/Component/Home';
+import Analytics from './Analytics/AnalyticsContainer';
+import Home from './Home';
 
 // import react-router
 import { Switch, Route, BrowserRouter } from "react-router-dom";

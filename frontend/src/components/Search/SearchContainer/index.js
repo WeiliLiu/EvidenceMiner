@@ -2,7 +2,7 @@ import React from 'react';
 
 // import components
 import ResultList from '../ResultList';
-import NavigationBar from '../../../NavigationBar/Component/NavigationBar';
+import NavigationBar from '../../NavigationBar';
 
 // import packages
 import { withRouter } from 'react-router-dom';
@@ -24,9 +24,9 @@ class SearchResult extends React.Component {
     render() {
         return(
             <div>
-                <NavigationBar history={this.props.history} type="search" />
+                <NavigationBar type="search" />
 
-                <ResultList history={this.props.history} />
+                <ResultList />
             </div>
         )
     }

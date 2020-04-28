@@ -15,6 +15,50 @@ module.exports = {
         return Object.keys(obj).sort(function(a, b) {
             return obj[b] - obj[a];
         })
+    },
+    compileEntities: function(searchResult) {
+        var entities = [];
+        for (let i = 0; i < searchResult.hits.hits.length; i++) {
+            for (let j = 0; j < searchResult.hits.hits[i]._source.entities.length; j++) {
+                entities.push(searchResult.hits.hits[i]._source.entities[j]);
+            }
+        }
+        return entities;
+    },
+    compileEntityFrequency: function(entities) {
+        var typeDict = {};
+
+        entities.forEach(entity => {
+            if(parent_type[entity.type] in typeDict === false) {
+                typeDict[parent_type[entity.type]] = {}
+            }
+            if(entity.type in typeDict[parent_type[entity.type]] === false) {
+                typeDict[parent_type[entity.type]][entity.type] = {}
+            }
+            if(entity.name in typeDict[parent_type[entity.type]][entity.type] === false) {
+                typeDict[parent_type[entity.type]][entity.type][entity.name] = 0;
+            }
+            typeDict[parent_type[entity.type]][entity.type][entity.name] += 1;
+        });
+
+        return typeDict;
+    },
+    compilePaperData: function(docSentences) {
+        let sentences = []; 
+        let patterns = []; 
+        let entities = [];
+        let sentColors = {};
+        docSentences.hits.hits.forEach(sentence => {
+            sentColors[sentence._source.sentId] = '';
+            sentences.push(sentence._source);
+            sentence._source.entities.forEach(entity => {
+                entities.push(entity);
+            });
+            sentence._source.patterns.forEach(pattern => {
+                patterns.push(pattern);
+            });
+        })
+        return [entities, sentences, patterns, sentColors];
     }
 }
 
@@ -49,7 +93,6 @@ const parent_type = {
     "EVENT": "SPACY TYPE",
     "WORK OF ART": "SPACY TYPE",
     "LAW": "SPACY TYPE",
-    "LANGUAGE": "SPACY TYPE",
     "DATE": "SPACY TYPE",
     "TIME": "SPACY TYPE",
     "PERCENT": "SPACY TYPE",

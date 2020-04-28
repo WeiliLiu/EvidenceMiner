@@ -1,0 +1,31 @@
+.word-container {
+    max-width: 26rem;
+    width: 100%;
+    border: solid 1px rgb(230, 230, 230);
+}
+
+.resultlist-word-segment-header {
+    background-color: white;
+    padding: 1.5rem 1rem;
+    border-top: 1.4px solid rgb(33, 133, 208);
+}
+
+.resultlist-word-segment-vis {
+    background-color: rgb(247, 247, 247);
+    padding: 1.5rem;
+    height: 300px;
+}
+
+.resultlist-word-segment-list {
+    overflow-y: auto; 
+    position:relative;
+    max-height: 300px;
+    background-color: white;
+    padding: 0;
+}
+
+@media (max-width: 990px) {
+    .word-container {
+        margin: 0 auto;
+    }
+}

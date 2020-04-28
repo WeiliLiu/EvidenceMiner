@@ -1,4 +1,6 @@
 import React from 'react';
+
+// import downloaded packages
 import { Grid, Segment, Message, Container } from 'semantic-ui-react';
 import CanvasJSReact from '../../canvasjs-2.3.2/canvasjs.react';
 var CanvasJS = CanvasJSReact.CanvasJS;
@@ -64,7 +66,6 @@ export default class AnalyticsGraph extends React.Component {
         if(Object.keys(entity_top_counts).includes(this.state.entity_type.toLowerCase())) {
             var data = [];
             for(var i = 0; i < Math.min(entity_top_counts[this.state.entity_type.toLowerCase()].length, 10); i++) {
-                console.log(entity_top_counts[this.state.entity_type.toLowerCase()][i]['title'])
                 data.push({
                     y: entity_top_counts[this.state.entity_type.toLowerCase()][i]['count'],
                     label: entity_top_counts[this.state.entity_type.toLowerCase()][i]['title']
@@ -78,7 +79,6 @@ export default class AnalyticsGraph extends React.Component {
         if(Object.keys(entity_document_top_counts).includes(this.state.entity_type.toLowerCase())) {
             var data = [];
             for(var i = 0; i < Math.min(entity_document_top_counts[this.state.entity_type.toLowerCase()].length, 10); i++) {
-                console.log(entity_document_top_counts[this.state.entity_type.toLowerCase()][i]['title'])
                 data.push({
                     y: entity_document_top_counts[this.state.entity_type.toLowerCase()][i]['count'],
                     label: entity_document_top_counts[this.state.entity_type.toLowerCase()][i]['title']
@@ -112,13 +112,13 @@ export default class AnalyticsGraph extends React.Component {
                 if(pair.includes(this.state.entity.toLowerCase().split(' ').join('_'))) {
                     count += 1
                     var entity_pair = pattern_top_counts[this.state.pattern.toLowerCase()][i]['title'].split('&')
-                    if (entity_pair[0].toLowerCase() != this.state.entity.toLowerCase().replace(/ /g, '_')) {
+                    if (entity_pair[0].toLowerCase() !== this.state.entity.toLowerCase().replace(/ /g, '_')) {
                         data.push({
                             y:  pattern_top_counts[this.state.pattern.toLowerCase()][i]['count'],
                             label: entity_pair[0]
                         })
                     }
-                    if (entity_pair[1].toLowerCase() != this.state.entity.toLowerCase().replace(/ /g, '_')) {
+                    if (entity_pair[1].toLowerCase() !== this.state.entity.toLowerCase().replace(/ /g, '_')) {
                         data.push({
                             y:  pattern_top_counts[this.state.pattern.toLowerCase()][i]['count'],
                             label: entity_pair[1]

@@ -1,7 +1,11 @@
 import React from 'react';
+
+// import downloaded package
 import { Grid, Menu } from 'semantic-ui-react';
-import NavigationBar from '../../NavigationBar/Component/NavigationBar';
-import AnalyticsGraph from '../Component/AnalyticsGraph';
+
+// import components
+import NavigationBar from '../../NavigationBar';
+import AnalyticsGraph from '../AnalyticsGraph';
 
 export default class Analytics extends React.Component {
     constructor(props) {
@@ -16,9 +20,6 @@ export default class Analytics extends React.Component {
     }
 
     componentDidMount() {
-        const searchParams = new URLSearchParams(window.location.search);
-        var keyword = searchParams.get('kw');
-
         // Set up screen size listener
         window.addEventListener("resize", this.resize.bind(this));
         this.resize();

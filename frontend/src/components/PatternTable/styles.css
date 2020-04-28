@@ -1,3 +1,8 @@
+.table-container {
+  max-width: 26rem;
+  width: 100%;
+}
+
 .table-container tbody {
   display: block;
   height: 300px;

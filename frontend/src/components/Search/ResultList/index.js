@@ -5,10 +5,9 @@ import React from 'react';
 import { Loader, List, Pagination, Icon, Segment, Grid, Container, Menu } from 'semantic-ui-react';
 
 // import self-made components
-import TypeList from '../../TypeList/PrimaryList';
+import TypeList from '../../TypeList/ListContainer';
 import ResultItem from '../ResultItem';
-import Footer from '../../../Footer/Component/Footer';
-import EntitesVis from '../../EntitiesVis';
+import Footer from '../../Footer';
 
 // import api endpoints
 import api from '../../../api';
@@ -20,7 +19,7 @@ import utils from '../../../utils';
 import './styles.css';
 
 
-export default class ResultList extends React.Component {
+class ResultList extends React.Component {
     constructor(props) {
         super(props);
 
@@ -54,7 +53,7 @@ export default class ResultList extends React.Component {
 
         // Calculate paging related numbers
         const totalPages = Math.ceil(numSearchResults / 10);
-        const currPage = new URLSearchParams(window.location.search).get('page')
+        const currPage = parseInt(new URLSearchParams(window.location.search).get('page'));
 
         // Call the api to query elasticsearch
         const resultSize = 10;
@@ -66,32 +65,12 @@ export default class ResultList extends React.Component {
 
         // Get color inforamtions
         var colors = utils.getColor();
-
-        // Get type hierarchy inforamtions
-        var typeHierarchy = utils.getTypeHierarchy();
         
         // Calculate entities information for current page
-        var typeDict = {};
-        var entities = [];
-        for (let i = 0; i < searchResult.hits.hits.length; i++) {
-            for (let j = 0; j < searchResult.hits.hits[i]._source.entities.length; j++) {
-                entities.push(searchResult.hits.hits[i]._source.entities[j]);
-            }
-        }
+        var entities = utils.compileEntities(searchResult);
         
         // Counting word frequencies for each entity
-        for(let i = 0; i < entities.length; i++) {
-            if(typeHierarchy[entities[i].type] in typeDict === false) {
-                typeDict[typeHierarchy[entities[i].type]] = {}
-            }
-            if(entities[i].type in typeDict[typeHierarchy[entities[i].type]] === false) {
-                typeDict[typeHierarchy[entities[i].type]][entities[i].type] = {}
-            }
-            if(entities[i].name in typeDict[typeHierarchy[entities[i].type]][entities[i].type] === false) {
-                typeDict[typeHierarchy[entities[i].type]][entities[i].type][entities[i].name] = 0;
-            }
-            typeDict[typeHierarchy[entities[i].type]][entities[i].type][entities[i].name] += 1;
-        }
+        var typeDict = utils.compileEntityFrequency(entities);
 
         // Prepare graph data
         var graphData = [];
@@ -172,7 +151,7 @@ export default class ResultList extends React.Component {
 
         return(
             <div>
-                <div className="search-grid-container" style={isLoading? {position: 'fixed', width: '100%'} : {}}>
+                <div className={isLoading? "loading-style search-grid-container" : "search-grid-container"}>
                     <Grid className="search-grid">
                         <Grid.Row className="search-grid-row">
                             <Grid.Column only='computer' computer={1} />
@@ -235,17 +214,7 @@ export default class ResultList extends React.Component {
                                     </Segment>
                                 </Grid.Column>
                                 <Grid.Column mobile={16} tablet={16} computer={4} widescreen={4} className="wordlist-column">
-                                    <div className="word-container shadow-sm">
-                                        <div className="resultlist-word-segment-header">
-                                            <h4>Label Coloring & Entity Counts</h4>
-                                        </div>
-                                        <div className="resultlist-word-segment-vis">
-                                            <EntitesVis graphData={graphData} graphColors={graphColors}/>
-                                        </div>
-                                        <div className="resultlist-word-segment-list">
-                                            <TypeList typeDict={typeDict}/>
-                                        </div>
-                                    </div>
+                                    <TypeList typeDict={typeDict} graphColors={graphColors} graphData={graphData}/>
                                 </Grid.Column>
                                 <Grid.Column computer={1} widescreen={5}/>
                             </Grid.Row>
@@ -266,3 +235,5 @@ export default class ResultList extends React.Component {
         )
     }
 }
+
+export default ResultList;

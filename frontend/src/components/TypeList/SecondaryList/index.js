@@ -1,7 +1,8 @@
 import React from 'react';
 
 // import UI elements
-import { List, Transition, Label, Button } from 'semantic-ui-react';
+import { List, Transition, Label } from 'semantic-ui-react';
+import PropTypes from 'prop-types';
 
 // import util functions
 import utils from '../../../utils';
@@ -24,7 +25,8 @@ class SecondaryList extends React.Component {
 
         return(
             <Transition visible={visible} animation='scale' duration={500} unmountOnHide>
-                <List.Item className="secondary-list-item" style={{backgroundColor: isExpanded? 'rgb(247, 247, 247)' : 'white'}} onClick={() => this.setState({ isExpanded: !isExpanded })}>
+                <List.Item className={isExpanded? "secondary-list-item expanded-background-color" : "secondary-list-item non-expanded-background-color"} 
+                            onClick={() => this.setState({ isExpanded: !isExpanded })}>
                     <List.Icon name={isExpanded? 'caret square up' : 'caret square down outline'} className="list-icon" />
                     <List.Content>
                         {type}
@@ -50,6 +52,12 @@ class SecondaryList extends React.Component {
             </Transition>
         )
     }
+}
+
+SecondaryList.propTypes = {
+    type: PropTypes.string, 
+    visible: PropTypes.bool, 
+    typeDict: PropTypes.object
 }
 
 export default SecondaryList;

@@ -1,8 +1,13 @@
 import React from 'react';
-import { List, Table, Header } from 'semantic-ui-react';
-import '../Style/patternTable.css';
 
-export default class PatternTable extends React.Component {
+// import downloaded packages
+import { List, Table } from 'semantic-ui-react';
+import PropTypes from 'prop-types';
+
+// import css
+import './styles.css';
+
+class PatternTable extends React.Component {
   constructor(props) {
     super(props);
 
@@ -15,28 +20,29 @@ export default class PatternTable extends React.Component {
     this.props.scrollToAnchor(sentID);
   }
 
-  listPatterns() {
+  listPatterns = () => {
+    const { patterns } = this.props;
     let table = [];
-    for(let i = 0; i < this.props.patterns.length; i++) {
-      let metaPatternList = this.props.patterns[i].metaPattern.split(' ');
+    for(let i = 0; i < patterns.length; i++) {
+      let metaPatternList = patterns[i].metaPattern.split(' ');
       let metaPatternElement = [];
       for(let j = 0; j < metaPatternList.length; j++) {
-        if (metaPatternList[j] == metaPatternList[j].toUpperCase()) {
+        if (metaPatternList[j] === metaPatternList[j].toUpperCase()) {
           metaPatternElement.push(metaPatternList[j])
         } else {
-          metaPatternElement.push(<u>{metaPatternList[j]}</u>);
+          metaPatternElement.push(<u key={j}>{metaPatternList[j]}</u>);
         }
 
-        if(j != metaPatternList.length - 1) {
+        if(j !== metaPatternList.length - 1) {
           metaPatternElement.push(' ');
         }
       }
 
       table.push(
-        <Table.Row onClick={() => this.handleOnClick(this.props.patterns[i].sentID)}>
+        <Table.Row onClick={() => this.handleOnClick(patterns[i].sentID)} key={i}>
           <Table.Cell>
             <List as='ul'>
-              {this.props.patterns[i].instances.map((d) => <List.Item as='li' key={d}>{d.split('_').join(' ')}</List.Item>)}
+              {patterns[i].instances.map((d) => <List.Item as='li' key={d}>{d.split('_').join(' ')}</List.Item>)}
             </List>
           </Table.Cell>
           <Table.Cell>
@@ -71,3 +77,11 @@ export default class PatternTable extends React.Component {
     )
   }
 }
+
+PatternTable.propTypes = {
+  changeSentColor: PropTypes.func,
+  scrollToAnchor: PropTypes.func,
+  patterns: PropTypes.array
+}
+
+export default PatternTable;

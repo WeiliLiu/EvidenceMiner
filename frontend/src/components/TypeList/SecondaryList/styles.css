@@ -20,3 +20,11 @@
     position: relative;
     padding: 0.5rem 0!important;
 }
+
+.expanded-background-color {
+    background-color: rgb(247, 247, 247)!important;
+}
+
+.non-expanded-background-color {
+    background-color: white!important;
+}

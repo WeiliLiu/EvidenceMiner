@@ -2,6 +2,7 @@ import React from 'react';
 
 // import ui elements
 import { List, Label } from 'semantic-ui-react';
+import PropTypes from 'prop-types';
 
 // import components
 import SecondaryList from '../SecondaryList';
@@ -38,9 +39,7 @@ class PrimaryList extends React.Component {
                 <List.Icon name={this.state[type]? 'caret square up' : 'caret square down outline'} className="list-icon"/>
                 <List.Content style={{ color: utils.getColor()[type] }}>
                     <List.Header>
-                        <Label color={index === 0? 'red' : (index === 1? 'orange' : '')}>
-                            {index + 1}
-                        </Label>
+                        {index === 0? <Label color="red">{index + 1}</Label> : <Label>{index + 1}</Label>}
                         &nbsp;&nbsp;&nbsp;&nbsp;{type}&nbsp;&nbsp;&nbsp;&nbsp;
                         <Label circular empty style={{ backgroundColor: utils.getColor()[type] }}/>
                     </List.Header>
@@ -84,6 +83,10 @@ class PrimaryList extends React.Component {
             </List>
         )
     }
+}
+
+PrimaryList.propTypes = {
+    typeDict: PropTypes.object
 }
 
 export default PrimaryList;
