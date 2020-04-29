@@ -79,19 +79,19 @@ class ResultItem extends React.Component {
     }
 
     decideScoreColor = (ranking, page) => {
-        if(ranking === 0 && page === '1') {
+        if(ranking === 0 && page === 1) {
             return 'red';
-        }else if (ranking === 1 && page === '1') {
+        }else if (ranking === 1 && page === 1) {
             return 'orange';
-        }else if (ranking === 2 && page === '1') {
+        }else if (ranking === 2 && page === 1) {
             return 'yellow';
         }
     }
 
     decideScoreSize = (ranking, page) => {
-        if(ranking === 0 && page === '1') {
+        if(ranking === 0 && page === 1) {
             return 'small';
-        }else if (ranking === 1 && page === '1') {
+        }else if (ranking === 1 && page === 1) {
             return 'tiny';
         }else {
             return 'mini';
