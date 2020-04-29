@@ -15,7 +15,6 @@ export default class Analytics extends React.Component {
             keyword: ""
         }
 
-        this.getSearchURL = this.getSearchURL.bind(this);
         this.resize = this.resize.bind(this);
     }
 
@@ -33,12 +32,8 @@ export default class Analytics extends React.Component {
         this.setState({isMobile: window.innerWidth <= 992});
     }
 
-    getSearchURL() {
-        return '/search?kw=' + this.state.keyword.replace(/=/g, '%3D').replace(/&/g, '%26') + '&page=1';
-    }
-
 	render() {
-        const { isMobile } = this.state;
+        const { isMobile, keyword } = this.state;
 
 		return (
 		<div>
@@ -50,17 +45,25 @@ export default class Analytics extends React.Component {
                             <Grid.Column width={isMobile? 16 : 10} className="menu-column">
                                 <Menu pointing secondary className="search-menu">
                                     <Menu.Item
-                                        name='Sentence'
+                                        name='COVID-19'
                                         icon="archive"
                                         color="blue"
                                         active={false}
-                                        onClick={() => window.location.href = this.getSearchURL()}
+                                        onClick={() => window.location.href = `/search/covid-19?kw=${encodeURIComponent(keyword)}&page=1`}
+                                    />
+                                    <Menu.Item
+                                        name='Cancer and Heart Disease'
+                                        icon="archive"
+                                        color="orange"
+                                        active={false}
+                                        onClick={() => window.location.href = `/search/chd?kw=${encodeURIComponent(keyword)}&page=1`}
                                     />
                                     <Menu.Item
                                         name='Analytics'
                                         icon="chart line"
-                                        color="blue"
                                         active={true}
+                                        color='red'
+                                        onClick={() => window.location.href = '/analytics?' + keyword}
                                     />
                                 </Menu>
                             </Grid.Column>

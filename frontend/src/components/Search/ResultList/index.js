@@ -40,8 +40,6 @@ class ResultList extends React.Component {
         }
 
         this.showSearchResults = this.showSearchResults.bind(this);
-        this.getSearchURL = this.getSearchURL.bind(this);
-        this.getAnalyticsURL = this.getAnalyticsURL.bind(this);
     }
 
     async componentDidMount() {
@@ -61,6 +59,7 @@ class ResultList extends React.Component {
         // Call the api to query elasticsearch
         const resultSize = 10;
         const searchResult = await api.getSearchResult(searchKeyword, resultSize, currPage, archive);
+        console.log(searchResult)
 
         // Set up screen size listener
         window.addEventListener("resize", this.resize.bind(this));
@@ -139,19 +138,6 @@ class ResultList extends React.Component {
         return table;
     }
 
-    getSearchURL = (keyword, nextPage) => {
-        const { archive } = this.props;
-        return `/search/${archive}?kw=` + keyword + "&page=" + nextPage;
-    }
-
-    getAnalyticsURL = (keyword) => {
-        return '/analytics?' + keyword;
-    }
-
-    handleKeyPress = (keyword, nextPage) => {
-        window.location.href = this.getSearchURL(keyword, nextPage);
-    }
-
     render() {
         const { isMobile, isLoading, typeDict, graphData, graphColors, keyword, responseTime, resultLength, totalPage, currentPage } = this.state;
         const { archive } = this.props;
@@ -169,21 +155,21 @@ class ResultList extends React.Component {
                                         icon="archive"
                                         color="blue"
                                         active={archive === 'covid-19'}
-                                        onClick={() => window.location.href = `/search/covid-19?kw=${keyword}&page=1`}
+                                        onClick={() => window.location.href = '/search/covid-19?kw=' + encodeURIComponent(keyword) + '&page=1'}
                                     />
                                     <Menu.Item
                                         name='Cancer and Heart Disease'
                                         icon="archive"
                                         color="orange"
                                         active={archive === 'chd'}
-                                        onClick={() => window.location.href = `/search/chd?kw=${keyword}&page=1`}
+                                        onClick={() => window.location.href = '/search/chd?kw=' + encodeURIComponent(keyword) + '&page=1'}
                                     />
-                                    {/* <Menu.Item
+                                    <Menu.Item
                                         name='Analytics'
                                         icon="chart line"
                                         active={false}
-                                        onClick={() => window.location.href = this.getAnalyticsURL(keyword.replace(/=/g, '%3D').replace(/&/g, '%26'))}
-                                    /> */}
+                                        onClick={() => window.location.href = '/analytics?' + keyword}
+                                    />
                                 </Menu>
                             </Grid.Column>
                             <Grid.Column computer={5} widescreen={9} />
@@ -224,7 +210,7 @@ class ResultList extends React.Component {
                                             totalPages={totalPage}
                                             activePage={currentPage}
                                             boundaryRange={isMobile? 0 : 1}
-                                            onPageChange={(e, { activePage }) => this.handleKeyPress(keyword.replace(/=/g, '%3D').replace(/&/g, '%26'), activePage)}
+                                            onPageChange={(e, { activePage }) => window.location.href = `/search/${archive}?kw=` + encodeURIComponent(keyword) + "&page=" + activePage}
                                         />
                                     </Segment>
                                 </Grid.Column>

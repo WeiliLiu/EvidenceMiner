@@ -14,7 +14,7 @@ import './styles.css';
 
 const resultRenderer = ({ title }) => {
     return(
-        <div style={{ 'font-size': '0.9rem' }}>{title}</div>
+        <div style={{ 'fontSize': '0.9rem' }}>{title}</div>
     )
 }
 
@@ -101,10 +101,12 @@ export default class NavigationBar extends React.Component {
     }
 
     getSearchURL() {
+        const { value } = this.state;
+        const { type } = this.props;
         if (this.props.type === "analytics") {
-            return "/" + this.props.type + '?' + this.state.value;
+            return "/" + type + '?' + value;
         } else {
-            return "/search/" + this.props.type + '?kw=' + this.state.value + "&page=1"
+            return "/search/" + type + '?kw=' + encodeURIComponent(value) + "&page=1"
         }
     }
 
@@ -116,6 +118,7 @@ export default class NavigationBar extends React.Component {
 
     handleSearchChange = (e, { value }) => {
         this.setState({ isLoading: true, value })
+        const { type } = this.props;
 
         var query = {
             "query": {
@@ -131,7 +134,7 @@ export default class NavigationBar extends React.Component {
             }
         };
 
-        axios.get(config.searchUrl + '/pubmed/_search', {
+        axios.get(config.searchUrl + type + '/_search', {
             params: {
                 source: JSON.stringify(query),
                 source_content_type: 'application/json'
@@ -222,5 +225,5 @@ export default class NavigationBar extends React.Component {
 const titleColor = {
     'covid-19': 'rgb(33, 133, 208)',
     'chd': 'rgb(242, 113 ,28)',
-    'analytics': 'green'
+    'analytics': '#db2828'
 }

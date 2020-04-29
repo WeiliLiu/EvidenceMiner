@@ -1,7 +1,7 @@
 const env = 'prod'
 
 const dev = {
-  searchUrl: 'https://search-evidenceminer-lnayeh5s4wbpvgy4jezyqwk2ja.us-west-2.es.amazonaws.com',
+  searchUrl: 'https://7dc1bc0b.ngrok.io/',
   frontUrl: 'http://localhost:3000',
 }
 
@@ -12,7 +12,7 @@ const staging = {
 
 const prod = {
   frontUrl: 'https://evidenceminer.com',
-  searchUrl: 'https://search-evidenceminer-lnayeh5s4wbpvgy4jezyqwk2ja.us-west-2.es.amazonaws.com',
+  searchUrl: 'https://7dc1bc0b.ngrok.io/',
 }
 
 function mergeDeep(...objects) {
