@@ -41,8 +41,8 @@ class PatternTable extends React.Component {
       table.push(
         <Table.Row onClick={() => this.handleOnClick(patterns[i].sentID)} key={i}>
           <Table.Cell>
-            <List as='ul'>
-              {patterns[i].instances.map((d) => <List.Item as='li' key={d}>{d.split('_').join(' ')}</List.Item>)}
+            <List>
+              {patterns[i].instances.map((d, index) => <List.Item as='li' key={index}>{d.split('_').join(' ')}</List.Item>)}
             </List>
           </Table.Cell>
           <Table.Cell>
@@ -55,8 +55,10 @@ class PatternTable extends React.Component {
   }
 
   render() {
+    const { patterns } = this.props;
+
     return(
-      <div className="table-container">
+      <div className="table-container" hidden={patterns.length === 0}>
         <Table celled selectable fixed role="grid" aria-labelledby="header">
           <Table.Header className="table-row">
             <Table.Row>

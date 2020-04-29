@@ -32,7 +32,7 @@ class Home extends React.Component {
     }
 
     getSearchURL() {
-        return "/search?kw=" + this.state.searchValue + "&page=1"
+        return "/search/covid-19?kw=" + this.state.searchValue + "&page=1"
     }
 
     handleKeyPress(target) {
@@ -85,9 +85,9 @@ class Home extends React.Component {
                                     </Button>
                                 </InputGroup.Prepend>
                             </InputGroup>
-                            <span>Example&nbsp;:&nbsp;<a href={config.frontUrl + "/search?kw=NSCLC is treated with nivolumab&page=1"}>NSCLC is treated with nivolumab</a>,&nbsp;
-            <a href={config.frontUrl + "/search?kw=HCC is treated with sorafenib&page=1"}>HCC is treated with sorafenib</a>,&nbsp;
-            <a href={config.frontUrl + "/search?kw=prostate cancer is treated with androgen&page=1"}>prostate cancer is treated with androgen</a></span>
+                            <span>Example&nbsp;:&nbsp;<a href={config.frontUrl + "/search/chd?kw=NSCLC is treated with nivolumab&page=1"}>NSCLC is treated with nivolumab</a>,&nbsp;
+                            <a href={config.frontUrl + "/search/chd?kw=HCC is treated with sorafenib&page=1"}>HCC is treated with sorafenib</a>,&nbsp;
+                            <a href={config.frontUrl + "/search/chd?kw=prostate cancer is treated with androgen&page=1"}>prostate cancer is treated with androgen</a></span>
                         </div>
                     </div>
                     <div className={'home-search-bar-container-right'}>

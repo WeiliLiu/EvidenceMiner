@@ -10,6 +10,7 @@
 
 .footer-container a:hover {
     text-decoration: underline;
+    color: black;
     transition: all 0.5s;
 }
 

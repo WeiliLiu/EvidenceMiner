@@ -7,7 +7,7 @@ const api = axios.create({ baseURL: config.searchUrl, headers: {
 } });
 
 export default {
-    getSearchResult(keyword, size, page) {
+    getSearchResult(keyword, size, page, archive) {
         const query = {
             "query": {
                 "match": { "searchKey": keyword }
@@ -15,7 +15,7 @@ export default {
             "size": size,
             "from": (page - 1) * size
         };
-        return api.get('/_search', {
+        return api.get(`/${archive}/_search`, {
             params: {
                 source: JSON.stringify(query),
                 source_content_type: 'application/json'
@@ -23,14 +23,14 @@ export default {
         })
             .then(r => r.data)
     },
-    getSearchResultCount(keyword) {
+    getSearchResultCount(keyword, archive) {
         const query = {
             "query": {
                 "match": { "searchKey": keyword }
             },
             "size": 0
         };
-        return api.get('/_search', {
+        return api.get(`/${archive}/_search`, {
             params: {
                 source: JSON.stringify(query),
                 source_content_type: 'application/json'

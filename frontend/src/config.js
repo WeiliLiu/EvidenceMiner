@@ -1,7 +1,7 @@
 const env = 'dev'
 
 const dev = {
-  searchUrl: 'http://localhost:9200/evidenceminer',
+  searchUrl: 'https://search-evidenceminer-lnayeh5s4wbpvgy4jezyqwk2ja.us-west-2.es.amazonaws.com',
   frontUrl: 'http://localhost:3000',
 }
 

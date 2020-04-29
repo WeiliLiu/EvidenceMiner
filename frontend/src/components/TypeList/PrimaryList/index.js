@@ -30,18 +30,17 @@ class PrimaryList extends React.Component {
     }
 
     handleListDisplay = (type, index) => {
-        const { typeDict } = this.props;
-
+        const { typeDict, archive } = this.props;
         let table = [];
         // Put in the major type first
         table.push(
             <List.Item id={type} key={type} className="primary-list-item" onClick={() => this.handleOnClickListItem(type)}>
                 <List.Icon name={this.state[type]? 'caret square up' : 'caret square down outline'} className="list-icon"/>
-                <List.Content style={{ color: utils.getColor()[type] }}>
+                <List.Content style={{ color: utils.getColor(archive)[type] }}>
                     <List.Header>
                         {index === 0? <Label color="red">{index + 1}</Label> : <Label>{index + 1}</Label>}
                         &nbsp;&nbsp;&nbsp;&nbsp;{type}&nbsp;&nbsp;&nbsp;&nbsp;
-                        <Label circular empty style={{ backgroundColor: utils.getColor()[type] }}/>
+                        <Label circular empty style={{ backgroundColor: utils.getColor(archive)[type] }}/>
                     </List.Header>
                     <List.Description className="list-item-description">
                         {Object.keys(typeDict[type]).length}&nbsp;
@@ -66,7 +65,7 @@ class PrimaryList extends React.Component {
         )
                         
         // Horizontal divider for each major type only
-        if(type !== Object.keys(typeDict)[Object.keys(typeDict).length - 1]) {
+        if(index !== Object.keys(typeDict).length - 1) {
             table.push(<hr key={type + type}/>);
         }
         return table;

@@ -48,8 +48,11 @@ class ResultList extends React.Component {
         // Get query from the url querystring
         const searchKeyword = new URLSearchParams(window.location.search).get('kw');
 
+        // Get which archive to search from
+        const { archive } = this.props;
+
         // Get the total number of search results returned
-        const numSearchResults = await api.getSearchResultCount(searchKeyword);
+        const numSearchResults = await api.getSearchResultCount(searchKeyword, archive);
 
         // Calculate paging related numbers
         const totalPages = Math.ceil(numSearchResults / 10);
@@ -57,20 +60,20 @@ class ResultList extends React.Component {
 
         // Call the api to query elasticsearch
         const resultSize = 10;
-        const searchResult = await api.getSearchResult(searchKeyword, resultSize, currPage);
+        const searchResult = await api.getSearchResult(searchKeyword, resultSize, currPage, archive);
 
         // Set up screen size listener
         window.addEventListener("resize", this.resize.bind(this));
         this.resize();
 
         // Get color inforamtions
-        var colors = utils.getColor();
+        var colors = utils.getColor(archive);
         
         // Calculate entities information for current page
         var entities = utils.compileEntities(searchResult);
         
         // Counting word frequencies for each entity
-        var typeDict = utils.compileEntityFrequency(entities);
+        var typeDict = utils.compileEntityFrequency(entities, archive);
 
         // Prepare graph data
         var graphData = [];
@@ -109,6 +112,7 @@ class ResultList extends React.Component {
     showSearchResults = () => {
         var table = [];
         const { searchResults, currentPage } = this.state;
+        const { archive } = this.props;
 
         searchResults.forEach((result, index) => {
             const resultObj = result._source;
@@ -122,20 +126,22 @@ class ResultList extends React.Component {
                 abstract={resultObj.abstract}
                 entities={resultObj.entities}
                 authors={resultObj.author_list}
-                date={resultObj.date}
+                date={String(resultObj.date)}
                 journal={resultObj.journal_name}
                 documentId={resultObj.documentId}
                 score={result._score}
                 key={result._id} 
                 ranking={index} 
-                page={currentPage} />)
+                page={currentPage}
+                archive={archive} />)
         })
 
         return table;
     }
 
     getSearchURL = (keyword, nextPage) => {
-        return "/search?kw=" + keyword + "&page=" + nextPage;
+        const { archive } = this.props;
+        return `/search/${archive}?kw=` + keyword + "&page=" + nextPage;
     }
 
     getAnalyticsURL = (keyword) => {
@@ -148,6 +154,7 @@ class ResultList extends React.Component {
 
     render() {
         const { isMobile, isLoading, typeDict, graphData, graphColors, keyword, responseTime, resultLength, totalPage, currentPage } = this.state;
+        const { archive } = this.props;
 
         return(
             <div>
@@ -158,17 +165,25 @@ class ResultList extends React.Component {
                             <Grid.Column mobile={16} tablet={16} computer={10} widescreen={6} className="menu-column">
                                 <Menu pointing secondary className="search-menu">
                                     <Menu.Item
-                                        name='Sentence'
+                                        name='COVID-19'
                                         icon="archive"
                                         color="blue"
-                                        active={true}
+                                        active={archive === 'covid-19'}
+                                        onClick={() => window.location.href = `/search/covid-19?kw=${keyword}&page=1`}
                                     />
                                     <Menu.Item
+                                        name='Cancer and Heart Disease'
+                                        icon="archive"
+                                        color="orange"
+                                        active={archive === 'chd'}
+                                        onClick={() => window.location.href = `/search/chd?kw=${keyword}&page=1`}
+                                    />
+                                    {/* <Menu.Item
                                         name='Analytics'
                                         icon="chart line"
                                         active={false}
                                         onClick={() => window.location.href = this.getAnalyticsURL(keyword.replace(/=/g, '%3D').replace(/&/g, '%26'))}
-                                    />
+                                    /> */}
                                 </Menu>
                             </Grid.Column>
                             <Grid.Column computer={5} widescreen={9} />
@@ -200,7 +215,7 @@ class ResultList extends React.Component {
                                         {this.showSearchResults()}
                                     </List>
                                     <Segment basic textAlign={isMobile? "center" : "left"} className="pagination-container">
-                                        <Pagination className={'result-list-pagination'}
+                                        <Pagination className={'result-list-pagination'} hidden={resultLength === 0}
                                             ellipsisItem={{ content: <Icon name='ellipsis horizontal' />, icon: true }}
                                             firstItem={isMobile? null : { content: <Icon name='angle double left' />, icon: true }}
                                             lastItem={isMobile? null : { content: <Icon name='angle double right' />, icon: true }}
@@ -213,14 +228,14 @@ class ResultList extends React.Component {
                                         />
                                     </Segment>
                                 </Grid.Column>
-                                <Grid.Column mobile={16} tablet={16} computer={4} widescreen={4} className="wordlist-column">
-                                    <TypeList typeDict={typeDict} graphColors={graphColors} graphData={graphData}/>
+                                <Grid.Column mobile={16} tablet={16} computer={4} widescreen={4} className="wordlist-column" hidden={resultLength === 0}>
+                                    <TypeList typeDict={typeDict} graphColors={graphColors} graphData={graphData} archive={archive}/>
                                 </Grid.Column>
                                 <Grid.Column computer={1} widescreen={5}/>
                             </Grid.Row>
                         </Grid>
-                        <hr />
-                        <Grid className="resultlist-footer-container">
+                        <Grid className="resultlist-footer-container" style={resultLength === 0?{ position: 'fixed', bottom: '0' } : {}}>
+                            <hr style={{ margin: '0', padding: '0', width: '100vw' }}/>
                             <Grid.Row className="resultlist-footer-row">
                                 <Grid.Column only='computer' computer={1}/>
                                 <Grid.Column mobile={16} tablet={11} computer={10} widescreen={6} className="footer-column">

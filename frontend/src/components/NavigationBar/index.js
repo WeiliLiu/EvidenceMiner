@@ -104,7 +104,7 @@ export default class NavigationBar extends React.Component {
         if (this.props.type === "analytics") {
             return "/" + this.props.type + '?' + this.state.value;
         } else {
-            return "/" + this.props.type + '?kw=' + this.state.value + "&page=1"
+            return "/search/" + this.props.type + '?kw=' + this.state.value + "&page=1"
         }
     }
 
@@ -178,40 +178,49 @@ export default class NavigationBar extends React.Component {
     }
 
     render() {
-        const { value, results } = this.state
+        const { value, results } = this.state;
+        const { type } = this.props;
 
         return(
-            <Navbar id="header" bg="light" expand="lg" style={{ padding: '0px', backgroundColor: 'red' }} className={'main-navbar'}>
-                <Grid style={{ width: '100%' }} padded stretched>
-                    <Grid.Column mobile={16} tablet={16} computer={1} className="logo-column" textAlign="center" verticalAlign="middle">
-                        <Container fluid text textAlign='center' style={{ backgroundColor: '', fontSize: "2.5rem", padding: "0" }}>
-                            <a href="/">EM</a>
-                        </Container>
-                    </Grid.Column>
-                    <Grid.Column mobile={16} tablet={16} computer={6} className={'searchbar-grid'}>
-                        <Search
-                            fluid
-                            loading={false}
-                            input={<Input fluid icon='search' placeholder='Search...' value={value || ''}/>}
-                            onResultSelect={this.handleResultSelect}
-                            onSearchChange={_.debounce(this.handleSearchChange, 500, {
-                            leading: true,
-                            })}
-                            results={results}
-                            value={value}
-                            resultRenderer={resultRenderer}
-                            noResultsMessage={"No meta patterns found!"}
-                            onKeyPress={this.handleKeyPress}
-                            onFocus={() => {this.setState({searchBarFocused: true})}}
-                            onBlur={() => {this.setState({searchBarFocused: false})}}
-                            {...this.props}
-                        />
-                    </Grid.Column>
-                    {/* <Grid.Column width={9} verticalAlign='middle' style={{ padding: '0' }}>
-                      {this.showExample(this.props.type)}
-                    </Grid.Column> */}
-                </Grid>
-            </Navbar>
+            <div>
+                <Navbar id="header" bg="light" expand="lg" style={{ padding: '0px', backgroundColor: 'red' }} className={'main-navbar'}>
+                    <Grid style={{ width: '100%', margin: '0' }} padded stretched>
+                        <Grid.Column mobile={16} tablet={16} computer={1} className="logo-column" textAlign="center" verticalAlign="middle">
+                            <Container fluid text textAlign='center' style={{ backgroundColor: '', fontSize: "2.5rem", padding: "0" }}>
+                                <a href="/" style={{ color: titleColor[type] }}>EM</a>
+                            </Container>
+                        </Grid.Column>
+                        <Grid.Column mobile={16} tablet={16} computer={7} className={'searchbar-grid'}>
+                            <Search
+                                fluid
+                                loading={false}
+                                input={<Input className="input-search-bar" fluid icon='search' iconPosition='left' placeholder='Search...' value={value || ''} />}
+                                onResultSelect={this.handleResultSelect}
+                                onSearchChange={_.debounce(this.handleSearchChange, 500, {
+                                leading: true,
+                                })}
+                                results={results}
+                                value={value}
+                                resultRenderer={resultRenderer}
+                                noResultsMessage={"No meta patterns found!"}
+                                onKeyPress={this.handleKeyPress}
+                                onFocus={() => {this.setState({searchBarFocused: true})}}
+                                onBlur={() => {this.setState({searchBarFocused: false})}}
+                                {...this.props}
+                            />
+                        </Grid.Column>
+                        <Grid.Column width={8} verticalAlign='middle' style={{ padding: '0' }}>
+                            {/* {this.showExample(this.props.type)} */}
+                        </Grid.Column>
+                    </Grid>
+                </Navbar>
+            </div>
         )
     }
+}
+
+const titleColor = {
+    'covid-19': 'rgb(33, 133, 208)',
+    'chd': 'rgb(242, 113 ,28)',
+    'analytics': 'green'
 }

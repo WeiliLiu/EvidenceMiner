@@ -47,9 +47,9 @@ class ResultItem extends React.Component {
     }
 
     showSentence = () => {
-        const { entities, sentence } = this.props;
-        const colors = utils.getColor();
-        const typeHierarchy = utils.getTypeHierarchy();
+        const { entities, sentence, archive } = this.props;
+        const colors = utils.getColor(archive);
+        const typeHierarchy = utils.getTypeHierarchy(archive);
         var start = 0;
         var end = 0;
         var table = [];

@@ -59,8 +59,9 @@ class ArticleBody extends React.Component {
     }
 
     showSentence = (entities, sentence) => {
-        const colors = utils.getColor();
-        const typeHierarchy = utils.getTypeHierarchy();
+        const { archive } = this.props;
+        const colors = utils.getColor(archive);
+        const typeHierarchy = utils.getTypeHierarchy(archive);
         const content = sentence.sentence;
         var start = 0;
         var end = 0;
@@ -142,11 +143,12 @@ class ArticleBody extends React.Component {
             changeSentColor,
             scrollToAnchor,
             graphData,
-            graphColors
+            graphColors,
+            archive,
         } = this.props;
 
         return(
-            <div>
+            <div className="article-body-outer-container">
                 <Grid className="article-container">
                     <Grid.Row className="article-container-row">
                         <Grid.Column only='computer' computer={1}/>
@@ -177,8 +179,8 @@ class ArticleBody extends React.Component {
                         </Grid.Column>
                         <Grid.Column mobile={16} tablet={16} computer={4} widescreen={3} style={{ margin: '0', padding: '0' }}>
                             <div className="word-segment-container">
-                                <TypeList typeDict={typeDict} graphData={graphData} graphColors={graphColors}/>
-                                <div className="empty-div" />
+                                <TypeList typeDict={typeDict} graphData={graphData} graphColors={graphColors} archive={archive}/>
+                                <div className="empty-div" hidden={typeDict === {}}/>
                                 <Menu.Item className="pattern-segment">
                                     <PatternTable patterns={patterns} changeSentColor={changeSentColor}
                                         scrollToAnchor={scrollToAnchor} />
@@ -188,8 +190,8 @@ class ArticleBody extends React.Component {
                         <Grid.Column computer={1} widescreen={5}/>
                     </Grid.Row>
                 </Grid>
-                <hr style={{ padding: '0', margin: '0' }}/>
-                <Grid className="article-footer-container" >
+                <Grid className="article-footer-container">
+                    <hr style={{ padding: '0', margin: '0', width: '100%' }}/>
                     <Grid.Row className="article-footer-row">
                         <Grid.Column only='computer' computer={1}/>
                         <Grid.Column mobile={16} tablet={16} computer={10} widescreen={7} className="article-content-column" >

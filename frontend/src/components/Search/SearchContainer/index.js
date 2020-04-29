@@ -7,6 +7,9 @@ import NavigationBar from '../../NavigationBar';
 // import packages
 import { withRouter } from 'react-router-dom';
 
+// import css
+import './styles.css';
+
 class SearchResult extends React.Component {
     constructor(props) {
         super(props);
@@ -23,10 +26,10 @@ class SearchResult extends React.Component {
 
     render() {
         return(
-            <div>
-                <NavigationBar type="search" />
+            <div className="search-page-container">
+                <NavigationBar type={this.props.match.params.id} />
 
-                <ResultList />
+                <ResultList archive={this.props.match.params.id}/>
             </div>
         )
     }

@@ -1,3 +1,9 @@
+.article-body-outer-container {
+  min-height: 100vh;
+  position: relative;
+  padding-bottom: 5rem;
+}
+
 .article-container {
   margin: 0 0 5rem 0!important;
   padding: 6rem 0 0 0!important;
@@ -6,6 +12,9 @@
 .article-footer-container {
   margin: 0!important;
   padding: 0!important;
+  position: absolute; 
+  bottom: 0; 
+  width: 100%;
 }
 
 .article-footer-container {

@@ -39,6 +39,7 @@ class ArticleContainer extends React.Component {
             jumpTarget: '',
             graphData: [],
             graphColors: [],
+            archive: '',
             isLoading: true,
         };
 
@@ -49,6 +50,10 @@ class ArticleContainer extends React.Component {
     }
 
     async componentDidMount() {
+        // Determine which archive this article belongs to
+        const article_id = this.props.match.params.id;
+        var archive = article_id > 29499? 'chd' : 'covid-19';
+
         // Get query from the url querystring
         const jumpTarget = new URLSearchParams(window.location.search).get('jt');
 
@@ -59,7 +64,7 @@ class ArticleContainer extends React.Component {
         const docSentences = await api.getDocSentences(this.props.match.params.id, docSentencesCount);
 
         // Get color and type hierarchy information
-        const colors = utils.getColor();
+        const colors = utils.getColor(archive);
 
         // Process the returned results for display
         let paperData = utils.compilePaperData(docSentences);
@@ -69,7 +74,7 @@ class ArticleContainer extends React.Component {
         let sentColors = paperData[3];
 
         // Counting word frequencies for each entity
-        var typeDict = utils.compileEntityFrequency(entities);
+        var typeDict = utils.compileEntityFrequency(entities, archive);
 
         // Prepare graph data
         var graphData = [];
@@ -101,6 +106,7 @@ class ArticleContainer extends React.Component {
             jumpTarget: jumpTarget,
             graphData: graphData,
             graphColors: graphColors,
+            archive: archive,
             isLoading: false,
         });
     }
@@ -155,6 +161,7 @@ class ArticleContainer extends React.Component {
             jumpTarget,
             graphData,
             graphColors,
+            archive,
             isLoading 
         } = this.state;
 
@@ -164,20 +171,18 @@ class ArticleContainer extends React.Component {
             scrollToAnchor
         } = this;
 
-        console.log(pmcid)
-
         return (
             <div>
-                <NavigationBar type="search"/>
+                <NavigationBar type={this.props.match.params.id > 29499? 'chd' : 'covid-19'}/>
 
                 {isLoading? <Segment className="loading-screen">
                                 <Loader active size='huge'>Setting Up Article</Loader>
                             </Segment> 
                             : 
                             <ArticleBody sentences={sentences} title={title}  abstract={abstract} authors={authors}
-                                        date={publish_date} pmid={pmid} journal={journal} graphData={graphData} graphColors={graphColors}
+                                        date={String(publish_date)} pmid={pmid} journal={journal} graphData={graphData} graphColors={graphColors}
                                         entities={entities} typeDict={typeDict} patterns={patterns} doi={doi} pmcid={pmcid}
-                                        sentColors={sentColors} changeSentColor={changeSentColor} source={source}
+                                        sentColors={sentColors} changeSentColor={changeSentColor} source={source} archive={archive}
                                         clearSentColor={clearSentColor} scrollToAnchor={scrollToAnchor} jumpTarget={jumpTarget} />}
             </div>
         )

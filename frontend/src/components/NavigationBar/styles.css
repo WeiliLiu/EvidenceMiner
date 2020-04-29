@@ -27,6 +27,11 @@
     padding-left: 0!important;
 }
 
+.search-selection {
+    background-color: red;
+    border-right: 50em;
+}
+
 .nav-search-bar::-webkit-search-decoration,
 .nav-search-bar::-webkit-search-cancel-button {
     display: none!important;
@@ -73,6 +78,7 @@ input[type="color"]:focus,
 
 .logo-column {
     padding: 0!important;
+    margin: 0!important;
 }
 
 @media (max-width: 990px) {
