@@ -59,7 +59,6 @@ class ResultList extends React.Component {
         // Call the api to query elasticsearch
         const resultSize = 10;
         const searchResult = await api.getSearchResult(searchKeyword, resultSize, currPage, archive);
-        console.log(searchResult)
 
         // Set up screen size listener
         window.addEventListener("resize", this.resize.bind(this));

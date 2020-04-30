@@ -1,4 +1,4 @@
-const env = 'dev'
+const env = 'prod'
 
 const dev = {
   searchUrl: 'http://localhost:9200',

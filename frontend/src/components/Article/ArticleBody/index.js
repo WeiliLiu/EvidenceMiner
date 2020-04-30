@@ -174,7 +174,7 @@ class ArticleBody extends React.Component {
                                 secOrder.map((sec, index) => {
                                     return (
                                         <div className="body-container">
-                                            <h3>{sec}</h3>
+                                            <h4>{sec}</h4>
                                             {this.highlightText(index + 2, sec)}
                                         </div>
                                     )
