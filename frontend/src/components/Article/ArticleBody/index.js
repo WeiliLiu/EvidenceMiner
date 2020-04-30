@@ -91,13 +91,8 @@ class ArticleBody extends React.Component {
         return table;
     }
 
-    highlightText = (isTitle) => {
+    highlightText = (isTitle, secName) => {
         const { sentences, jumpTarget } = this.props;
-        const section = {
-            0: 'abstract',
-            1: 'title',
-            2: 'body'
-        }
 
         if (sentences[0] !== undefined) {
             var table = [];
@@ -111,17 +106,17 @@ class ArticleBody extends React.Component {
             }
 
             currSentences.forEach((sentence, index) => {
-                if (jumpTarget === String(section[isTitle] + index)) {
+                if (jumpTarget === String(secName + index)) {
                     table.push(
-                        <Animated key={section[isTitle] + index} className="animated-sentence" animationIn="rubberBand" animationInDelay={300}>
-                            <span id={section[isTitle] + index} style={{ paddingTop: "50vh", marginTop: "-50vh" }} />
+                        <Animated key={secName + index} className="animated-sentence" animationIn="rubberBand" animationInDelay={300}>
+                            <span id={secName + index} style={{ paddingTop: "50vh", marginTop: "-50vh" }} />
                             <Icon name="search" />
-                            <span style={{ backgroundColor: this.props.sentColors[section[isTitle] + index] }}>{this.showSentence(sentence.entities, sentence)}</span>
+                            <span style={{ backgroundColor: this.props.sentColors[secName + index] }}>{this.showSentence(sentence.entities, sentence)}</span>
                         </Animated>
                     );
                 } else {
-                    table.push(<span key={section[isTitle] + index} style={{ paddingTop: "50vh", marginTop: "-50vh" }} id={section[isTitle] + index}></span>);
-                    table.push(<span key={section[isTitle] + index + section[isTitle] + index} style={{ backgroundColor: this.props.sentColors[section[isTitle] + index] }}>{this.showSentence(sentence.entities, sentence)}</span>);
+                    table.push(<span key={secName + index} style={{ paddingTop: "50vh", marginTop: "-50vh" }} id={secName + index}></span>);
+                    table.push(<span key={secName + index + secName + index} style={{ backgroundColor: this.props.sentColors[secName + index] }}>{this.showSentence(sentence.entities, sentence)}</span>);
                 }
                 table.push(' ');
             });
@@ -145,6 +140,7 @@ class ArticleBody extends React.Component {
             graphData,
             graphColors,
             archive,
+            secOrder
         } = this.props;
 
         return(
@@ -153,7 +149,7 @@ class ArticleBody extends React.Component {
                     <Grid.Row className="article-container-row">
                         <Grid.Column only='computer' computer={1}/>
                         <Grid.Column mobile={16} tablet={16} computer={14} widescreen={10} className="article-container-column">
-                            <h1 className="title-text">{this.highlightText(1)}</h1>
+                            <h1 className="title-text">{this.highlightText(1, 'title')}</h1>
                             <div className={'author-names'}>{this.showAuthors()}</div>
                             <div className='meta-info'>
                                 {journal? <span><strong>Journal: </strong><i>{journal}</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> : ""}
@@ -171,11 +167,23 @@ class ArticleBody extends React.Component {
                         <Grid.Column mobile={16} tablet={16} computer={10} widescreen={7} className="article-content-column">
                             <div className="abstract-container">
                                 <h4>Abstract</h4>
-                                {this.highlightText(0)}
+                                {this.highlightText(0, 'abstract')}
                             </div>
-                            <div className="body-container">
-                                {this.highlightText(2)}
-                            </div>
+                            {
+                                secOrder? 
+                                secOrder.map((sec, index) => {
+                                    return (
+                                        <div className="body-container">
+                                            <h3>{sec}</h3>
+                                            {this.highlightText(index + 2, sec)}
+                                        </div>
+                                    )
+                                })
+                                :
+                                <div className="body-container">
+                                    {this.highlightText(2, 'body')}
+                                </div>
+                            }
                         </Grid.Column>
                         <Grid.Column mobile={16} tablet={16} computer={4} widescreen={3} style={{ margin: '0', padding: '0' }}>
                             <div className="word-segment-container">

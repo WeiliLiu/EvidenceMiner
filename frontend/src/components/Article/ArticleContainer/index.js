@@ -36,6 +36,7 @@ class ArticleContainer extends React.Component {
             typeDict: {},
             sentences: [],
             sentColors: {},
+            secOrder: [],
             jumpTarget: '',
             graphData: [],
             graphColors: [],
@@ -62,6 +63,7 @@ class ArticleContainer extends React.Component {
 
         // Get all the sentences for this article
         const docSentences = await api.getDocSentences(this.props.match.params.id, docSentencesCount);
+        console.log(docSentences)
 
         // Get color and type hierarchy information
         const colors = utils.getColor(archive);
@@ -99,6 +101,7 @@ class ArticleContainer extends React.Component {
             authors: sentences[0].author_list,
             journal: sentences[0].journal_name,
             publish_date: sentences[0].date,
+            secOrder: sentences[0].sec_order,
             entities: entities,
             patterns: patterns,
             typeDict: typeDict,
@@ -162,6 +165,7 @@ class ArticleContainer extends React.Component {
             graphData,
             graphColors,
             archive,
+            secOrder,
             isLoading 
         } = this.state;
 
@@ -181,7 +185,7 @@ class ArticleContainer extends React.Component {
                             : 
                             <ArticleBody sentences={sentences} title={title}  abstract={abstract} authors={authors}
                                         date={String(publish_date)} pmid={pmid} journal={journal} graphData={graphData} graphColors={graphColors}
-                                        entities={entities} typeDict={typeDict} patterns={patterns} doi={doi} pmcid={pmcid}
+                                        entities={entities} typeDict={typeDict} patterns={patterns} doi={doi} pmcid={pmcid} secOrder={secOrder}
                                         sentColors={sentColors} changeSentColor={changeSentColor} source={source} archive={archive}
                                         clearSentColor={clearSentColor} scrollToAnchor={scrollToAnchor} jumpTarget={jumpTarget} />}
             </div>
