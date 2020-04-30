@@ -1,120 +1,59 @@
 .home-page-container {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: url("https://firebasestorage.googleapis.com/v0/b/biotext-demo.appspot.com/o/background.png?alt=media&token=a6314c75-5461-4c6a-b6b2-2f7ec2576d7b") no-repeat center center fixed;
-    background-size: cover;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    flex-direction: column;
-    /*background-image: linear-gradient(to bottom right, #329d9c, #CFF4d2);*/
-}
-
-.home-search-bar-container {
-    width: 1000px;
-    height: 100%;
-    position: relative;
-    /*background-color: red;*/
-}
-
-.home-page-search-bar {
-    height: 4rem;
-    width: 25rem!important;
-    border-top-left-radius: 10em;
-    border-bottom-left-radius: 10em;
-    padding-left: 2rem;
-    border: 0;
-    background-color: rgb(247, 247, 247);
-}
-
-.home-page-search-bar:focus {
-    background-color: rgb(247, 247, 247);
-}
-
-.search-bar-right {
-    background-color: rgb(247, 247, 247);
-    border-top-right-radius: 10em;
-    border-bottom-right-radius: 10em;
-    height: 4rem;
-    width: 3.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.home-search-button {
-    border-radius: 50% !important;
-    width: 2.5rem;
-    height: 2.5rem;
-    background-color: rgb(28,51,64);
-    border: 0;
-}
-
-.home-search-button:hover {
-    background-color: rgb(28,51,64);
-}
-
-.welcome-title {
-    font-size: 4.5rem;
-    font-color: rgb(28, 51, 64);
-}
-
-.home-search-bar-container-left {
-    /*background-color: red;*/
-    padding-right: 2rem;
-    color: white;
-    height: 100vh;
-    width: 50%;
-    float: left;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-}
-
-.message-box {
-    position: absolute;
-    top: 7rem;
-}
-
-.temp-message {
-    /*border-radius: 0!important;*/
-}
-
-.home-search-bar-container-right {
-    height: 100vh;
-    width: 50%;
-    float: right;
-    /* background-color: red; */
-    display: table;
-    /*background-color: green;*/
-    /* padding-left: 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center; */
-}
-
-.right-inner {
-    display: table-cell;
-    vertical-align: middle;
+    min-height: 100vh;
 }
 
 .home-page-navbar {
-    width: 100vw;
-    position: fixed;
-    top: 0;
-    right: 0;
-    height: 5rem;
-    padding-left: 2rem;
-    background-color: rgba(0,0,0,0)!important;
-    border-bottom: 1.5px solid rgb(228, 228, 228);
+    background-color: white!important;
+    padding: 1.5rem;
 }
 
-.home-image {
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)!important;
-    border-radius: 1rem;
-    border: 0;
+.navbar-title {
+    font-weight: 600;
+    font-size: 1.5rem;
+}
+
+.search-section {
+    background-image: url('../../assets/images/virus.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+.search-overlay {
+    padding: 5rem;
+    color: white;
+}
+
+.search-overlay h1 {
+    font-size: 2.5rem;
+}
+
+.overlay-input {
+    width: 30rem;
+    max-width: 100%;
+}
+
+.intro-icons {
+    font-size: 7rem!important;
+    padding: 1rem;
+    background-color: rgb(240, 240, 240);
+    color: rgb(150, 150, 150);
+    border-radius: 50%;
+}
+
+.home-footer {
+    padding: 3rem 5rem;
+    background-color: rgb(44, 42, 45);
+    border-top: solid 1px white;
+    text-align: center;
+    color: white;
+}
+
+.home-footer a {
+    color: white;
+}
+
+.home-footer a:hover {
+    color: white;
+    text-decoration: underline;
 }
