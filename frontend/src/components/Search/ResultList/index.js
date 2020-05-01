@@ -3,6 +3,7 @@ import React from 'react';
 
 // import packages
 import { Loader, List, Pagination, Icon, Segment, Grid, Container, Menu } from 'semantic-ui-react';
+import PropTypes from 'prop-types';
 
 // import self-made components
 import TypeList from '../../TypeList/ListContainer';
@@ -163,12 +164,12 @@ class ResultList extends React.Component {
                                         active={archive === 'chd'}
                                         onClick={() => window.location.href = '/search/chd?kw=' + encodeURIComponent(keyword) + '&page=1'}
                                     />
-                                    <Menu.Item
+                                    {/* <Menu.Item
                                         name='Analytics'
                                         icon="chart line"
                                         active={false}
                                         onClick={() => window.location.href = '/analytics?' + keyword}
-                                    />
+                                    /> */}
                                 </Menu>
                             </Grid.Column>
                             <Grid.Column computer={5} widescreen={9} />
@@ -220,7 +221,7 @@ class ResultList extends React.Component {
                             </Grid.Row>
                         </Grid>
                         <Grid className="resultlist-footer-container" style={resultLength === 0?{ position: 'fixed', bottom: '0' } : {}}>
-                            <hr style={{ margin: '0', padding: '0', width: '100vw' }}/>
+                            <hr />
                             <Grid.Row className="resultlist-footer-row">
                                 <Grid.Column only='computer' computer={1}/>
                                 <Grid.Column mobile={16} tablet={11} computer={10} widescreen={6} className="footer-column">
@@ -234,6 +235,10 @@ class ResultList extends React.Component {
             </div>
         )
     }
+}
+
+ResultItem.propTypes = {
+    archive: PropTypes.string
 }
 
 export default ResultList;

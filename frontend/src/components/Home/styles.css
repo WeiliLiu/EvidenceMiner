@@ -33,6 +33,35 @@
     max-width: 100%;
 }
 
+.overlay-content h3 {
+    margin: 0;
+    padding: 0;
+    line-height: 1.5rem;
+    font-size: 1.7rem;
+}
+
+.home-empty-div {
+    height: 1rem;
+}
+
+.overlay-dropdown {
+    padding: 1rem 0 2rem 0;
+}
+
+.learn-more-grid {
+    padding: 4rem 0!important;
+    margin: 0!important;
+}
+
+.no-padding-margin {
+    padding: 0!important;
+    margin: 0!important;
+}
+
+.grid-column {
+    padding: 3rem 2rem!important;
+}
+
 .intro-icons {
     font-size: 7rem!important;
     padding: 1rem;
@@ -41,19 +70,82 @@
     border-radius: 50%;
 }
 
-.home-footer {
-    padding: 3rem 5rem;
-    background-color: rgb(44, 42, 45);
-    border-top: solid 1px white;
+.tutorial-section {
+    background-color: rgb(247, 247, 247);
+    padding: 5rem 0;
+}
+
+.FAQ-section {
     text-align: center;
+    padding: 3rem 0 3rem 0;
+}
+
+.QA {
+    margin-bottom: 1rem;
+}
+
+.question {
+    border-left: solid 3px black;
+    padding: 1rem 2rem;
+    text-align: left;
+    background-color: rgb(247, 247, 247);
+}
+
+.answer {
+    border-left: solid 3px rgb(230, 230, 230);
+    padding: 1rem 2rem;
+    text-align: left;
+    background-color: rgb(255, 255, 255);
+}
+
+.FAQ-section-row {
+    padding: 1rem 0!important;
+    margin: 0!important;
+}
+
+.section-header {
+    padding: 0 0 2rem 0;
+}
+
+.team-member-section {
+    background-color: rgb(44, 42, 45);
+    padding: 5rem 0;
     color: white;
 }
 
-.home-footer a {
-    color: white;
+.team-member-section-header {
+    padding: 0 0 3rem 0!important;
+    margin: 0!important;
 }
 
-.home-footer a:hover {
-    color: white;
-    text-decoration: underline;
+.horizontal-center {
+    margin: 0 auto!important;
+}
+
+@media(max-width: 990px) {
+    .horizontal-center {
+        margin-bottom: 1rem!important;
+    }
+
+    .grid-column {
+        text-align: center!important;
+    }
+
+    .learn-more-grid {
+        padding: 1rem 0!important;
+    }
+
+    .tutorial-section {
+        padding: 1rem 0!important;
+    }
+}
+
+@media (max-width: 767px) {
+    .search-overlay {
+        padding: 4rem 2rem;
+    }
+
+    .overlay-content {
+        text-align: center;
+    }
 }

@@ -1,79 +1,23 @@
 .main-navbar {
-    padding-top: 0.8rem;
-    padding-bottom: 0.8rem;
     background-color: white!important;
     transition: 0.2s;
     position: fixed;
     width: 100%;
     z-index: 1000;
+    padding: 0;
 }
 
-.searchbar-unfocused {
-    width: 15rem!important;
-    height: 2.5rem;
-    background-color: rgb(237, 237, 237);
-    border: solid 1px;
-    border-radius: 10em;
-    border-bottom-right-radius: 10em;
-    border-color: rgba(0, 0, 0, 0);
-    padding-left: 1.5rem;
-
-    -webkit-transition: all .5s;
-    -moz-transition: all .5s;
-    transition: all .5s;
+.searchbar-title {
+    font-size: 2.5rem!important;
 }
 
 .searchbar-grid {
+    width: 100%!important;
+    margin: 0!important;
+}
+
+.searchbar-grid-column {
     padding-left: 0!important;
-}
-
-.search-selection {
-    background-color: red;
-    border-right: 50em;
-}
-
-.nav-search-bar::-webkit-search-decoration,
-.nav-search-bar::-webkit-search-cancel-button {
-    display: none!important;
-}
-
-.searchbar-focused{
-    width: 25rem!important;
-    height: 2.5rem;
-    background-color: rgb(237, 237, 237);
-    border: solid 1px;
-    border-radius: 10em;
-    padding-left: 1.5rem;
-
-    -webkit-transition: all .5s;
-    -moz-transition: all .5s;
-    transition: all .5s;
-
-
-    background-color: #fff;
-    border-color: #66CC75;
-    outline: 0 none;
-}
-
-textarea:focus,
-input[type="text"]:focus,
-input[type="password"]:focus,
-input[type="datetime"]:focus,
-input[type="datetime-local"]:focus,
-input[type="date"]:focus,
-input[type="month"]:focus,
-input[type="time"]:focus,
-input[type="week"]:focus,
-input[type="number"]:focus,
-input[type="email"]:focus,
-input[type="url"]:focus,
-input[type="search"]:focus,
-input[type="tel"]:focus,
-input[type="color"]:focus,
-.uneditable-input:focus {
-    border-color: #66CC75;
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0), 0 0 8px rgba(0,0,0,0);
-    outline: 0 none;
 }
 
 .logo-column {
@@ -81,12 +25,20 @@ input[type="color"]:focus,
     margin: 0!important;
 }
 
+.auto-complete-result {
+    font-size: 0.9rem;
+}
+
+.no-padding {
+    padding: 0!important;
+}
+
 @media (max-width: 990px) {
-    .searchbar-grid {
+    .searchbar-grid-column {
         padding-left: 1rem!important;
     }
 
-    .searchbar-grid{
+    .searchbar-grid-column{
         padding-top: 0!important;
         padding-bottom: 0!important;
     }

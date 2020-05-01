@@ -38,7 +38,7 @@ export default {
         })
             .then(r => r.data.hits.total.value)
     },
-    getDocSentences(docId, size) {
+    getDocSentences(docId, size, archive) {
         const query = {
             "query": {
                 "match": {"documentId": docId}
@@ -46,7 +46,7 @@ export default {
             "from": 0,
             "size": size,
         };
-        return api.get('/_search', {
+        return api.get(`/${archive}/_search`, {
             params: {
                 source: JSON.stringify(query),
                 source_content_type: 'application/json'
@@ -54,7 +54,7 @@ export default {
         })
             .then(r => r.data)
     },
-    getDocSentencesCount(docId) {
+    getDocSentencesCount(docId, archive) {
         const query = {
             "query": {
                 "match": {"documentId": docId}
@@ -62,12 +62,35 @@ export default {
             "from": 0,
             "size": 0,
         };
-        return api.get('/_search', {
+        return api.get(`/${archive}/_search`, {
             params: {
                 source: JSON.stringify(query),
                 source_content_type: 'application/json'
             }
         })
             .then(r => r.data.hits.total.value)
+    },
+    getAutoComplete(value, archive) {
+        const query = {
+            "query": {
+                "multi_match": {
+                    "query": value,
+                    "type": "bool_prefix",
+                    "fields": [
+                        "metaPattern",
+                        "metaPattern._2gram",
+                        "metaPattern._3gram"
+                    ]
+                }
+            }
+        };
+
+        return api.get(`/${archive}/_search`, {
+            params: {
+                source: JSON.stringify(query),
+                source_content_type: 'application/json'
+            }
+        })
+            .then(r => r.data.hits.hits)
     }
 };

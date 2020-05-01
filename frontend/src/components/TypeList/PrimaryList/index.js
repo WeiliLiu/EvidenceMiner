@@ -38,9 +38,8 @@ class PrimaryList extends React.Component {
                 <List.Icon name={this.state[type]? 'caret square up' : 'caret square down outline'} className="list-icon"/>
                 <List.Content style={{ color: utils.getColor(archive)[type] }}>
                     <List.Header>
-                        {index === 0? <Label color="red">{index + 1}</Label> : <Label>{index + 1}</Label>}
-                        &nbsp;&nbsp;&nbsp;&nbsp;{type}&nbsp;&nbsp;&nbsp;&nbsp;
                         <Label circular empty style={{ backgroundColor: utils.getColor(archive)[type] }}/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;{type}
                     </List.Header>
                     <List.Description className="list-item-description">
                         {Object.keys(typeDict[type]).length}&nbsp;

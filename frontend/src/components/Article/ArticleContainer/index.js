@@ -1,7 +1,8 @@
 import React, {createRef} from 'react';
 
 // import downloaded packages
-import { Loader, Segment } from 'semantic-ui-react'
+import { Loader, Segment } from 'semantic-ui-react';
+import { Helmet } from 'react-helmet';
 
 // import components
 import ArticleBody from '../ArticleBody';
@@ -59,11 +60,10 @@ class ArticleContainer extends React.Component {
         const jumpTarget = new URLSearchParams(window.location.search).get('jt');
 
         // Get the total number of sentences in this article
-        const docSentencesCount = await api.getDocSentencesCount(this.props.match.params.id);
+        const docSentencesCount = await api.getDocSentencesCount(this.props.match.params.id, archive);
 
         // Get all the sentences for this article
-        const docSentences = await api.getDocSentences(this.props.match.params.id, docSentencesCount);
-        console.log(docSentences)
+        const docSentences = await api.getDocSentences(this.props.match.params.id, docSentencesCount, archive);
 
         // Get color and type hierarchy information
         const colors = utils.getColor(archive);
@@ -94,6 +94,7 @@ class ArticleContainer extends React.Component {
 
         this.setState({
             sentences: sentences,
+            title: sentences[0].title === ""? 'No Title' : sentences[0].title,
             pmid: sentences[0].pmid,
             doi: sentences[0].doi,
             pmcid: sentences[0].pmcid,
@@ -148,7 +149,6 @@ class ArticleContainer extends React.Component {
     render() {
         const { 
             title, 
-            abstract, 
             authors, 
             journal, 
             pmid,
@@ -177,15 +177,19 @@ class ArticleContainer extends React.Component {
 
         return (
             <div>
+                <Helmet>
+                    <title>EvidenceMiner Articles - { title }</title>
+                </Helmet>
+
                 <NavigationBar type={this.props.match.params.id > 29499? 'chd' : 'covid-19'}/>
 
                 {isLoading? <Segment className="loading-screen">
                                 <Loader active size='huge'>Setting Up Article</Loader>
                             </Segment> 
                             : 
-                            <ArticleBody sentences={sentences} title={title}  abstract={abstract} authors={authors}
-                                        date={String(publish_date)} pmid={pmid} journal={journal} graphData={graphData} graphColors={graphColors}
-                                        entities={entities} typeDict={typeDict} patterns={patterns} doi={doi} pmcid={pmcid} secOrder={secOrder}
+                            <ArticleBody sentences={sentences} authors={authors} date={String(publish_date)} pmid={pmid} journal={journal} 
+                                        graphData={graphData} graphColors={graphColors} entities={entities} typeDict={typeDict} 
+                                        patterns={patterns} doi={doi} pmcid={pmcid} secOrder={secOrder}
                                         sentColors={sentColors} changeSentColor={changeSentColor} source={source} archive={archive}
                                         clearSentColor={clearSentColor} scrollToAnchor={scrollToAnchor} jumpTarget={jumpTarget} />}
             </div>

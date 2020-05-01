@@ -7,6 +7,9 @@ import FindInPageSharpIcon from '@material-ui/icons/FindInPageSharp';
 import ColorizeSharpIcon from '@material-ui/icons/ColorizeSharp';
 import AssessmentSharpIcon from '@material-ui/icons/AssessmentSharp';
 
+// import components
+import Footer from '../Footer';
+
 // import css
 import './styles.css';
 
@@ -66,9 +69,9 @@ class Home extends React.Component {
                 <div className="search-section">
                     <div className="search-overlay">
                         <div className="overlay-content">
-                            <h3 style={{ margin: '0', padding: '0', lineHeight: '1.5rem', fontSize: '1.7rem' }}>Welcome to EvidenceMiner</h3>
+                            <h3>Welcome to EvidenceMiner</h3>
                             <h1>Automatic Textual Evidence Mining in COVID-19 Literature</h1>
-                            <div style={{ height: '1rem' }} />
+                            <div className="home-empty-div" />
                             <Search
                                 input={<Input className="overlay-input" iconPosition='left' placeholder={'Search by keywords, entities, meta patterns...'}/>}
                                 onSearchChange={this.handleSearchChange}
@@ -78,7 +81,7 @@ class Home extends React.Component {
                                 onFocus={() => {this.setState({searchBarFocused: true})}}
                                 onBlur={() => {this.setState({searchBarFocused: false})}}
                             />
-                            <div style={{ padding: '1rem 0 2rem 0' }}>
+                            <div className="overlay-dropdown">
                                 Search through archive{' '}
                                 <Dropdown upward={false} floating inline options={options} onChange={(e, data) => this.setState({archive: data.value})} defaultValue='covid-19' />{' '}
                             </div>
@@ -87,22 +90,22 @@ class Home extends React.Component {
                     </div>
                 </div>
                 <div id="learn-more">
-                    <Grid style={{ padding: '4rem 0', margin: '0' }} textAlign="center">
-                        <Grid.Row style={{ padding: '0', margin: '0'}}>
-                            <Grid.Column tablet={16} computer={4} widescreen={3} textAlign="left" style={{ padding: '3rem 2rem' }}>
+                    <Grid className="learn-more-grid" textAlign="center">
+                        <Grid.Row className="no-padding-margin">
+                            <Grid.Column mobile={16} tablet={8} computer={4} widescreen={3} textAlign="left" className="grid-column">
                                 <FindInPageSharpIcon className="intro-icons"/>
                                 <h1>Query</h1>
                                 <p>EvidenceMiner lets users query a natural language statement 
                                     and automatically retrieves textual evidence from a background corpora for life sciences.</p>
                             </Grid.Column>
-                            <Grid.Column tablet={16} computer={4} widescreen={3} textAlign="left" style={{ padding: '3rem 2rem' }}>
+                            <Grid.Column mobile={16} tablet={8} computer={4} widescreen={3} textAlign="left" className="grid-column">
                                 <ColorizeSharpIcon className="intro-icons"/>
                                 <h1>Annotate</h1>
                                 <p> The named entities and meta-patterns in EvidenceMiner are pre-computed and indexed offline to 
                                     support fast online evidence retrieval. The annotation results are also highlighted in the 
                                     original document for better visualization.</p>
                             </Grid.Column>
-                            <Grid.Column tablet={16} computer={4} widescreen={3} textAlign="left" style={{ padding: '3rem 2rem' }}>
+                            <Grid.Column mobile={16} tablet={8} computer={4} widescreen={3} textAlign="left" className="grid-column">
                                 <AssessmentSharpIcon className="intro-icons" />
                                 <h1>Analyze</h1>
                                 <p>EvidenceMiner includes analytic functionalities such as the most frequent entity and relation summarization.</p>
@@ -110,14 +113,14 @@ class Home extends React.Component {
                         </Grid.Row>
                     </Grid>
                 </div>
-                <div style={{ backgroundColor: 'rgb(247, 247, 247)', padding: '5rem 0' }}>
-                    <Grid style={{ padding: '0', margin: '0' }} textAlign="center">
-                        <Grid.Row style={{ padding: '0', margin: '0'}}>
-                            <Grid.Column tablet={16} computer={5} widescreen={4} textAlign="left" style={{ padding: '3rem 2rem' }}>
+                <div className="tutorial-section">
+                    <Grid className="no-padding-margin" textAlign="center">
+                        <Grid.Row className="no-padding-margin">
+                            <Grid.Column tablet={16} computer={5} widescreen={4} textAlign="left" className="grid-column">
                                 <h1>Not sure how to use Evidenceminer?</h1>
                                 <p>Don't worry, we've prepared a tutorial to get you started!</p>
                             </Grid.Column>
-                            <Grid.Column tablet={16} computer={5} widescreen={4} textAlign="left" style={{ padding: '3rem 2rem' }}>
+                            <Grid.Column tablet={16} computer={5} widescreen={4} textAlign="left" className="grid-column">
                                 <Embed
                                     id='iYuQ6gsr--I'
                                     defaultActive={true}
@@ -130,139 +133,134 @@ class Home extends React.Component {
                         </Grid.Row>
                     </Grid>
                 </div>
-                <div style={{ textAlign: 'center', padding: '3rem 0 8rem 0' }}>
-                    <Grid style={{ padding: '0', margin: '0' }} textAlign="center">
-                        <Grid.Row style={{ padding: '1rem 0', margin: '0'}}>
-                            <Grid.Column tablet={16} computer={10} widescreen={8} style={{ padding: '0 0 2rem 0' }}>
+                <div className="FAQ-section">
+                    <Grid className="no-padding-margin" textAlign="center">
+                        <Grid.Row className="FAQ-section-row">
+                            <Grid.Column tablet={16} computer={10} widescreen={8} className="section-header">
                                 <h1>Frequently Asked Questions (FAQ)</h1>
                             </Grid.Column>
                         </Grid.Row>
-                        <Grid.Row style={{ padding: '0', margin: '0'}}>
-                            <Grid.Column tablet={16} computer={10} widescreen={8}>
-                                <div style={{borderLeft: 'solid 3px black', padding: '1rem 2rem', textAlign: 'left', backgroundColor: 'rgb(247, 247, 247)'}}>Q. Question</div>
-                                <div style={{borderLeft: 'solid 3px rgb(230, 230, 230)', padding: '1rem 2rem', textAlign: 'left', backgroundColor: 'rgb(255, 255, 255)'}}>A. Answer</div>
-                            </Grid.Column>
-                        </Grid.Row>
-                        <div style={{ height: '2rem' }}/>
-                        <Grid.Row style={{ padding: '0', margin: '0'}}>
-                            <Grid.Column tablet={16} computer={10} widescreen={8}>
-                                <div style={{borderLeft: 'solid 3px black', padding: '1rem 2rem', textAlign: 'left', backgroundColor: 'rgb(247, 247, 247)'}}>Q. Question</div>
-                                <div style={{borderLeft: 'solid 3px rgb(230, 230, 230)', padding: '1rem 2rem', textAlign: 'left', backgroundColor: 'rgb(255, 255, 255)'}}>A. Answer</div>
-                            </Grid.Column>
-                        </Grid.Row>
-                        <div style={{ height: '2rem' }}/>
-                        <Grid.Row style={{ padding: '0', margin: '0'}}>
-                            <Grid.Column tablet={16} computer={10} widescreen={8}>
-                                <div style={{borderLeft: 'solid 3px black', padding: '1rem 2rem', textAlign: 'left', backgroundColor: 'rgb(247, 247, 247)'}}>Q. Question</div>
-                                <div style={{borderLeft: 'solid 3px rgb(230, 230, 230)', padding: '1rem 2rem', textAlign: 'left', backgroundColor: 'rgb(255, 255, 255)'}}>A. Answer</div>
-                            </Grid.Column>
-                        </Grid.Row>
+
+                        {
+                            QAs.map(QA => {
+                                return (
+                                    <Grid.Row className="QA">
+                                        <Grid.Column tablet={16} computer={10} widescreen={8}>
+                                            <div className="question">Q. {QA.q}</div>
+                                            <div className="answer">A. Answer</div>
+                                        </Grid.Column>
+                                    </Grid.Row>
+                                )
+                            })
+                        }
                     </Grid>
                 </div>
-                <div style={{ backgroundColor: 'rgb(44, 42, 45)', padding: '5rem 0', color: 'white' }}>
-                    <Grid style={{ padding: '0', margin: '0' }} textAlign="center">
-                        <Grid.Row style={{ padding: '0 0 3rem 0', margin: '0'}}>
-                            <Grid.Column tablet={16} computer={8} style={{ padding: '0 0 2rem 0' }}>
+                <div className="team-member-section">
+                    <Grid className="no-padding-margin" textAlign="center">
+                        <Grid.Row className="team-member-section-header">
+                            <Grid.Column tablet={16} computer={8} className="section-header">
                                 <h1>Meet the team behind EvidenceMiner</h1>
                                 <p>We are a group of passionate students from Professor Jiawei Han's Data Mining Group at
                                      the University of Illinois at Urbana-Champaign</p>
                             </Grid.Column>
                         </Grid.Row>
-                        <Grid.Row style={{ padding: '0 0 3rem 0', margin: '0'}}>
-                            <Grid.Column tablet={16} computer={4} widescreen={3}>
-                                <Card style={{ margin: '0 auto' }}>
-                                    <Image src={require('../../assets/images/female.png')} wrapped ui={false} />
-                                    <Card.Content>
-                                    <Card.Header>Xuan Wang</Card.Header>
-                                    <Card.Meta>
-                                        <span className='date'>Team Lead</span>
-                                    </Card.Meta>
-                                    <Card.Description>
-                                        Xuan is a phD student at the Department of CS in UIUC
-                                    </Card.Description>
-                                    </Card.Content>
-                                    <Card.Content extra>
-                                    <span>
-                                        <Icon name='mail' />
-                                        xwang174@illinois.edu
-                                    </span>
-                                    </Card.Content>
-                                </Card>
-                            </Grid.Column>
-                            <Grid.Column tablet={16} computer={4} widescreen={3}>
-                                <Card style={{ margin: '0 auto' }}>
-                                    <Image src={require('../../assets/images/male.png')} wrapped ui={false} />
-                                    <Card.Content>
-                                    <Card.Header>Yingjun Guan</Card.Header>
-                                    <Card.Meta>
-                                        <span className='date'>Joined in 2019</span>
-                                    </Card.Meta>
-                                    <Card.Description>
-                                        Yingjun is a phD student at the School of IS in UIUC
-                                    </Card.Description>
-                                    </Card.Content>
-                                    <Card.Content extra>
-                                    <span>
-                                        <Icon name='mail' />
-                                        yingjun2@illinois.edu
-                                    </span>
-                                    </Card.Content>
-                                </Card>
-                            </Grid.Column>
-                            <Grid.Column tablet={16} computer={4} widescreen={3}>
-                                <Card style={{ margin: '0 auto' }}>
-                                    <Image src={require('../../assets/images/male.png')} wrapped ui={false} />
-                                    <Card.Content>
-                                    <Card.Header>Aabhas Chauhan</Card.Header>
-                                    <Card.Meta>
-                                        <span className='date'>Joined in 2020</span>
-                                    </Card.Meta>
-                                    <Card.Description>
-                                        Aabhas is a MS student at the Department of CS in UIUC
-                                    </Card.Description>
-                                    </Card.Content>
-                                    <Card.Content extra>
-                                    <span>
-                                        <Icon name='mail' />
-                                        aabhasc2@illinois.edu
-                                    </span>
-                                    </Card.Content>
-                                </Card>
-                            </Grid.Column>
-                            <Grid.Column tablet={16} computer={4} widescreen={3}>
-                                <Card style={{ margin: '0 auto' }}>
-                                    <Image src={require('../../assets/images/male.png')} wrapped ui={false} />
-                                    <Card.Content>
-                                    <Card.Header>Weili Liu</Card.Header>
-                                    <Card.Meta>
-                                        <span className='date'>Joined in 2019</span>
-                                    </Card.Meta>
-                                    <Card.Description>
-                                        Weili is a BS student at the Department of CS in UIUC
-                                    </Card.Description>
-                                    </Card.Content>
-                                    <Card.Content extra>
-                                    <span>
-                                        <Icon name='mail' />
-                                        weilil2@illinois.edu
-                                    </span>
-                                    </Card.Content>
-                                </Card>
-                            </Grid.Column>
+                        <Grid.Row className="team-member-section-header">
+                            {
+                                teamMembers.map(teamMember => {
+                                    return(
+                                        <Grid.Column mobile={16} tablet={8} computer={4} widescreen={3}>
+                                            <Card className="horizontal-center">
+                                                <Image src={require(`../../assets/images/${teamMember.image}`)} wrapped ui={false} />
+                                                <Card.Content>
+                                                <Card.Header>{teamMember.name}</Card.Header>
+                                                <Card.Meta>
+                                                    <span className='date'>{teamMember.role}</span>
+                                                </Card.Meta>
+                                                <Card.Description>
+                                                    {teamMember.description}
+                                                </Card.Description>
+                                                </Card.Content>
+                                                <Card.Content extra>
+                                                <span>
+                                                    <Icon name='mail' />
+                                                    {teamMember.email}
+                                                </span>
+                                                </Card.Content>
+                                            </Card>
+                                        </Grid.Column>
+                                    )
+                                })
+                            }
                         </Grid.Row>
-                        <Grid.Row style={{ padding: '0', margin: '0'}}>
-                            <Grid.Column tablet={16} computer={8} style={{ padding: '0 0 2rem 0' }}>
+                        <Grid.Row className="no-padding-margin">
+                            <Grid.Column tablet={16} computer={8} className="section-header">
                                 <h3>Please contact us if you have any questions or suggestions for this system.</h3>
                             </Grid.Column>
                         </Grid.Row>
                     </Grid>
                 </div>
-                <div className="home-footer">
-                    Copyright &copy; 2019-2020, <a href="/">EvidenceMiner</a>, <a href="http://dm1.cs.uiuc.edu/">Data Mining Group(DMG)@UIUC</a>
-                </div>
+                <Footer style={footerStyle} linkStyle={linkStyle}/>
             </div>
         )
     }
+}
+
+const teamMembers = [
+    {
+        "name": "Xuan Wang",
+        "role": "Team Lead",
+        "description": "Xuan is a phD student at the Department of CS in UIUC",
+        "email": "xwang174@illinois.edu",
+        "image": 'female.png'
+    },
+    {
+        "name": "Yingjun Guan",
+        "role": "Joined in 2019",
+        "description": "Yingjun is a phD student at the School of IS in UIUC",
+        "email": "yingjun2@illinois.edu",
+        "image": "male.png"
+    },
+    {
+        "name": "Aabhas Chauhan",
+        "role": "Joined in 2020",
+        "description": "Aabhas is a MS student at the Department of CS in UIUC",
+        "email": "aabhasc2@illinois.edu",
+        "image": "male.png"
+    },
+    {
+        "name": "Weili Liu",
+        "role": "Joined in 2019",
+        "description": "Weili is a BS student at the Department of CS in UIUC",
+        "email": "weilil2@illinois.edu",
+        "image": "male.png"
+    }
+]
+
+const QAs = [
+    {
+        "q": "Question",
+        "a": "Answer",
+    },
+    {
+        "q": "Question",
+        "a": "Answer",
+    },
+    {
+        "q": "Question",
+        "a": "Answer",
+    }
+]
+
+const footerStyle = {
+    backgroundColor: 'rgb(44, 42, 45)',
+    textAlign: "center",
+    padding: '3rem 5rem',
+    borderTop: 'solid 1px white',
+    color: 'white'
+}
+
+const linkStyle = {
+    color: 'white'
 }
 
 export default Home;

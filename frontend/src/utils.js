@@ -35,10 +35,10 @@ module.exports = {
             if(entity.type in typeDict[parent_type[archive][entity.type]] === false) {
                 typeDict[parent_type[archive][entity.type]][entity.type] = {}
             }
-            if(entity.name in typeDict[parent_type[archive][entity.type]][entity.type] === false) {
-                typeDict[parent_type[archive][entity.type]][entity.type][entity.name] = 0;
+            if(entity.name.toLowerCase() in typeDict[parent_type[archive][entity.type]][entity.type] === false) {
+                typeDict[parent_type[archive][entity.type]][entity.type][entity.name.toLowerCase()] = 0;
             }
-            typeDict[parent_type[archive][entity.type]][entity.type][entity.name] += 1;
+            typeDict[parent_type[archive][entity.type]][entity.type][entity.name.toLowerCase()] += 1;
         });
 
         return typeDict;

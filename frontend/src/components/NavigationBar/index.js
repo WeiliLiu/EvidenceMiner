@@ -4,17 +4,16 @@ import React from 'react';
 import _ from 'lodash';
 import { Navbar } from 'react-bootstrap';
 import { Search, Grid, Input, Container } from 'semantic-ui-react'
-import axios from "axios";
 
-// import config
-import config from '../../config';
+// import api
+import api from '../../api';
 
 // import css
 import './styles.css';
 
 const resultRenderer = ({ title }) => {
     return(
-        <div style={{ 'fontSize': '0.9rem' }}>{title}</div>
+        <div className="auto-complete-result">{title}</div>
     )
 }
 
@@ -33,11 +32,9 @@ export default class NavigationBar extends React.Component {
             source: [],
         }
 
-        this.decideSearchBarStyle = this.decideSearchBarStyle.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.getSearchURL = this.getSearchURL.bind(this);
         this.handleScroll = this.handleScroll.bind(this);
-        this.showExample = this.showExample.bind(this);
     }
 
     componentDidMount() {
@@ -83,18 +80,12 @@ export default class NavigationBar extends React.Component {
         window.removeEventListener('scroll',this.handleScroll);
     }
 
-    decideSearchBarStyle() {
-        if(this.state.searchBarFocused === true) {
-            return 'mr-sm-2 searchbar-focused';
-        }else {
-            return 'mr-sm-2 searchbar-unfocused';
-        }
-    }
-
     handleKeyPress = (target) => {
+        const { searchBarFocused, value } = this.state;
+
         if(target.charCode === 13){
             target.preventDefault();
-            if(this.state.searchBarFocused && this.state.value !== '') {
+            if(searchBarFocused && value !== '') {
                 window.location.href = this.getSearchURL();
             }
         }
@@ -116,68 +107,28 @@ export default class NavigationBar extends React.Component {
         this.setState({ value: value.join(',') })
     }
 
-    handleSearchChange = (e, { value }) => {
+    handleSearchChange = async (e, { value }) => {
         this.setState({ isLoading: true, value })
         const { type } = this.props;
 
-        var query = {
-            "query": {
-                "multi_match": {
-                    "query": this.state.value,
-                    "type": "bool_prefix",
-                    "fields": [
-                        "metaPattern",
-                        "metaPattern._2gram",
-                        "metaPattern._3gram"
-                    ]
-                }
-            }
-        };
+        const autoCompletionResults = await api.getAutoComplete(value, type);
 
-        axios.get(config.searchUrl + type + '/_search', {
-            params: {
-                source: JSON.stringify(query),
-                source_content_type: 'application/json'
+        var results = [];
+        var resultsObj = [];
+        var counter = 0;
+        autoCompletionResults.some(result => {
+            const metaPattern = result._source.metaPattern;
+            if (!results.includes(metaPattern)) {
+                results.push(metaPattern);
+                resultsObj.push({ "title": metaPattern });
+                counter += 1;
             }
-        }).then(response => {
-            var data = response.data.hits.hits;
-
-            var results = [];
-            var results_obj = [];
-            for (let i = 0; i < data.length; i++) {
-                if (!results.includes(data[i]._source.metaPattern)) {
-                    results.push(data[i]._source.metaPattern);
-                    results_obj.push({"title": data[i]._source.metaPattern});
-                }
-                if(i >= 5) {
-                    break;
-                }
-            }
-
-            this.setState({
-                isLoading: false,
-                results: results_obj,
-            })
+            return counter === 5;
         })
-    }
-
-    showExample = (type) => {
-        if (type === "analytics") {
-            return <div>
-            Example&nbsp;:&nbsp;
-            <a href={config.frontUrl + "/analytics?entity_type=DISEASEORSYNDROME"}>
-                entity_type=DISEASEORSYNDROME</a>,&nbsp;
-            <a href={config.frontUrl + "/analytics?pattern=DISEASEORSYNDROME treat with CHEMICAL"}>pattern=DISEASEORSYNDROME treat with CHEMICAL</a>,&nbsp;
-            <a href={config.frontUrl + "/analytics?entity=nivolumab&pattern=DISEASEORSYNDROME treat with CHEMICAL"}>entity=nivolumab&pattern=DISEASEORSYNDROME treat with CHEMICAL</a>
-          </div>
-        } else {
-            return <div>
-            Example : &nbsp;
-            <a href={config.frontUrl + "/search?kw=NSCLC is treated with nivolumab&page=1"}>NSCLC is treated with nivolumab</a>,&nbsp;
-            <a href={config.frontUrl + "/search?kw=HCC is treated with sorafenib&page=1"}>HCC is treated with sorafenib</a>,&nbsp;
-            <a href={config.frontUrl + "/search?kw=prostate cancer is treated with androgen&page=1"}>prostate cancer is treated with androgen</a>
-          </div>
-        }
+        this.setState({
+            isLoading: false,
+            results: resultsObj,
+        })
     }
 
     render() {
@@ -186,35 +137,32 @@ export default class NavigationBar extends React.Component {
 
         return(
             <div>
-                <Navbar id="header" bg="light" expand="lg" style={{ padding: '0px', backgroundColor: 'red' }} className={'main-navbar'}>
-                    <Grid style={{ width: '100%', margin: '0' }} padded stretched>
+                <Navbar id="header" bg="light" expand="lg" className={'main-navbar'}>
+                    <Grid className="searchbar-grid" padded stretched>
                         <Grid.Column mobile={16} tablet={16} computer={1} className="logo-column" textAlign="center" verticalAlign="middle">
-                            <Container fluid text textAlign='center' style={{ backgroundColor: '', fontSize: "2.5rem", padding: "0" }}>
+                            <Container fluid text textAlign='center' className="searchbar-title">
                                 <a href="/" style={{ color: titleColor[type] }}>EM</a>
                             </Container>
                         </Grid.Column>
-                        <Grid.Column mobile={16} tablet={16} computer={7} className={'searchbar-grid'}>
+                        <Grid.Column mobile={16} tablet={16} computer={7} className={'searchbar-grid-column'}>
                             <Search
                                 fluid
                                 loading={false}
                                 input={<Input className="input-search-bar" fluid icon='search' iconPosition='left' placeholder='Search...' value={value || ''} />}
                                 onResultSelect={this.handleResultSelect}
                                 onSearchChange={_.debounce(this.handleSearchChange, 500, {
-                                leading: true,
+                                    leading: true,
                                 })}
                                 results={results}
-                                value={value}
+                                value={value || ''}
                                 resultRenderer={resultRenderer}
                                 noResultsMessage={"No meta patterns found!"}
                                 onKeyPress={this.handleKeyPress}
                                 onFocus={() => {this.setState({searchBarFocused: true})}}
                                 onBlur={() => {this.setState({searchBarFocused: false})}}
-                                {...this.props}
                             />
                         </Grid.Column>
-                        <Grid.Column width={8} verticalAlign='middle' style={{ padding: '0' }}>
-                            {/* {this.showExample(this.props.type)} */}
-                        </Grid.Column>
+                        <Grid.Column width={8} verticalAlign='middle' className="no-padding"></Grid.Column>
                     </Grid>
                 </Navbar>
             </div>
