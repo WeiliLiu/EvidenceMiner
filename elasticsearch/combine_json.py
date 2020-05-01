@@ -3,7 +3,7 @@ import nltk.data
 import ast
 
 def decode_file_to_json(file_name):
-    with open(file_name) as json_file:
+    with open(file_name, 'r') as json_file:
         content = json_file.readlines()
 
     content = [x.strip() for x in content]
@@ -15,7 +15,7 @@ def decode_file_to_json(file_name):
 
     return json_object
 
-def process_sentences(sentences, doc, start, id_start, isTitle, whole_text, prevNumSent, patterns):
+def process_sentences(sentences, doc, start, id_start, isTitle, whole_text, prevNumSent, patterns, doc_id, sec_name):
     ret = []
     start_store = start
     for sentence in sentences:
@@ -24,6 +24,16 @@ def process_sentences(sentences, doc, start, id_start, isTitle, whole_text, prev
         # Store the PMID 
         currObj['pmid'] = doc['PMID']
 
+        # Store the doi
+        currObj['doi'] = doc.get('doi', '')
+
+        # Store the PMCID
+        currObj['pmcid'] = doc.get('pmcid', '')
+
+        # Store the source
+        currObj['source'] = doc.get('source', '')
+
+        # Store what portion of the paper this sentence belongs to
         currObj['isTitle'] = isTitle
 
         # Store the sentence itself for display purposes
@@ -32,6 +42,9 @@ def process_sentences(sentences, doc, start, id_start, isTitle, whole_text, prev
         # Store the title even if it is the current sentence
         currObj['title'] = doc['ArticleTitle']
 
+        # Store the section order
+        currObj['sec_order'] = doc.get('sec_order', [])
+
         # Journal may not exist in the provided data, so need to check for existence
         if 'Journal' in doc:
             currObj['journal_name'] = doc['Journal']
@@ -39,12 +52,7 @@ def process_sentences(sentences, doc, start, id_start, isTitle, whole_text, prev
             currObj['journal_name'] = "Unknown"
 
         # Store the current sentence id
-        if isTitle == 0:
-            currObj['sentId'] = 'abstract' + str(id_start)
-        elif isTitle == 1:
-            currObj['sentId'] = 'title' + str(id_start)
-        else:
-            currObj['sentId'] = 'body' + str(id_start)
+        currObj['sentId'] = sec_name + str(id_start)
 
         # Filter out the entities relevant to the current sentence and store it in the object
         currObj['searchKey'] = sentence
@@ -64,14 +72,9 @@ def process_sentences(sentences, doc, start, id_start, isTitle, whole_text, prev
         # set up pattern for current sentence
         currObj['patterns'] = []
         for pattern in patterns:
-            if id_start + prevNumSent == int(pattern['sentID']):
+            if int(id_start + prevNumSent) == int(pattern['sentID']):
                 temp_pattern = pattern.copy()
-                if isTitle == 0:
-                    temp_pattern['sentID'] = 'abstract' + str(id_start)
-                elif isTitle == 1:
-                    temp_pattern['sentID'] = 'title' + str(id_start)
-                else:
-                    temp_pattern['sentID'] = 'body' + str(id_start)
+                temp_pattern['sentID'] = sec_name + str(id_start)
                 currObj['patterns'].append(temp_pattern)
                 currObj['searchKey'] += ' '
                 currObj['searchKey'] += pattern['sentenceExtraction'].replace('{', '').replace('}', '').replace('_', ' ')
@@ -110,7 +113,7 @@ def process_sentences(sentences, doc, start, id_start, isTitle, whole_text, prev
             # check if AuthorList is a string or list
             if isinstance(doc["AuthorList"], int):
                 author_list = []
-            elif isinstance(doc["AuthorList"], unicode):
+            elif isinstance(doc["AuthorList"], str):
                 if ';' in doc["AuthorList"]:
                     for author in doc["AuthorList"].split(';'):
                         author_list.append(author)
@@ -132,7 +135,7 @@ def process_sentences(sentences, doc, start, id_start, isTitle, whole_text, prev
             currObj["author_list"] = []
 
         # Store the unique id of the document the sentence belongs to
-        currObj["documentId"] = doc["id"]
+        currObj["documentId"] = doc_id
 
         # Append the object into the array
         ret.append(json.dumps(currObj) + '\n')
@@ -156,34 +159,53 @@ def combine_objects(pubmed_obj, pubmed_pattern_obj):
         if cnt % 1000 == 0:
             print(str(cnt) + " documents processed...")
         
-        # Separate title, abstact and body into sentences
-        titles = tokenizer.tokenize(document['ArticleTitle'])
-        abstracts = tokenizer.tokenize(document['Abstract'])
-        bodies = tokenizer.tokenize(document['BODY'])
-
         # Get all patterns for current document
         filtered_patterns = []
         for pattern in pubmed_pattern_obj:
-            if int(pattern['doc_id']) == int(document['id']):
+            if str(pattern['doc_id']) == str(document['id']):
                 filtered_patterns.append(pattern)
 
-        # Initialize the variable to keep track of the index of each sentence relative to the whole paper
+        numPrevSent = 0
         start_in_paper = 0
-        sentId_in_paper = 0
+        # iterate through the different sections
+        numSec = 0
+        if 'sec_order' in document:
+            numSec = len(document['sec_order'])
+        for i in range(numSec + 2):
+            # First get the text of the current section
+            if i == 1:
+                section_text = document['Abstract']
+            elif i == 0:
+                section_text = document['ArticleTitle']
+            else:
+                section_text = document[document['sec_order'][i - 2]]
 
-        # First process sentences in title
-        title_objs = process_sentences(titles, document, start_in_paper, sentId_in_paper, 1, document['ArticleTitle'], 0, filtered_patterns)
-        # Reinitialize start index (+1 to address the offset)
-        start_in_paper = len(document['ArticleTitle']) + 1
-        # Then process sentences in abstract
-        abstract_objs = process_sentences(abstracts, document, start_in_paper, sentId_in_paper, 0, document['Abstract'], len(titles), filtered_patterns)
-        # Reinitialize start index (+2 to address the offset)
-        start_in_paper = len(document['ArticleTitle']) + len(document['Abstract']) + 2
-        # Then process sentences in body
-        body_objs = process_sentences(bodies, document, start_in_paper, sentId_in_paper, 2, document['BODY'], len(titles) + len(abstracts), filtered_patterns)
-        
-        # Combine the tree objs
-        combined_obj += (title_objs + abstract_objs + body_objs)
+            if len(section_text) == 0:
+                start_in_paper += 1
+                continue
+
+            # Separate the current section into sentences
+            sentences = tokenizer.tokenize(section_text)
+
+            # Initialize the variable to keep track of the index of each sentence relative to the whole paper
+            id_start = 0
+
+            # process the sentences in current section
+            if i == 1:
+                objs = process_sentences(sentences, document, start_in_paper, id_start, 0, section_text, numPrevSent, filtered_patterns, document['id'], 'abstract')
+            elif i == 0:
+                objs = process_sentences(sentences, document, 0, id_start, 1, section_text, numPrevSent, filtered_patterns, document['id'], 'title')
+            else:
+                objs = process_sentences(sentences, document, start_in_paper, id_start, i, section_text, numPrevSent, filtered_patterns, document['id'], document['sec_order'][i - 2])
+
+            numPrevSent += len(sentences)
+            
+            start_in_paper += len(section_text)
+            if i <= 1:
+                start_in_paper += 1
+
+            # Combine the tree objs
+            combined_obj += objs
         
         cnt += 1
 
@@ -195,11 +217,10 @@ def encode_json_to_file(json_obj, file_name):
 
 def main():
     pubmed_pattern_object = decode_file_to_json('pubmed_pattern.json')
-    pubmed_object = decode_file_to_json('COVID19.json')
-    # pubmed_object = pubmed_object[:1000]
+    pubmed_object = decode_file_to_json('COVID-19-frontend_withsections.json')
     print("object read...")
     combined_object = combine_objects(pubmed_object, pubmed_pattern_object)
-    encode_json_to_file(combined_object, 'pubmed_with_pattern.json')
+    encode_json_to_file(combined_object, 'covid19_processed.json')
 
 if __name__ == "__main__":
     main()

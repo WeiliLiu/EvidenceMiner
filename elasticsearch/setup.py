@@ -2,7 +2,7 @@ from elasticsearch import Elasticsearch
 
 
 if __name__ == '__main__':
-    INDEX_NAME = "evidenceminer"
+    INDEX_NAME = "covid-19"
     NUMBER_SHARDS = 1 # keep this as one if no cluster
     NUMBER_REPLICAS = 0
 
@@ -59,6 +59,18 @@ if __name__ == '__main__':
         },
         "documentId": {
             "type": "long"
+        },
+        "doi": {
+            "type": "text"
+        },
+        "pmcid": {
+            "type": "text"
+        },
+        "source": {
+            "type": "text"
+        },
+        "sec_order": {
+            "type": "text"
         }
     }
 
@@ -72,7 +84,7 @@ if __name__ == '__main__':
         }
     }
 
-    es = Elasticsearch("https://search-evidenceminer-lnayeh5s4wbpvgy4jezyqwk2ja.us-west-2.es.amazonaws.com/")
+    es = Elasticsearch("http://localhost:9200/")
     if es.indices.exists(INDEX_NAME):
         res = es.indices.delete(index = INDEX_NAME)
         print("Deleting index %s , Response: %s" % (INDEX_NAME, res))

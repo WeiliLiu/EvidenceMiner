@@ -4,12 +4,12 @@ from elasticsearch import Elasticsearch
 import re
 
 if __name__ == '__main__':
-    inputFilePath = "./pubmed_with_pattern.json"
+    inputFilePath = "./covid19_processed.json"
     logFilePath = "./es_log.txt"
 
-    INDEX_NAME = "evidenceminer"
+    INDEX_NAME = "covid-19"
 
-    es = Elasticsearch("https://search-evidenceminer-lnayeh5s4wbpvgy4jezyqwk2ja.us-west-2.es.amazonaws.com/")
+    es = Elasticsearch("http://localhost:9200/")
 
     with open(inputFilePath, "r") as fin, open(logFilePath, "w") as fout:
         start = time.time()
@@ -18,6 +18,8 @@ if __name__ == '__main__':
 
         cnt = 0
         for line in fin: ## each line is single document
+            # if cnt == 200:
+            #     break
             cnt += 1
             paperInfo = json.loads(line.strip())
             
@@ -68,8 +70,20 @@ if __name__ == '__main__':
             # update documentId
             data_dict["documentId"] = paperInfo.get("documentId", -1)
             
+            # update doi
+            data_dict["doi"] = paperInfo.get("doi", "")
+
+            # update pmcid
+            data_dict["pmcid"] = paperInfo.get("pmcid", "")
+
+            # update source
+            data_dict["source"] = paperInfo.get("source", "")
+
+            # update the section order
+            data_dict["sec_order"] = paperInfo.get("sec_order", [])
+
             # update date
-            if isinstance(paperInfo["date"], unicode):
+            if isinstance(paperInfo["date"], str):
                 data_dict["date"] = paperInfo["date"]
             elif isinstance(paperInfo["date"], int):
                 data_dict["date"] = str(paperInfo["date"])
