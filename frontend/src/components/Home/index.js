@@ -142,9 +142,9 @@ class Home extends React.Component {
                         </Grid.Row>
 
                         {
-                            QAs.map(QA => {
+                            QAs.map((QA, index) => {
                                 return (
-                                    <Grid.Row className="QA">
+                                    <Grid.Row className="QA" key={index}>
                                         <Grid.Column tablet={16} computer={10} widescreen={8}>
                                             <div className="question">Q. {QA.q}</div>
                                             <div className="answer">A. Answer</div>
@@ -166,9 +166,9 @@ class Home extends React.Component {
                         </Grid.Row>
                         <Grid.Row className="team-member-section-header">
                             {
-                                teamMembers.map(teamMember => {
+                                teamMembers.map((teamMember, index) => {
                                     return(
-                                        <Grid.Column mobile={16} tablet={8} computer={4} widescreen={3}>
+                                        <Grid.Column mobile={16} tablet={8} computer={4} widescreen={3} key={index}>
                                             <Card className="horizontal-center">
                                                 <Image src={require(`../../assets/images/${teamMember.image}`)} wrapped ui={false} />
                                                 <Card.Content>

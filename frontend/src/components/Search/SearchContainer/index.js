@@ -7,9 +7,6 @@ import NavigationBar from '../../NavigationBar';
 // import packages
 import { Helmet } from 'react-helmet'
 
-// import css
-import './styles.css';
-
 class SearchResult extends React.Component {
     constructor(props) {
         super(props);
@@ -28,7 +25,7 @@ class SearchResult extends React.Component {
         const { keyword } = this.state;
 
         return(
-            <div className="search-page-container">
+            <div style={{ minHeight: window.innerHeight }}>
                 <Helmet>
                     <title>EvidenceMiner Search - { keyword }</title>
                 </Helmet>

@@ -220,7 +220,7 @@ class ResultList extends React.Component {
                                 <Grid.Column computer={1} widescreen={5}/>
                             </Grid.Row>
                         </Grid>
-                        <Grid className="resultlist-footer-container" style={resultLength === 0?{ position: 'fixed', bottom: '0' } : {}}>
+                        <Grid className="resultlist-footer-container" style={resultLength === 0?{ position: 'absolute', bottom: '0', width: '100%' } : {}}>
                             <hr />
                             <Grid.Row className="resultlist-footer-row">
                                 <Grid.Column only='computer' computer={1}/>
