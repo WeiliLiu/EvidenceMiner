@@ -26,8 +26,8 @@ cd elasticsearch-7.6.2/bin
 Once the elasticsearch is started, run the following scripts.
 ```
 cd elasticsearch
-python setup.py
-python index.py
+python3 setup.py
+python3 index.py
 ```
 
 Install the dependencies for the `backend` app by running these commands
