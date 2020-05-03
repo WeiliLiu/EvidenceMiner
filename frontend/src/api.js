@@ -7,10 +7,26 @@ const api = axios.create({ baseURL: config.searchUrl, headers: {
 } });
 
 export default {
-    getSearchResult(keyword, size, page, archive) {
+    getSearchResult(keyword, size, page, archive, includePreprint) {
         const query = {
             "query": {
-                "match": { "searchKey": keyword }
+                "bool": {
+                    "must": {
+                        "match": { "searchKey": keyword }
+                    },
+                    "must_not": [
+                        {
+                            "term": {
+                                "source": includePreprint? "" : "medrxiv"
+                            }
+                        },
+                        {
+                            "term": {
+                                "source": includePreprint? "" : "biorxiv"
+                            }
+                        }
+                    ]
+                }
             },
             "size": size,
             "from": (page - 1) * size
@@ -23,10 +39,26 @@ export default {
         })
             .then(r => r.data)
     },
-    getSearchResultCount(keyword, archive) {
+    getSearchResultCount(keyword, archive, includePreprint) {
         const query = {
             "query": {
-                "match": { "searchKey": keyword }
+                "bool": {
+                    "must": {
+                        "match": { "searchKey": keyword }
+                    },
+                    "must_not": [
+                        {
+                            "term": {
+                                "source": includePreprint? "" : "medrxiv"
+                            }
+                        },
+                        {
+                            "term": {
+                                "source": includePreprint? "" : "biorxiv"
+                            }
+                        }
+                    ]
+                }
             },
             "size": 0
         };

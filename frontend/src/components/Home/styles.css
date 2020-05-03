@@ -1,3 +1,21 @@
+.notice {
+    font-size: 0.9rem;
+    color: white;
+    background-color: rgb(48, 48, 48);
+    padding: 0.5rem 1rem;
+    text-align: center;
+}
+
+.notice a{
+    color: white;
+    text-decoration: underline;
+}
+
+.notice a:hover {
+    color: white;
+    text-decoration: underline;
+}
+
 .home-page-container {
     min-height: 100vh;
 }
@@ -20,8 +38,8 @@
 }
 
 .search-overlay {
-    padding: 5rem;
     color: white;
+    padding: 5rem;
 }
 
 .search-overlay h1 {
@@ -45,7 +63,21 @@
 }
 
 .overlay-dropdown {
-    padding: 1rem 0 2rem 0;
+    padding: 1rem 0 1rem 0;
+}
+
+.overlay-dropdown a {
+    color: white;
+}
+
+.overlay-dropdown a:hover {
+    color: white;
+    text-decoration: underline;
+}
+
+.sample-query {
+    border-top: solid 1px white;
+    padding: 2rem 5rem!important;
 }
 
 .learn-more-grid {
@@ -84,18 +116,35 @@
     margin-bottom: 1rem;
 }
 
+.QA-accordian {
+    width: 100%!important;
+    text-align: left;
+}
+
 .question {
     border-left: solid 3px black;
-    padding: 1rem 2rem;
+    padding: 1rem 2rem!important;
     text-align: left;
     background-color: rgb(247, 247, 247);
+    font-weight: bold;
 }
 
 .answer {
     border-left: solid 3px rgb(230, 230, 230);
-    padding: 1rem 2rem;
+    padding: 1rem 2rem!important;
     text-align: left;
     background-color: rgb(255, 255, 255);
+    color: grey;
+}
+
+.QA a {
+    color: black;
+    text-decoration: underline;
+}
+
+.QA a:hover {
+    color: black;
+    text-decoration: underline;
 }
 
 .FAQ-section-row {

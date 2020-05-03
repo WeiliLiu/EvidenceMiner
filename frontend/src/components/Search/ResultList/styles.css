@@ -2,6 +2,10 @@
     margin-left: 0!important;
 }
 
+.include-preprint-checkbox {
+    float: right;
+}
+
 .search-meta-info {
     width: 100%;
     margin: 2rem 0 2rem 0!important;
@@ -101,6 +105,11 @@
 }
 
 @media (max-width: 990px) {
+    .include-preprint-checkbox {
+        float: none;
+        width: 100%;
+    }
+
     .search-meta-info {
         margin: 1rem 0 0 0!important;
     }

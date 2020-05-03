@@ -2,7 +2,7 @@
 import React from 'react';
 
 // import packages
-import { Loader, List, Pagination, Icon, Segment, Grid, Container, Menu } from 'semantic-ui-react';
+import { Loader, List, Pagination, Icon, Segment, Grid, Container, Menu, Checkbox } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 
 // import self-made components
@@ -46,12 +46,13 @@ class ResultList extends React.Component {
     async componentDidMount() {
         // Get query from the url querystring
         const searchKeyword = new URLSearchParams(window.location.search).get('kw');
+        const includePreprint = new URLSearchParams(window.location.search).get('ipp') === 'true'? true : false;
 
         // Get which archive to search from
         const { archive } = this.props;
 
         // Get the total number of search results returned
-        const numSearchResults = await api.getSearchResultCount(searchKeyword, archive);
+        const numSearchResults = await api.getSearchResultCount(searchKeyword, archive, includePreprint);
 
         // Calculate paging related numbers
         const totalPages = Math.ceil(numSearchResults / 10);
@@ -59,7 +60,7 @@ class ResultList extends React.Component {
 
         // Call the api to query elasticsearch
         const resultSize = 10;
-        const searchResult = await api.getSearchResult(searchKeyword, resultSize, currPage, archive);
+        const searchResult = await api.getSearchResult(searchKeyword, resultSize, currPage, archive, includePreprint);
 
         // Set up screen size listener
         window.addEventListener("resize", this.resize.bind(this));
@@ -116,6 +117,9 @@ class ResultList extends React.Component {
         searchResults.forEach((result, index) => {
             const resultObj = result._source;
             table.push(<ResultItem pmid={resultObj.pmid}
+                pmcid={resultObj.pmid}
+                source={resultObj.source}
+                doi={resultObj.doi}
                 sentence={resultObj.sentence}
                 prevSentence={resultObj.prevSent}
                 nextSentence={resultObj.nextSent}
@@ -141,6 +145,7 @@ class ResultList extends React.Component {
     render() {
         const { isMobile, isLoading, typeDict, graphData, graphColors, keyword, responseTime, resultLength, totalPage, currentPage } = this.state;
         const { archive } = this.props;
+        const includePreprint = new URLSearchParams(window.location.search).get('ipp') === 'true'? true : false;
 
         return(
             <div>
@@ -155,14 +160,14 @@ class ResultList extends React.Component {
                                         icon="archive"
                                         color="blue"
                                         active={archive === 'covid-19'}
-                                        onClick={() => window.location.href = '/search/covid-19?kw=' + encodeURIComponent(keyword) + '&page=1'}
+                                        onClick={() => window.location.href = `/search/covid-19?kw=` + encodeURIComponent(keyword) + `&ipp=${includePreprint}&page=1`}
                                     />
                                     <Menu.Item
                                         name='Cancer and Heart Disease'
                                         icon="archive"
                                         color="orange"
                                         active={archive === 'chd'}
-                                        onClick={() => window.location.href = '/search/chd?kw=' + encodeURIComponent(keyword) + '&page=1'}
+                                        onClick={() => window.location.href = '/search/chd?kw=' + encodeURIComponent(keyword) + `&ipp=${includePreprint}&page=1`}
                                     />
                                     {/* <Menu.Item
                                         name='Analytics'
@@ -186,6 +191,12 @@ class ResultList extends React.Component {
                                 <Grid.Column only='computer' computer={1}/>
                                 <Grid.Column mobile={16} tablet={11} computer={10} widescreen={6} className="search-meta-info-column">
                                     <Container fluid className="search-meta-container">
+                                        <Checkbox 
+                                                checked={includePreprint} 
+                                                label='Include biorXiv/medRxiv' 
+                                                onChange={() => window.location.href = `/search/${archive}?kw=` + encodeURIComponent(keyword) + `&ipp=${!includePreprint}&page=1`}
+                                                className="include-preprint-checkbox"
+                                        />
                                         <span> "{keyword}" </span>
                                         <span>(Total: <strong>{resultLength}</strong>, Took: <strong>{responseTime}ms</strong>)</span>
                                         <br />

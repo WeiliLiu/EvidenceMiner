@@ -13,6 +13,7 @@
     border: 0!important;
     font-size: 1rem!important;
     padding: 0rem!important;
+    overflow: auto!important;
 }
 
 .context-label {

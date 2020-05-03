@@ -2,7 +2,7 @@ import React from 'react';
 
 // import downloaded packages
 import { Navbar, Nav } from 'react-bootstrap';
-import { Search, Grid, Input, Dropdown, Button, Embed, Card, Icon, Image } from 'semantic-ui-react';
+import { Search, Grid, Input, Dropdown, Button, Embed, Card, Icon, Image, Accordion } from 'semantic-ui-react';
 import FindInPageSharpIcon from '@material-ui/icons/FindInPageSharp';
 import ColorizeSharpIcon from '@material-ui/icons/ColorizeSharp';
 import AssessmentSharpIcon from '@material-ui/icons/AssessmentSharp';
@@ -21,10 +21,20 @@ class Home extends React.Component {
             searchBarFocused: false,
             value: '',
             archive: 'covid-19',
+            activeIndex: 0,
         }
 
         this.getSearchURL = this.getSearchURL.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
+        this.handleClick = this.handleClick.bind(this);
+    }
+
+    handleClick = (e, titleProps) => {
+        const { index } = titleProps
+        const { activeIndex } = this.state
+        const newIndex = activeIndex === index ? -1 : index
+    
+        this.setState({ activeIndex: newIndex })
     }
 
     getSearchURL() {
@@ -53,10 +63,16 @@ class Home extends React.Component {
     }
 
     render() {
-        const { value } = this.state;
+        const { value, activeIndex } = this.state;
 
         return(
             <div className={'home-page-container'}>
+                <div className="notice">
+                    <strong>Notice: </strong>
+                    The current corpus contains all publications until 3/13/2020 from the&nbsp;
+                    <a href="https://www.kaggle.com/allen-institute-for-ai/CORD-19-research-challenge">CORD-19 dataset</a>. 
+                    We will constantly update the backend corpus of EvidenceMiner based on the updates of the CORD-19 corpus.
+                </div>
                 <Navbar bg="light" expand="lg" className={'home-page-navbar'}>
                     <Navbar.Brand href="/" className="navbar-title" >EvidenceMiner</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -84,6 +100,18 @@ class Home extends React.Component {
                             <div className="overlay-dropdown">
                                 Search through archive{' '}
                                 <Dropdown upward={false} floating inline options={options} onChange={(e, data) => this.setState({archive: data.value})} defaultValue='covid-19' />{' '}
+                            </div >
+                            <div className="overlay-dropdown">
+                                Try:&nbsp;&nbsp;
+                                <a href="/search/covid-19?kw=UV%2C%20Ultraviolet%2C%20kill%2C%20SARS-COV-2&ipp=false&page=1">UV, Ultraviolet, kill, SARS-COV-2</a>
+                                &nbsp;&nbsp;|&nbsp;&nbsp;
+                                <a href="/search/covid-19?kw=COVID-19%2C%20Remdesivir&ipp=false&page=1">COVID-19, Remdesivir</a>
+                                &nbsp;&nbsp;|<br />
+                                <a href="/search/covid-19?kw=SARS-COV-2%2C%20Amodiaquine&page=1">SARS-COV-2, Amodiaquine</a>
+                                &nbsp;&nbsp;|&nbsp;&nbsp;
+                                <a href="/search/covid-19?kw=COVID-19%2C%20masks&ipp=false&page=1">COVID-19, masks</a>
+                                &nbsp;&nbsp;|<br />
+                                <a href="/search/covid-19?kw=CORONAVIRUS%20cause%20DISEASEORSYNDROME&ipp=false&page=1">CORONAVIRUS cause DISEASEORSYNDROME</a>
                             </div>
                             <Button inverted size="large" href="https://arxiv.org/abs/2004.12563">Read Our Paper</Button>
                         </div>
@@ -141,18 +169,100 @@ class Home extends React.Component {
                             </Grid.Column>
                         </Grid.Row>
 
-                        {
-                            QAs.map((QA, index) => {
-                                return (
-                                    <Grid.Row className="QA" key={index}>
-                                        <Grid.Column tablet={16} computer={10} widescreen={8}>
-                                            <div className="question">Q. {QA.q}</div>
-                                            <div className="answer">A. Answer</div>
-                                        </Grid.Column>
-                                    </Grid.Row>
-                                )
-                            })
-                        }
+                        <Grid.Row className="QA">
+                            <Grid.Column tablet={16} computer={10} widescreen={8}>
+                                <Accordion className="QA-accordian">
+                                    <Accordion.Title className="question"
+                                        active={activeIndex === 0}
+                                        index={0}
+                                        onClick={this.handleClick}
+                                        >
+                                        <Icon name='dropdown' />
+                                        What is the source of the backend corpus of EvidenceMiner?
+                                    </Accordion.Title>
+                                    <Accordion.Content active={activeIndex === 0} className="answer">
+                                        <p>
+                                            The backend corpus is CORD-19, the&nbsp;
+                                            <a href="https://www.kaggle.com/allen-institute-for-ai/CORD-19-research-challenge">COVID-19 Open Research Dataset</a>. 
+                                            CORD-19 is created by  researchers from the Allen Institute for AI, Chan Zuckerberg Initiative (CZI), 
+                                            Georgetown University’s Center for Security and Emerging Technology (CSET), Microsoft, and the 
+                                            National Library of Medicine (NLM) at NIH (the National Institutes of Health). CORD-19 contains 
+                                            publications about COVID-19 and the coronavirus family of viruses from various sources including 
+                                            PubMed’s PMC open access corpus, bioRxiv and medRxiv pre-prints and a corpus maintained by the WHO 
+                                            about COVID-19 and the coronavirus family of viruses.
+                                        </p>
+                                    </Accordion.Content>
+                                    <Accordion.Title className="question"
+                                        active={activeIndex === 1}
+                                        index={1}
+                                        onClick={this.handleClick}
+                                        >
+                                        <Icon name='dropdown' />
+                                        How are the fine-grained entity types annotated?
+                                    </Accordion.Title>
+                                    <Accordion.Content active={activeIndex === 1} className="answer">
+                                        <p>
+                                            EvidenceMiner uses the 75 fine-grained entity types automatically 
+                                            annotated by <a href="https://arxiv.org/abs/2003.12218">CORD-NER</a>. CORD-NER covers many new entity 
+                                            types specifically related to the COVID-19 studies (e.g., coronaviruses, viral proteins, 
+                                            evolution, materials, substrates and immune responses), which may benefit research on COVID-19 
+                                            related virus, spreading mechanisms, and potential vaccines. CORD-NER relies on distantly- 
+                                            and weakly-supervised NER methods, with no need of expensive human annotation on any articles 
+                                            or subcorpus. Its entity annotation quality surpasses SciSpacy (over 10% higher on the F1 score 
+                                            based on a sample set of documents), a fully supervised BioNER tool. More details of CORD-NER 
+                                            can be found in the <a href="https://arxiv.org/abs/2003.12218">arXiv paper</a>.
+                                        </p>
+                                    </Accordion.Content>
+                                    <Accordion.Title className="question"
+                                        active={activeIndex === 2}
+                                        index={2}
+                                        onClick={this.handleClick}
+                                        >
+                                        <Icon name='dropdown' />
+                                        How is the evidence score calculated?
+                                    </Accordion.Title>
+                                    <Accordion.Content active={activeIndex === 2} className="answer">
+                                        <p>
+                                            The evidence score ranks the retrieved sentences by a confidence score of each being
+                                            textual evidence for the input query. The confidence score is a weighted combination of three scores: 
+                                            a word score, an entity score and a pattern score. The three scores are calculated following three 
+                                            criteria: (1) word score: candidate evidence sentences covering more query-related words will be ranked 
+                                            higher, (2) entity score: candidate evidence sentences covering more query-related entities will be ranked 
+                                            higher, and (3) pattern score: candidate evidence sentences covering more query-matched meta-patterns will 
+                                            be ranked higher. More details of EvidenceMiner can be found in the <a href="https://arxiv.org/abs/2004.12563"> arXiv paper</a>.
+                                        </p>
+                                    </Accordion.Content>
+                                </Accordion>
+
+                                {/* <div className="question">Q. What is the source of the backend corpus of EvidenceMiner?</div>
+                                <div className="answer"><span style={{ height: '100%' }}>A.</span>The backend corpus is CORD-19, the&nbsp;
+                                    <a href="https://www.kaggle.com/allen-institute-for-ai/CORD-19-research-challenge">COVID-19 Open Research Dataset</a>. 
+                                    CORD-19 is created by  researchers from the Allen Institute for AI, Chan Zuckerberg Initiative (CZI), 
+                                    Georgetown University’s Center for Security and Emerging Technology (CSET), Microsoft, and the 
+                                    National Library of Medicine (NLM) at NIH (the National Institutes of Health). CORD-19 contains 
+                                    publications about COVID-19 and the coronavirus family of viruses from various sources including 
+                                    PubMed’s PMC open access corpus, bioRxiv and medRxiv pre-prints and a corpus maintained by the WHO 
+                                    about COVID-19 and the coronavirus family of viruses.</div>
+                                <div className="question">Q. How are the fine-grained entity types annotated?</div>
+                                <div className="answer">A. EvidenceMiner uses the 75 fine-grained entity types automatically 
+                                    annotated by <a href="https://arxiv.org/abs/2003.12218">CORD-NER</a>. CORD-NER covers many new entity 
+                                    types specifically related to the COVID-19 studies (e.g., coronaviruses, viral proteins, 
+                                    evolution, materials, substrates and immune responses), which may benefit research on COVID-19 
+                                    related virus, spreading mechanisms, and potential vaccines. CORD-NER relies on distantly- 
+                                    and weakly-supervised NER methods, with no need of expensive human annotation on any articles 
+                                    or subcorpus. Its entity annotation quality surpasses SciSpacy (over 10% higher on the F1 score 
+                                    based on a sample set of documents), a fully supervised BioNER tool. More details of CORD-NER 
+                                    can be found in the <a href="https://arxiv.org/abs/2003.12218">arXiv paper</a>.</div>
+                                <div className="question">Q. How is the evidence score calculated?</div>
+                                <div className="answer">A. The evidence score ranks the retrieved sentences by a confidence score of each being
+                                    textual evidence for the input query. The confidence score is a weighted combination of three scores: 
+                                    a word score, an entity score and a pattern score. The three scores are calculated following three 
+                                    criteria: (1) word score: candidate evidence sentences covering more query-related words will be ranked 
+                                    higher, (2) entity score: candidate evidence sentences covering more query-related entities will be ranked 
+                                    higher, and (3) pattern score: candidate evidence sentences covering more query-matched meta-patterns will 
+                                    be ranked higher. More details of EvidenceMiner can be found in the <a href="https://arxiv.org/abs/2004.12563"> arXiv paper</a>.</div> */}
+                            </Grid.Column>
+                        </Grid.Row>
                     </Grid>
                 </div>
                 <div className="team-member-section">
@@ -233,21 +343,6 @@ const teamMembers = [
         "description": "Weili is a BS student at the Department of CS in UIUC",
         "email": "weilil2@illinois.edu",
         "image": "male.png"
-    }
-]
-
-const QAs = [
-    {
-        "q": "Question",
-        "a": "Answer",
-    },
-    {
-        "q": "Question",
-        "a": "Answer",
-    },
-    {
-        "q": "Question",
-        "a": "Answer",
     }
 ]
 

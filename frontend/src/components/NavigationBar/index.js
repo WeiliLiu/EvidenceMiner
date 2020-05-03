@@ -38,8 +38,7 @@ export default class NavigationBar extends React.Component {
     }
 
     componentDidMount() {
-        const searchParams = new URLSearchParams(window.location.search);
-        var keyword = searchParams.get('kw')
+        const keyword = new URLSearchParams(window.location.search).get('kw');
 
         // Set up screen size listener
         window.addEventListener("resize", this.resize.bind(this));
@@ -94,10 +93,11 @@ export default class NavigationBar extends React.Component {
     getSearchURL() {
         const { value } = this.state;
         const { type } = this.props;
+        const includePreprint = new URLSearchParams(window.location.search).get('ipp') === 'true'? true : false;
         if (this.props.type === "analytics") {
             return "/" + type + '?' + value;
         } else {
-            return "/search/" + type + '?kw=' + encodeURIComponent(value) + "&page=1"
+            return "/search/" + type + '?kw=' + encodeURIComponent(value) + `&ipp=${includePreprint}&page=1`    
         }
     }
 

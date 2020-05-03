@@ -99,7 +99,7 @@ class ResultItem extends React.Component {
     }
 
     render() {
-        const { prevSentence, nextSentence, documentId, sentID, sentence, ranking, page, score, date, journal, pmid, authors, isTitle, title } = this.props;
+        const { prevSentence, nextSentence, documentId, sentID, sentence, ranking, page, score, date, journal, pmid, authors, isTitle, title, pmcid, source, doi } = this.props;
         const { isMobile, showAllAuthors } = this.state;
 
         return(
@@ -129,14 +129,23 @@ class ResultItem extends React.Component {
                         Evidence Score
                         <Label.Detail>{score.toFixed(2)}</Label.Detail>
                         </Label>} />
-                    <Label size="mini" className={'metadata-label'}>
-                        <Icon name='calendar'/>{date === '0'? 'No Date' : date}
+                    <Label size="mini" className={'metadata-label'} hidden={date === '0'}>
+                        <Icon name='calendar'/>{date}
                     </Label>
-                    <Label size="mini" className={'metadata-label'}>
+                    <Label size="mini" className={'metadata-label'} hidden={journal === 'No journal info'}>
                         <Icon name='book' />{journal}
                     </Label>
+                    <Label size="mini" className={'metadata-label'} hidden={source === ""}>
+                        <Icon name='linkify'/>Source: {source}
+                    </Label>
                     <Label size="mini" className={'metadata-label'} hidden={pmid === ""}>
-                        <Icon name='linkify'/>PMID{pmid}
+                        <Icon name='linkify'/>PMID: {pmid}
+                    </Label>
+                    <Label size="mini" className={'metadata-label'} hidden={pmcid === ""}>
+                        <Icon name='linkify'/>PMCID: {pmcid}
+                    </Label>
+                    <Label size="mini" className={'metadata-label'} hidden={doi === ""}>
+                        <Icon name='linkify'/>DOI: {doi}
                     </Label>
                     <Label size="mini" image className={showAllAuthors? 'invisible-label' : ''} hidden={authors.length === 0}>
                         <Icon name='user' />{authors[0]}
