@@ -8,8 +8,8 @@ const dev = {
 };
 
 const staging = {
-  apiUrl: 'http://128.174.244.32:8101',
-  clientUrl: 'http://128.174.244.32:8001',
+  apiUrl: 'http://localhost:5000',
+  clientUrl: 'http://localhost:3000',
   elasticsearchUrl: 'http://localhost:9200',
   isDev: true,
 };
