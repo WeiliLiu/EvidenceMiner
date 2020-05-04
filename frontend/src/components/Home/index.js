@@ -113,7 +113,7 @@ class Home extends React.Component {
                                 &nbsp;&nbsp;|<br />
                                 <a href="/search/covid-19?kw=CORONAVIRUS%20cause%20DISEASEORSYNDROME&ipp=false&page=1">CORONAVIRUS cause DISEASEORSYNDROME</a>
                             </div>
-                            <Button inverted size="large" href="https://arxiv.org/abs/2004.12563">Read Our Paper</Button>
+                            <Button inverted size="large" href="https://arxiv.org/abs/2004.12563" className="paper-button">Read Our Paper</Button>
                         </div>
                     </div>
                 </div>
@@ -188,8 +188,7 @@ class Home extends React.Component {
                                             Georgetown University’s Center for Security and Emerging Technology (CSET), Microsoft, and the 
                                             National Library of Medicine (NLM) at NIH (the National Institutes of Health). CORD-19 contains 
                                             publications about COVID-19 and the coronavirus family of viruses from various sources including 
-                                            PubMed’s PMC open access corpus, bioRxiv and medRxiv pre-prints and a corpus maintained by the WHO 
-                                            about COVID-19 and the coronavirus family of viruses.
+                                            PubMed’s PMC open access corpus, bioRxiv and medRxiv pre-prints and a corpus maintained by the WHO.
                                         </p>
                                     </Accordion.Content>
                                     <Accordion.Title className="question"
@@ -233,34 +232,6 @@ class Home extends React.Component {
                                         </p>
                                     </Accordion.Content>
                                 </Accordion>
-
-                                {/* <div className="question">Q. What is the source of the backend corpus of EvidenceMiner?</div>
-                                <div className="answer"><span style={{ height: '100%' }}>A.</span>The backend corpus is CORD-19, the&nbsp;
-                                    <a href="https://www.kaggle.com/allen-institute-for-ai/CORD-19-research-challenge">COVID-19 Open Research Dataset</a>. 
-                                    CORD-19 is created by  researchers from the Allen Institute for AI, Chan Zuckerberg Initiative (CZI), 
-                                    Georgetown University’s Center for Security and Emerging Technology (CSET), Microsoft, and the 
-                                    National Library of Medicine (NLM) at NIH (the National Institutes of Health). CORD-19 contains 
-                                    publications about COVID-19 and the coronavirus family of viruses from various sources including 
-                                    PubMed’s PMC open access corpus, bioRxiv and medRxiv pre-prints and a corpus maintained by the WHO 
-                                    about COVID-19 and the coronavirus family of viruses.</div>
-                                <div className="question">Q. How are the fine-grained entity types annotated?</div>
-                                <div className="answer">A. EvidenceMiner uses the 75 fine-grained entity types automatically 
-                                    annotated by <a href="https://arxiv.org/abs/2003.12218">CORD-NER</a>. CORD-NER covers many new entity 
-                                    types specifically related to the COVID-19 studies (e.g., coronaviruses, viral proteins, 
-                                    evolution, materials, substrates and immune responses), which may benefit research on COVID-19 
-                                    related virus, spreading mechanisms, and potential vaccines. CORD-NER relies on distantly- 
-                                    and weakly-supervised NER methods, with no need of expensive human annotation on any articles 
-                                    or subcorpus. Its entity annotation quality surpasses SciSpacy (over 10% higher on the F1 score 
-                                    based on a sample set of documents), a fully supervised BioNER tool. More details of CORD-NER 
-                                    can be found in the <a href="https://arxiv.org/abs/2003.12218">arXiv paper</a>.</div>
-                                <div className="question">Q. How is the evidence score calculated?</div>
-                                <div className="answer">A. The evidence score ranks the retrieved sentences by a confidence score of each being
-                                    textual evidence for the input query. The confidence score is a weighted combination of three scores: 
-                                    a word score, an entity score and a pattern score. The three scores are calculated following three 
-                                    criteria: (1) word score: candidate evidence sentences covering more query-related words will be ranked 
-                                    higher, (2) entity score: candidate evidence sentences covering more query-related entities will be ranked 
-                                    higher, and (3) pattern score: candidate evidence sentences covering more query-matched meta-patterns will 
-                                    be ranked higher. More details of EvidenceMiner can be found in the <a href="https://arxiv.org/abs/2004.12563"> arXiv paper</a>.</div> */}
                             </Grid.Column>
                         </Grid.Row>
                     </Grid>

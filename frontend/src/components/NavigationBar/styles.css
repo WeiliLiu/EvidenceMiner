@@ -8,7 +8,11 @@
 }
 
 .searchbar-title {
-    font-size: 2.5rem!important;
+    font-size: 2.2rem!important;
+}
+
+.searchbar-title a {
+    font-weight: 100!important;
 }
 
 .searchbar-grid {

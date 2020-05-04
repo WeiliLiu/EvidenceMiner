@@ -193,7 +193,7 @@ class ResultList extends React.Component {
                                     <Container fluid className="search-meta-container">
                                         <Checkbox 
                                                 checked={includePreprint} 
-                                                label='Include biorXiv/medRxiv' 
+                                                label='Include bioRxiv/medRxiv' 
                                                 onChange={() => window.location.href = `/search/${archive}?kw=` + encodeURIComponent(keyword) + `&ipp=${!includePreprint}&page=1`}
                                                 className="include-preprint-checkbox"
                                         />

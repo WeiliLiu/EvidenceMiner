@@ -26,7 +26,7 @@
 }
 
 .navbar-title {
-    font-weight: 600;
+    font-weight: 100;
     font-size: 1.5rem;
 }
 
@@ -44,6 +44,7 @@
 
 .search-overlay h1 {
     font-size: 2.5rem;
+    font-weight: 100;
 }
 
 .overlay-input {
@@ -56,6 +57,7 @@
     padding: 0;
     line-height: 1.5rem;
     font-size: 1.7rem;
+    font-weight: 100;
 }
 
 .home-empty-div {
@@ -75,14 +77,13 @@
     text-decoration: underline;
 }
 
-.sample-query {
-    border-top: solid 1px white;
-    padding: 2rem 5rem!important;
-}
-
 .learn-more-grid {
     padding: 4rem 0!important;
     margin: 0!important;
+}
+
+.paper-button {
+    font-weight: 100!important;
 }
 
 .no-padding-margin {
@@ -196,5 +197,13 @@
 
     .overlay-content {
         text-align: center;
+    }
+
+    .overlay-content h3 {
+        font-size: 1.5rem;
+    }
+
+    .overlay-content h1 {
+        font-size: 2rem;
     }
 }
