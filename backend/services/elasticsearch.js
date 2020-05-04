@@ -10,12 +10,7 @@ async function getDocuments(queryBody, index) {
     const searchResult = await elasticClient.search({
         index: index,
         body: queryBody
-    })
+    });
     return searchResult;
 }
 exports.getDocuments = getDocuments;
-
-function getDocumentsCount(queryBody, index) {
-    return 0;
-}
-exports.getDocumentsCount = getDocumentsCount;
