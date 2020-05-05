@@ -1,26 +1,27 @@
-var express = require('express');
-var cors = require('cors');
-var bodyParser = require('body-parser')
-var dotenv = require('dotenv')
-var basic = require('express-authentication-basic');
-var authentication = require('express-authentication');
-var config = require('./config');
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser')
+const dotenv = require('dotenv')
+const basic = require('express-authentication-basic');
+const authentication = require('express-authentication');
+const mongoose = require('mongoose');
+const config = require('./config');
 
 // import routes
-var search = require('./routes/search');
+const search = require('./routes/search');
 
 // initialize app
-var app = express();
+const app = express();
 
 // configureapp to use bodyParser
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // set port to be 5000 if dev
-var port = process.env.PORT || 5000;
+const port = process.env.PORT || 5000;
 
 // register routes
-var router = express.Router();
+const router = express.Router();
 require('./routes')(app, router);
 
 // start the server
@@ -28,4 +29,14 @@ app.listen(port, () => {
     console.log(`API running on port ${port}`)
 });
 
-// Connect to elasticsearch instance
+// Connect to mongodb instance
+mongoose.connect(config.dbUrl, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true,
+});
+mongoose.connection.on('error', (err) => {
+    console.error(`Could not connect to the database:\n${err}`);
+});
+mongoose.connection.once('open', () => {
+    console.log('Connected to the database.');
+});

@@ -17,7 +17,8 @@
     "elasticsearch": "^16.7.1",
     "express": "^4.17.1",
     "express-authentication": "^0.3.2",
-    "express-authentication-basic": "^0.3.1"
+    "express-authentication-basic": "^0.3.1",
+    "mongoose": "^5.9.12"
   },
   "devDependencies": {
     "nodemon": "^2.0.3"
