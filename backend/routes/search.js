@@ -10,6 +10,7 @@ async function getSearchResults(req, res) {
     const count = q.count? JSON.parse(q.count) : false;
     const includePreprint = q.includePreprint? JSON.parse(q.includePreprint) : false;
     const total = q.total? JSON.parse(q.total) : false;
+    const index = q.index? JSON.parse(q.index) : "";
 
     if (count && total) return res.status(400).json({ message: "total and count can't be both true", data: {} });
 
@@ -59,7 +60,7 @@ async function getSearchResults(req, res) {
         "from": skip
     };
     
-    const searchResults = await elastic.getDocuments(query, 'covid-19')
+    const searchResults = await elastic.getDocuments(query, index)
         .then(response => {
             return {
                 status: 200,
