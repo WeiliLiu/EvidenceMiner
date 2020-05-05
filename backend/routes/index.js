@@ -10,5 +10,5 @@ module.exports = function(app, router) {
     // entity route
     var entities = require('./entities');
     app.route('/api/entities')
-        .get(entities.getEntities)
+        .get(entities.getTopEntities)
 };

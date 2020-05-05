@@ -10,7 +10,9 @@ const entitySchema = new Schema({
     source: String,
     start: Number,
     end: Number,
-    docId: String
+    docId: String,
+    sentId: String,
+    corpus: String
 });
 
 module.exports = mongoose.model('Entity', entitySchema);

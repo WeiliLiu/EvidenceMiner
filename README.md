@@ -10,7 +10,7 @@ First, we need to set up an elasticsearch cluster.
 
 Install the package `elasticsearch` needed to run the scripts
 ```
-pip install elasticsearch
+pip3 install elasticsearch
 ```
 Download [Elasticsearch-7.6.2](https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.6.2-linux-x86_64.tar.gz) and place it under the `elasticsearch` directory.
 
@@ -58,5 +58,5 @@ npm start
 
 ### Finally
 - `elasticsearch` is served at [http://localhost:9200](http://localhost:9200)
-- `backend` is served at [http://localhost:3000](http://localhost:5000)
-- `frontend` is served at [http://localhost:3001](https://localhost:3000)
+- `backend` is served at [http://localhost:5000](http://localhost:5000)
+- `frontend` is served at [http://localhost:3000](https://localhost:3000)

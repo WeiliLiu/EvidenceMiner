@@ -4,12 +4,13 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 // Define the entity schema
-const pattern = new Schema({
+const patternSchema = new Schema({
     sentId: String,
     metaPattern: String,
     instances: [String],
     sentenceExtraction: String,
-    docId: String
+    docId: String,
+    corpus: String
 });
 
-module.exports = mongoose.model('patterns', pattern);
+module.exports = mongoose.model('Pattern', patternSchema);
