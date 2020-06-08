@@ -27,7 +27,7 @@ class SearchResult extends React.Component {
         return(
             <div style={{ minHeight: window.innerHeight }}>
                 <Helmet>
-                    <title>EvidenceMiner Search - { keyword }</title>
+                    <title>{`EvidenceMiner Search - ${ keyword }`}</title>
                 </Helmet>
 
                 <NavigationBar type={this.props.match.params.id} />

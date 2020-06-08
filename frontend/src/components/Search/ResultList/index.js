@@ -169,12 +169,12 @@ class ResultList extends React.Component {
                                         active={archive === 'chd'}
                                         onClick={() => window.location.href = '/search/chd?kw=' + encodeURIComponent(keyword) + `&ipp=${includePreprint}&page=1`}
                                     />
-                                    {/* <Menu.Item
+                                   <Menu.Item
                                         name='Analytics'
                                         icon="chart line"
                                         active={false}
-                                        onClick={() => window.location.href = '/analytics?' + keyword}
-                                    /> */}
+                                        onClick={() => window.location.href = '/analytics?kw=' + keyword + "&corpus=" + encodeURIComponent(archive)}
+                                    />
                                 </Menu>
                             </Grid.Column>
                             <Grid.Column computer={5} widescreen={9} />

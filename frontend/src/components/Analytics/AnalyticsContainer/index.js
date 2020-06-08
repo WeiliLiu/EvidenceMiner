@@ -1,7 +1,7 @@
 import React from 'react';
 
 // import downloaded package
-import { Grid, Menu } from 'semantic-ui-react';
+import { Grid, Menu, Button } from 'semantic-ui-react';
 
 // import components
 import NavigationBar from '../../NavigationBar';
@@ -12,7 +12,8 @@ export default class Analytics extends React.Component {
         super(props);
 
         this.state = {
-            keyword: ""
+            keyword: "",
+            corpus: "covid-19"
         }
 
         this.resize = this.resize.bind(this);
@@ -23,8 +24,11 @@ export default class Analytics extends React.Component {
         window.addEventListener("resize", this.resize.bind(this));
         this.resize();
 
+        const keyword = new URLSearchParams(window.location.search).get('kw');
+        const corpus = new URLSearchParams(window.location.search).get('corpus');
         this.setState({
-            keyword: decodeURI(window.location.search.substring(1, window.location.search.length)),
+            keyword: keyword,
+            corpus: corpus,
         });
     }
 
@@ -33,17 +37,17 @@ export default class Analytics extends React.Component {
     }
 
 	render() {
-        const { isMobile, keyword } = this.state;
+        const { isMobile, keyword, corpus } = this.state;
 
 		return (
 		<div>
-            <NavigationBar history={this.props.history} type="analytics" />
+            <NavigationBar history={this.props.history} type="analytics" corpus={corpus}/>
                 <div className="search-grid-container">
                     <Grid className="search-grid">
                         <Grid.Row className="search-grid-row">
                             <Grid.Column width={isMobile? 0 : 1} />
-                            <Grid.Column width={isMobile? 16 : 10} className="menu-column">
-                                <Menu pointing secondary className="search-menu">
+                            <Grid.Column width={isMobile? 16 : 10}  className="menu-column">
+                                <Menu fluid={true} pointing secondary className="search-menu">
                                     <Menu.Item
                                         name='COVID-19'
                                         icon="archive"
@@ -63,14 +67,26 @@ export default class Analytics extends React.Component {
                                         icon="chart line"
                                         active={true}
                                         color='red'
-                                        onClick={() => window.location.href = '/analytics?' + keyword}
+                                        onClick={() => window.location.href = '/analytics?kw=' + keyword + "corpus=" + corpus}
                                     />
                                 </Menu>
                             </Grid.Column>
                             <Grid.Column width={isMobile? 0 : 5} />
                         </Grid.Row>
                     </Grid>
-                    <AnalyticsGraph keyword={this.state.keyword}/>
+                    <Grid padded style={{ paddingTop: '2rem' }}>
+                        <Grid.Column width={isMobile? 16 : 8}>
+                            <Button.Group vertical={isMobile ? true : false} style={{paddingLeft:"1rem"}}>
+                                <Button toggle active={corpus === "chd"} onClick={() => this.setState({corpus:"chd"})}>
+                                    Cancer&Heart Disease Analytics
+                                </Button>
+                                <Button toggle active={corpus === "covid-19"} onClick={() => this.setState({corpus:"covid-19"})}>
+                                    Covid-19 Analytics
+                                </Button>
+                            </Button.Group>
+                        </Grid.Column>
+                    </Grid>
+                    <AnalyticsGraph keyword={this.state.keyword} corpus={corpus}/>
                 </div>
 		    </div>
         );

@@ -11,7 +11,12 @@ import api from '../../api';
 // import css
 import './styles.css';
 
-const resultRenderer = ({ title }) => {
+const resultRenderer = ({ title, type }) => {
+    if (type != null) {
+        return (
+            <div className="auto-complete-result">{title + " (Entity)"}</div>
+        )
+    }
     return(
         <div className="auto-complete-result">{title}</div>
     )
@@ -44,15 +49,9 @@ export default class NavigationBar extends React.Component {
         window.addEventListener("resize", this.resize.bind(this));
         this.resize();
 
-        if (this.props.type === "analytics") {
-            this.setState({
-                value: decodeURI(window.location.search.substring(1, window.location.search.length)),
-            })
-        } else {
-            this.setState({
-                value: keyword,
-            })
-        }
+        this.setState({
+            value: keyword,
+        })
     }
 
     resize() {
@@ -92,10 +91,10 @@ export default class NavigationBar extends React.Component {
 
     getSearchURL() {
         const { value } = this.state;
-        const { type } = this.props;
+        const { type,corpus } = this.props;
         const includePreprint = new URLSearchParams(window.location.search).get('ipp') === 'true'? true : false;
         if (this.props.type === "analytics") {
-            return "/" + type + '?' + value;
+            return "/" + type + '?kw=' + encodeURIComponent(value) + '&corpus=' + corpus;
         } else {
             return "/search/" + type + '?kw=' + encodeURIComponent(value) + `&ipp=${includePreprint}&page=1`    
         }
@@ -108,14 +107,47 @@ export default class NavigationBar extends React.Component {
     }
 
     handleSearchChange = async (e, { value }) => {
+
         this.setState({ isLoading: true, value })
+        const {corpus} = this.props;
+        var EntityResultsObj = [];
+        if (this.props.type === "analytics") {
+            let entityTypeList = chdEntityType;
+            if (corpus === 'covid-19') entityTypeList = entityTypes;
+            for (let i = 0; i < entityTypeList.length; i++) {
+                if (entityTypeList[i].toLocaleLowerCase().startsWith(value.toLowerCase())) {
+                    EntityResultsObj.push({"title": entityTypeList[i], "type": 1});
+                    continue;
+                }
+                if (entityTypeList[i].toLocaleLowerCase().indexOf(" " + value.toLowerCase()) !== -1) {
+                    EntityResultsObj.push({"title": entityTypeList[i], "type": 2});
+                    continue;
+                }
+                if (entityTypeList[i].toLocaleLowerCase().indexOf(value.toLowerCase()) !== -1) {
+                    EntityResultsObj.push({"title": entityTypeList[i], "type": 3});
+                    continue;
+                }
+            }
+
+            EntityResultsObj = EntityResultsObj.sort(function(a,b) {
+                return a.type - b.type;
+            })
+        }
+
+
         const { type } = this.props;
-
-        const autoCompletionResults = await api.getAutoComplete(value, type);
-
         var results = [];
         var resultsObj = [];
         var counter = 0;
+
+        let autoCompletionResults;
+        if (type === "analytics") {
+            resultsObj = resultsObj.concat(EntityResultsObj);
+            autoCompletionResults = await api.getAutoComplete(value, corpus);
+        } else {
+            autoCompletionResults = await api.getAutoComplete(value, type);
+        }
+
         autoCompletionResults.some(result => {
             const metaPattern = result._source.metaPattern;
             if (!results.includes(metaPattern)) {
@@ -125,6 +157,7 @@ export default class NavigationBar extends React.Component {
             }
             return counter === 5;
         })
+
         this.setState({
             isLoading: false,
             results: resultsObj,
@@ -156,7 +189,7 @@ export default class NavigationBar extends React.Component {
                                 results={results}
                                 value={value || ''}
                                 resultRenderer={resultRenderer}
-                                noResultsMessage={"No meta patterns found!"}
+                                noResultsMessage={this.props.type === "analytics" ? "No entity types find" : "No meta patterns found!"}
                                 onKeyPress={this.handleKeyPress}
                                 onFocus={() => {this.setState({searchBarFocused: true})}}
                                 onBlur={() => {this.setState({searchBarFocused: false})}}
@@ -175,3 +208,6 @@ const titleColor = {
     'chd': 'rgb(242, 113 ,28)',
     'analytics': '#db2828'
 }
+
+const chdEntityType = ["TISSUE", "CELL", "ORGANISM FUNCTION", "BODY PART, ORGAN, OR ORGAN COMPONENT", "MOLECULAR FUNCTION", "CELL COMPONENT", "VIRUS", "EUKARYOTE", "ORGAN OR TISSUE FUNCTION", "CHEMICAL", "CELL FUNCTION", "CELL OR MOLECULAR DYSFUNCTION", "DISEASE OR SYNDROME", "EXPERIMENTAL MODEL OF DISEASE", "GENE OR GENOME"];
+const entityTypes = ["TIME","CORONAVIRUS","EVOLUTION","FAC","ORGAN OR TISSUE FUNCTION","MACHINE ACTIVITY","SOCIAL BEHAVIOR","GROUP","CELL OR MOLECULAR DYSFUNCTION","EVENT","CELL FUNCTION","MONEY","INJURY OR POISONING","ORGANISM","CELL COMPONENT","VIRUS","HUMAN-CAUSED PHENOMENON OR PROCESS","CELL","ANATOMICAL STRUCTURE","MOLECULAR FUNCTION","GROUP ATTRIBUTE","BODY SUBSTANCE","RESEARCH ACTIVITY","EXPERIMENTAL MODEL OF DISEASE","VIRAL PROTEIN","FOOD","DIAGNOSTIC PROCEDURE","QUANTITY","PERCENT","LOC","SIGN OR SYMPTOM","LAW","DATE","WILDLIFE","WORK OF ART","TISSUE","INDIVIDUAL BEHAVIOR","CARDINAL","IMMUNE RESPONSE","PHYSICAL SCIENCE","BACTERIUM","NORP","SUBSTRATE","LABORATORY OR TEST RESULT","ORDINAL","LABORATORY PROCEDURE","MATERIAL","GENE OR GENOME","ARCHAEON","GPE","ORG","DISEASE OR SYNDROME","EDUCATIONAL ACTIVITY","LIVESTOCK","EUKARYOTE","DAILY OR RECREATIONAL ACTIVITY","LANGUAGE","GOVERNMENTAL OR REGULATORY ACTIVITY","CHEMICAL","THERAPEUTIC OR PREVENTIVE PROCEDURE","PERSON","BODY PART ORGAN OR ORGAN COMPONENT","PRODUCT"]
