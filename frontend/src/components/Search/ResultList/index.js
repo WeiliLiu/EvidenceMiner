@@ -192,8 +192,8 @@ class ResultList extends React.Component {
                                 <Grid.Column mobile={16} tablet={11} computer={10} widescreen={6} className="search-meta-info-column">
                                     <Container fluid className="search-meta-container">
                                         <Checkbox 
-                                                checked={includePreprint} 
-                                                label='Include bioRxiv/medRxiv' 
+                                                checked={!includePreprint} 
+                                                label='Exclude bioRxiv/medRxiv' 
                                                 onChange={() => window.location.href = `/search/${archive}?kw=` + encodeURIComponent(keyword) + `&ipp=${!includePreprint}&page=1`}
                                                 className="include-preprint-checkbox"
                                         />

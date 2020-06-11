@@ -40,7 +40,7 @@ class Home extends React.Component {
     getSearchURL() {
         const { value } = this.state;
         const { archive } = this.state;
-        return "/search/" + archive + '?kw=' + encodeURIComponent(value) + "&page=1"
+        return "/search/" + archive + '?kw=' + encodeURIComponent(value) + "&ipp=true&page=1"
     }
 
     handleKeyPress = (target) => {
@@ -103,15 +103,15 @@ class Home extends React.Component {
                             </div >
                             <div className="overlay-dropdown">
                                 Try:&nbsp;&nbsp;
-                                <a href="/search/covid-19?kw=UV%2C%20Ultraviolet%2C%20kill%2C%20SARS-COV-2&ipp=false&page=1">UV, Ultraviolet, kill, SARS-COV-2</a>
+                                <a href="/search/covid-19?kw=UV%2C%20Ultraviolet%2C%20kill%2C%20SARS-COV-2&ipp=true&page=1">UV, Ultraviolet, kill, SARS-COV-2</a>
                                 &nbsp;&nbsp;|&nbsp;&nbsp;
-                                <a href="/search/covid-19?kw=COVID-19%2C%20Remdesivir&ipp=false&page=1">COVID-19, Remdesivir</a>
+                                <a href="/search/covid-19?kw=COVID-19%2C%20Remdesivir&ipp=true&page=1">COVID-19, Remdesivir</a>
                                 &nbsp;&nbsp;|<br />
-                                <a href="/search/covid-19?kw=SARS-COV-2%2C%20Amodiaquine&page=1">SARS-COV-2, Amodiaquine</a>
+                                <a href="/search/covid-19?kw=SARS-COV-2%2C%20Amodiaquine&ipp=true&page=1">SARS-COV-2, Amodiaquine</a>
                                 &nbsp;&nbsp;|&nbsp;&nbsp;
-                                <a href="/search/covid-19?kw=COVID-19%2C%20masks&ipp=false&page=1">COVID-19, masks</a>
+                                <a href="/search/covid-19?kw=COVID-19%2C%20masks&ipp=true&page=1">COVID-19, masks</a>
                                 &nbsp;&nbsp;|<br />
-                                <a href="/search/covid-19?kw=CORONAVIRUS%20cause%20DISEASEORSYNDROME&ipp=false&page=1">CORONAVIRUS cause DISEASEORSYNDROME</a>
+                                <a href="/search/covid-19?kw=CORONAVIRUS%20cause%20DISEASEORSYNDROME&ipp=true&page=1">CORONAVIRUS cause DISEASEORSYNDROME</a>
                             </div>
                             <Button inverted size="large" href="https://arxiv.org/abs/2004.12563" className="paper-button">Read Our Paper</Button>
                         </div>
