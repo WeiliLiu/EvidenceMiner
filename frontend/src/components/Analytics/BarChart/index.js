@@ -29,29 +29,21 @@ class BarChart extends React.Component {
     }
 
     getDataPoint() {
-        const {data, type, constrain, mode} = this.props;
+        const {data, type} = this.props;
         if (data["byDocument"] == null) {
+            alert(1);
             return [];
         }
         let dataPoints = [];
         let source = type === "doc" ? data["byDocument"] : data["bySentence"];
         let field = type === "doc" ? "docCount" : "sentCount";
         for (let i = 0; i < source.length; i++) {
-            if (mode === "pattern" && constrain !== "none") {
-                if (source[i]["name"].split("&").indexOf(constrain) !== -1) {
-                    dataPoints.push({
-                        "y":source[i][field],
-                        "label":source[i]["name"].replace("&"," - "),
-                        "indexLabel": source[i]["name"].replace("&"," - "),
-                        "click": this.onclick});
-                }
-            } else {
-                dataPoints.push({
-                    "y":source[i][field],
-                    "label":source[i]["name"].replace("&"," - "),
-                    "indexLabel": source[i]["name"].replace("&"," - "),
-                    "click": this.onclick});
-            }
+            dataPoints.push({
+                "y":source[i][field],
+                "label":source[i]["name"].replace("&"," - "),
+                "indexLabel": source[i]["name"].replace("&"," - "),
+                "click": this.onclick});
+
         }
         return dataPoints
     }

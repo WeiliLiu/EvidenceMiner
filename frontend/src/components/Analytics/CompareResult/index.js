@@ -44,7 +44,7 @@ class CompareResult extends React.Component {
     }
 
     getOption(){
-        const {data, mode, constrain} = this.props;
+        const {data, mode} = this.props;
         const {type} = this.state;
         let sent_data = data["bySentence"];
         let doc_data = data["byDocument"];
@@ -61,11 +61,6 @@ class CompareResult extends React.Component {
         if (type === "overlap") {
             for (let i = 0; i < sent_data.length; i++) {
                 let curr_name = sent_data[i]["name"];
-                if (mode === "pattern" && constrain !== "none") {
-                    if (curr_name.split("&").indexOf(constrain) === -1) {
-                        continue;
-                    }
-                }
                 for (let j = 0; j < doc_data.length; j++) {
                     if (doc_data[j]["name"] === curr_name) {
                         documentDataPoints.push({"y":sent_data[i]["docCount"], "label": curr_name.replace("&", " - "), "click": this.onclick})
@@ -78,11 +73,6 @@ class CompareResult extends React.Component {
         if (type === "sent") {
             for (let i = 0; i < sent_data.length; i++) {
                 let curr_name = sent_data[i]["name"];
-                if (mode === "pattern" && constrain !== "none") {
-                    if (curr_name.split("&").indexOf(constrain) === -1) {
-                        continue;
-                    }
-                }
                 let add = true;
                 for (let j = 0; j < doc_data.length; j++) {
                     if (doc_data[j]["name"] === curr_name) {
@@ -99,11 +89,6 @@ class CompareResult extends React.Component {
         if (type === "doc") {
             for (let i = 0; i < doc_data.length; i++) {
                 let curr_name = doc_data[i]["name"];
-                if (mode === "pattern" && constrain !== "none") {
-                    if (curr_name.split("&").indexOf(constrain) === -1) {
-                        continue;
-                    }
-                }
                 let add = true;
                 for (let j = 0; j < sent_data.length; j++) {
                     if (sent_data[j]["name"] === curr_name) {

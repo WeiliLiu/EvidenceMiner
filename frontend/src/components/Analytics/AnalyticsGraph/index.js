@@ -1,10 +1,8 @@
 import React from 'react';
-import data from './data/type_count.json'
-import chd_data from './data/chd_type_count.json'
-import pattern from './data/pattern_count.json'
-import chd_pattern from './data/pattern_count_chd.json'
 
+import api from '../../../api';
 // import downloaded packages
+
 import { Grid, Segment, Message, Container } from 'semantic-ui-react';
 import BarChart from "../BarChart";
 import CompareResult from "../CompareResult";
@@ -18,21 +16,21 @@ export default class AnalyticsGraph extends React.Component {
             entity_type: "",
             valid_data: true,
             data:{},
-            mode: "entity"
+            mode: "entity",
+            loaded: false
         }
 
         this.showInfo = this.showInfo.bind(this);
         this.entityUI = this.entityUI.bind(this);
         this.updateCorpus = this.updateCorpus.bind(this);
-        this.updateConstrain = this.updateConstrain.bind(this)
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         // Set up screen size listener
         window.addEventListener("resize", this.resize.bind(this));
         this.resize();
 
-        this.updateCorpus();
+        await this.updateCorpus();
 
     }
 
@@ -44,52 +42,53 @@ export default class AnalyticsGraph extends React.Component {
         this.setState({"selected_entity": name});
     }
 
-    updateConstrain(name) {
-        this.setState({"constrain": name});
-    }
-
-    updateCorpus(){
-        if (this.props.corpus === this.state.corpus) return;
-
+    async updateCorpus(){
         const entityType = new URLSearchParams(window.location.search).get('kw');
-        let corpus = {};
-        let valid = false;
-        let mode;
+        const corpus = new URLSearchParams(window.location.search).get('corpus');
+        const constrain = new URLSearchParams(window.location.search).get('constrain');
 
-        if (this.props.corpus === "covid-19") {
-           if (data[entityType.toUpperCase()] != null) {
-               valid = true;
-               corpus = data;
-               mode = "entity";
-           }
-           if (pattern[entityType.toUpperCase()] != null) {
-               valid = true;
-               corpus = pattern;
-               mode = "pattern";
-           }
-        }
-        if (this.props.corpus === "chd") {
-            if (chd_data[entityType.toUpperCase()] != null) {
-                valid = true;
-                corpus = chd_data;
-                mode = "entity";
-            }
-            if (chd_pattern[entityType.toUpperCase()] != null) {
-                valid = true;
-                corpus = chd_pattern;
-                mode = "pattern";
-            }
-        }
+        if (constrain != null) {
+            const result = await api.getPatternFilteredByDocCount(corpus, entityType, constrain);
+            const result2 = await api.getPatternFilteredBysentCount(corpus, entityType, constrain);
 
-        this.setState({
-            valid_data: valid,
-            entity_type: entityType,
-            data: corpus[entityType.toUpperCase()],
-            selected_entity: "default",
-            corpus: this.props.corpus,
-            mode: mode,
-            constrain: "none"
-        });
+            const valid = result.hits.total.value !== 0;
+
+            const dataByDoc = result.hits.hits;
+            const dataBySent = result2.hits.hits;
+
+            const data = {};
+            data["byDocument"] = [];
+            for (let i = 0; i < dataByDoc.length; i++) {
+                data["byDocument"].push(dataByDoc[i]._source);
+            }
+
+            data["bySentence"] = [];
+            for (let i = 0; i < dataBySent.length; i++) {
+                data["bySentence"].push(dataBySent[i]._source);
+            }
+
+            this.setState({
+                valid_data: valid,
+                entity_type: entityType,
+                data: valid ? data : {},
+                selected_entity: "default",
+                corpus: corpus,
+                mode: valid ? "pattern" : "default",
+                loaded: true
+            });
+        } else {
+            const data = await api.getTopRecord(corpus, entityType);
+
+            this.setState({
+                valid_data: data.hits.total.value === 1,
+                entity_type: entityType,
+                data: data.hits.total.value === 1 ? data.hits.hits[0]._source : {},
+                selected_entity: "default",
+                corpus: corpus,
+                mode: data.hits.total.value === 1 ? data.hits.hits[0]._source.group : "default",
+                loaded: true
+            });
+        }
     }
 
     entityUI(){
@@ -127,27 +126,27 @@ export default class AnalyticsGraph extends React.Component {
     }
 
     patternUI(){
-        const {isMobile, constrain, mode} = this.state;
+        const {isMobile, mode} = this.state;
         return (
             <div style={{padding: '1rem 1rem'}}>
                 <Grid padded style={{ paddingTop: '2rem' }}>
                     <Grid.Column width={isMobile? 16 : 8}>
                         <Segment padded>
                             <h3>Meta Pattern Type: {this.state.entity_type.charAt(0).toUpperCase() + this.state.entity_type.slice(1).toLowerCase()}</h3>
-                            <BarChart data={this.state.data} type={"doc"} action={this.showInfo} mode={this.state.mode} constrain={constrain}/>
+                            <BarChart data={this.state.data} type={"doc"} action={this.showInfo} mode={this.state.mode}/>
                         </Segment>
                     </Grid.Column>
                     <Grid.Column width={isMobile? 16 : 8}>
                         <Segment padded>
                             <h3>Meta Pattern Type: {this.state.entity_type.charAt(0).toUpperCase() + this.state.entity_type.slice(1).toLowerCase()}</h3>
-                            <BarChart data={this.state.data} type={"sent"} action={this.showInfo} mode={mode} constrain={constrain}/>
+                            <BarChart data={this.state.data} type={"sent"} action={this.showInfo} mode={mode}/>
                         </Segment>
                     </Grid.Column>
                 </Grid>
                 <Grid padded style={{ paddingTop: '2rem' }}>
                     <Grid.Column width={isMobile? 16 : 8}>
                         <Segment padded>
-                            <CompareResult data={this.state.data} action={this.showInfo} constrain={constrain} mode={mode}/>
+                            <CompareResult data={this.state.data} action={this.showInfo} mode={mode}/>
                         </Segment>
                     </Grid.Column>
                     <Grid.Column width={isMobile? 16 : 8}>
@@ -157,8 +156,6 @@ export default class AnalyticsGraph extends React.Component {
                                 data={this.state.data}
                                 corpus={this.state.corpus}
                                 mode={this.state.mode}
-                                constrain={this.state.constrain}
-                                action = {this.updateConstrain}
                             />
                         </Segment>
                     </Grid.Column>
@@ -169,10 +166,11 @@ export default class AnalyticsGraph extends React.Component {
 
     render() {
 
-        const {valid_data , mode } = this.state;
-        this.updateCorpus();
+        const {valid_data , mode, loaded } = this.state;
+
         let toReturn;
-        if (valid_data) {
+
+        if (valid_data && loaded) {
             if (mode === "entity")
             toReturn = this.entityUI();
             else toReturn = this.patternUI();

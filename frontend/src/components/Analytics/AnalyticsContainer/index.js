@@ -26,9 +26,11 @@ export default class Analytics extends React.Component {
 
         const keyword = new URLSearchParams(window.location.search).get('kw');
         const corpus = new URLSearchParams(window.location.search).get('corpus');
+        const constrain = new URLSearchParams(window.location.search).get('constrain');
         this.setState({
             keyword: keyword,
             corpus: corpus,
+            constrain: constrain
         });
     }
 
@@ -37,8 +39,8 @@ export default class Analytics extends React.Component {
     }
 
 	render() {
-        const { isMobile, keyword, corpus } = this.state;
-
+        const { isMobile, keyword, corpus, constrain } = this.state;
+        const constrainString = constrain === null ? "" : "&constrain=" + constrain;
 		return (
 		<div>
             <NavigationBar history={this.props.history} type="analytics" corpus={corpus}/>
@@ -67,7 +69,7 @@ export default class Analytics extends React.Component {
                                         icon="chart line"
                                         active={true}
                                         color='red'
-                                        onClick={() => window.location.href = '/analytics?kw=' + keyword + "corpus=" + corpus}
+                                        onClick={() => window.location.href = '/analytics?kw=' + keyword + "&corpus=" + corpus}
                                     />
                                 </Menu>
                             </Grid.Column>
@@ -77,16 +79,20 @@ export default class Analytics extends React.Component {
                     <Grid padded style={{ paddingTop: '2rem' }}>
                         <Grid.Column width={isMobile? 16 : 8}>
                             <Button.Group vertical={isMobile ? true : false} style={{paddingLeft:"1rem"}}>
-                                <Button toggle active={corpus === "chd"} onClick={() => this.setState({corpus:"chd"})}>
+                                <Button toggle active={corpus === "chd"}
+                                        onClick={() => window.location.href = '/analytics?kw='
+                                            + keyword + "&corpus=chd" + constrainString}>
                                     Cancer&Heart Disease Analytics
                                 </Button>
-                                <Button toggle active={corpus === "covid-19"} onClick={() => this.setState({corpus:"covid-19"})}>
+                                <Button toggle active={corpus === "covid-19"}
+                                        onClick={() => window.location.href = '/analytics?kw='
+                                    + keyword + "&corpus=covid-19" + constrainString}>
                                     Covid-19 Analytics
                                 </Button>
                             </Button.Group>
                         </Grid.Column>
                     </Grid>
-                    <AnalyticsGraph keyword={this.state.keyword} corpus={corpus}/>
+                    <AnalyticsGraph keyword={this.state.keyword}/>
                 </div>
 		    </div>
         );

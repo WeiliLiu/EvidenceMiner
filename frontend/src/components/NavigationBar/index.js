@@ -94,6 +94,10 @@ export default class NavigationBar extends React.Component {
         const { type,corpus } = this.props;
         const includePreprint = new URLSearchParams(window.location.search).get('ipp') === 'true'? true : false;
         if (this.props.type === "analytics") {
+            if (value.indexOf("+") != -1) {
+                let arr = value.split("+");
+                return "/" + type + '?kw=' + encodeURIComponent(arr[0].trim()) + '&corpus=' + corpus + '&constrain=' + encodeURIComponent(arr[1].trim());
+            }
             return "/" + type + '?kw=' + encodeURIComponent(value) + '&corpus=' + corpus;
         } else {
             return "/search/" + type + '?kw=' + encodeURIComponent(value) + `&ipp=${includePreprint}&page=1`    

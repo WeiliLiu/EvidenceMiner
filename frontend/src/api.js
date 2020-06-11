@@ -124,5 +124,76 @@ export default {
             }
         })
             .then(r => r.data.hits.hits)
+    },
+    getTopRecord(corpus, type){
+        const query = {
+            "query": {
+                "bool": {
+                    "must": [
+                        { "match": { "type": type.toUpperCase() } },
+                        { "match": { "corpus": corpus } }
+                    ]
+                }
+            },
+            "size": 1,
+            "from":0
+        };
+        return api.get(`/top/_search`, {
+            params: {
+                source: JSON.stringify(query),
+                source_content_type: 'application/json'
+            }
+        })
+            .then(r => r.data)
+    },
+    getPatternFilteredByDocCount(corpus, type, constrain){
+        const query = {
+            "sort" : [
+                {"docCount" : {"order":"desc"}}
+            ],
+            "query": {
+                "bool": {
+                    "must": [
+                        { "match": { "type": type.toUpperCase() } },
+                        { "match": { "corpus": corpus } },
+                        { "match": { "instance": constrain.toLowerCase() } }
+                    ]
+                }
+            },
+            "size" :20,
+            "from":0
+        };
+        return api.get(`/pattern/_search`, {
+            params: {
+                source: JSON.stringify(query),
+                source_content_type: 'application/json'
+            }
+        })
+            .then(r => r.data)
+    },
+    getPatternFilteredBysentCount(corpus, type, constrain){
+        const query = {
+            "sort" : [
+                {"sentCount" : {"order":"desc"}}
+            ],
+            "query": {
+                "bool": {
+                    "must": [
+                        { "match": { "type": type.toUpperCase() } },
+                        { "match": { "corpus": corpus } },
+                        { "match": { "instance": constrain.toLowerCase()} }
+                    ]
+                }
+            },
+            "size" :20,
+            "from":0
+        };
+        return api.get(`/pattern/_search`, {
+            params: {
+                source: JSON.stringify(query),
+                source_content_type: 'application/json'
+            }
+        })
+            .then(r => r.data)
     }
 };

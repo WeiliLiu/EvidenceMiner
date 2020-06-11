@@ -80,7 +80,7 @@ export default class EntityInfo extends React.Component {
 
     render() {
 
-        const { name, corpus, mode, action } = this.props;
+        const { name, corpus, mode} = this.props;
         const {isMobile, activeButton} = this.state;
 
         let toReturn;
@@ -110,7 +110,7 @@ export default class EntityInfo extends React.Component {
 
             toReturn =
                 <div>
-                    <h1 width={"100%"} style={{"text-align": "center"}}>{name}</h1>
+                    <h1 width={"100%"} style={{"textAlign": "center"}}>{name}</h1>
                     <div style={infoStyle}>Entity Type: <p style={dataStyle}>{entityInfo.type}</p></div>
                     <div style={infoStyle}>Document Count: <p style={dataStyle}>{entityInfo.docCount}</p>, appeared in <p style={dataStyle}>{parseFloat(entityInfo.docCount/documentNum*100).toFixed(4)}%</p> documents</div>
                     <div style={infoStyle}>Sentence Count: <p style={dataStyle}>{entityInfo.sentCount}</p>, appeared in <p style={dataStyle}>{parseFloat(entityInfo.sentCount/sentNum*100).toFixed(4)}%</p> sentences</div>
@@ -121,9 +121,11 @@ export default class EntityInfo extends React.Component {
                         <div style={infoStyle}>fixed Entity:</div>
                         <Button.Group vertical={isMobile ? true : false} style={{marginTop:"2rem"}}>
                             {name.split(" - ").map(function (value, index) {
-                                return <Button toggle active={activeButton === index} onClick={function () {
+                                return <Button toggle key={index} active={activeButton === index} onClick={function () {
                                     update(index);
-                                    action(value);
+                                    window.location.href = "/analytics?kw=" + encodeURIComponent(entityInfo.type)
+                                        + "&corpus=" + encodeURIComponent(corpus)
+                                        + "&constrain=" + encodeURIComponent(value);
                                 }}>
                                     {value}
                                 </Button>
