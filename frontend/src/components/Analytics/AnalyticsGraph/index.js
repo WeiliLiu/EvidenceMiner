@@ -79,6 +79,15 @@ export default class AnalyticsGraph extends React.Component {
         } else {
             const data = await api.getTopRecord(corpus, entityType);
 
+            if (data.hits.total.value === 1) {
+                data.hits.hits[0]._source.byDocument.sort(function (a,b) {
+                    return b.docCount - a.docCount
+                });
+                data.hits.hits[0]._source.bySentence.sort(function (a,b) {
+                    return b.sentCount - a.sentCount
+                });
+            }
+
             this.setState({
                 valid_data: data.hits.total.value === 1,
                 entity_type: entityType,
