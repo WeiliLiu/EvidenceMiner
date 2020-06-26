@@ -145,7 +145,7 @@ class ResultList extends React.Component {
     render() {
         const { isMobile, isLoading, typeDict, graphData, graphColors, keyword, responseTime, resultLength, totalPage, currentPage } = this.state;
         const { archive } = this.props;
-        const includePreprint = new URLSearchParams(window.location.search).get('ipp') === 'true'? true : false;
+        const includePreprint = new URLSearchParams(window.location.search).get('ipp') === 'false'? false : true;
 
         return(
             <div>
@@ -194,7 +194,7 @@ class ResultList extends React.Component {
                                         <Checkbox 
                                                 checked={!includePreprint} 
                                                 label='Exclude bioRxiv/medRxiv' 
-                                                onChange={() => window.location.href = `/search/${archive}?kw=` + encodeURIComponent(keyword) + `&ipp=${!includePreprint}&page=1`}
+                                                onChange={() => window.location.href = `/search/${archive}?kw=` + encodeURIComponent(keyword) + `&ipp=${!includePreprint}&page=${currentPage}`}
                                                 className="include-preprint-checkbox"
                                         />
                                         <span> "{keyword}" </span>
@@ -221,7 +221,7 @@ class ResultList extends React.Component {
                                             totalPages={totalPage}
                                             activePage={currentPage}
                                             boundaryRange={isMobile? 0 : 1}
-                                            onPageChange={(e, { activePage }) => window.location.href = `/search/${archive}?kw=` + encodeURIComponent(keyword) + "&page=" + activePage}
+                                            onPageChange={(e, { activePage }) => window.location.href = `/search/${archive}?kw=` + encodeURIComponent(keyword) + `&ipp=${includePreprint}&page=${activePage}`}
                                         />
                                     </Segment>
                                 </Grid.Column>

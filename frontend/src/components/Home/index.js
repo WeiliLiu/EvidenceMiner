@@ -249,9 +249,9 @@ class Home extends React.Component {
                             {
                                 teamMembers.map((teamMember, index) => {
                                     return(
-                                        <Grid.Column mobile={16} tablet={8} computer={4} widescreen={3} key={index}>
+                                        <Grid.Column mobile={16} tablet={8} computer={4} widescreen={3} key={index} style={{ marginTop: '3rem' }}>
                                             <Card className="horizontal-center">
-                                                <Image src={require(`../../assets/images/${teamMember.image}`)} wrapped ui={false} />
+                                                <Image src={require(`../../assets/images/${teamMember.image}`)} wrapped ui={false} style={{ overflow: 'hidden', maxHeight: '300px' }}/>
                                                 <Card.Content>
                                                 <Card.Header>{teamMember.name}</Card.Header>
                                                 <Card.Meta>
@@ -288,32 +288,60 @@ class Home extends React.Component {
 
 const teamMembers = [
     {
+        "name": "Jiawei Han",
+        "role": "Advisor",
+        "description": "Michael Aiken Chair Professor at UIUC",
+        "email": "hanj@illinois.edu",
+        "image": 'hanj_tour.jpg'
+    },
+    {
         "name": "Xuan Wang",
         "role": "Team Lead",
         "description": "Xuan is a phD student at the Department of CS in UIUC",
         "email": "xwang174@illinois.edu",
-        "image": 'female.png'
+        "image": 'xuan.jpeg'
     },
     {
         "name": "Yingjun Guan",
         "role": "Joined in 2019",
         "description": "Yingjun is a phD student at the School of IS in UIUC",
         "email": "yingjun2@illinois.edu",
-        "image": "male.png"
+        "image": "Yingjun.jpg"
     },
     {
         "name": "Aabhas Chauhan",
         "role": "Joined in 2020",
         "description": "Aabhas is a MS student at the Department of CS in UIUC",
         "email": "aabhasc2@illinois.edu",
-        "image": "male.png"
+        "image": "aabhas.jpeg"
     },
     {
         "name": "Weili Liu",
         "role": "Joined in 2019",
         "description": "Weili is a BS student at the Department of CS in UIUC",
         "email": "weilil2@illinois.edu",
-        "image": "male.png"
+        "image": "Weili.jpg"
+    },
+    {
+        "name": "Ruisong Li",
+        "role": "Joined in 2020",
+        "description": "Ruisong is a BS student at the Department of CS in UIUC",
+        "email": "ruisong4@illinois.edu",
+        "image": "ruisong.jpg"
+    },
+    {
+        "name": "Xiangchen Song",
+        "role": "Joined in 2019",
+        "description": "Xiangchen is a BS student at the Department of CS in UIUC",
+        "email": "xs22@illinois.edu",
+        "image": "xiangchen.jpg"
+    },
+    {
+        "name": "Bangzheng Li",
+        "role": "Joined in 2019",
+        "description": "Bangzheng is a BS student at the Department of CS in UIUC",
+        "email": "bl17@illinois.edu",
+        "image": "BangzhengLi.JPG"
     }
 ]
 

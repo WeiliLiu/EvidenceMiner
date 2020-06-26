@@ -3,7 +3,7 @@ import React from 'react';
 import api from '../../../api';
 // import downloaded packages
 
-import { Grid, Segment, Message, Container } from 'semantic-ui-react';
+import { Grid, Segment, Message, Container, Loader } from 'semantic-ui-react';
 import BarChart from "../BarChart";
 import CompareResult from "../CompareResult";
 import EntityInfo from "../EntityInfo";
@@ -184,13 +184,16 @@ export default class AnalyticsGraph extends React.Component {
             toReturn = this.entityUI();
             else toReturn = this.patternUI();
         } else {
-            toReturn = <Container style={{ backgroundColor: '', paddingTop: '2rem' }} textAlign='center'>
+            toReturn = loaded? <Container style={{ backgroundColor: '', paddingTop: '2rem' }} textAlign='center'>
                 <Message warning compact style={{ margin: '1rem' }}>
                     <Message.Header>No result in this Corpus</Message.Header>
                     <p>We can't find this metapattern or entity type in current corpus</p>
                     <p>please change the searching corpus or Re-Type in the Search bar and select from dropdown menu</p>
                 </Message>
-            </Container>
+            </Container> : 
+            <Segment className="search-loading-screen">
+                <Loader active={!loaded} size='huge'>Loading</Loader>
+            </Segment>
         }
         return (
             <div>
