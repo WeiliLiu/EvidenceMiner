@@ -156,7 +156,10 @@ export default {
                     "must": [
                         { "match": { "type": type.toUpperCase() } },
                         { "match": { "corpus": corpus } },
-                        { "match": { "instance": constrain.toLowerCase() } }
+                        { "match": { "instance": {
+                            "query": constrain.toLowerCase(),
+                            "operator": "and"
+                        } } }
                     ]
                 }
             },
@@ -181,7 +184,10 @@ export default {
                     "must": [
                         { "match": { "type": type.toUpperCase() } },
                         { "match": { "corpus": corpus } },
-                        { "match": { "instance": constrain.toLowerCase()} }
+                        { "match": { "instance": {
+                            "query": constrain.toLowerCase(),
+                            "operator": "and"
+                        } } }
                     ]
                 }
             },

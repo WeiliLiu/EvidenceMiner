@@ -43,8 +43,10 @@ export default class NavigationBar extends React.Component {
     }
 
     componentDidMount() {
-        const keyword = new URLSearchParams(window.location.search).get('kw');
-
+        let keyword = new URLSearchParams(window.location.search).get('kw');
+        if (new URLSearchParams(window.location.search).get('constrain') != null) {
+            keyword += "+" + new URLSearchParams(window.location.search).get('constrain');
+        }
         // Set up screen size listener
         window.addEventListener("resize", this.resize.bind(this));
         this.resize();

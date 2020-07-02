@@ -56,8 +56,8 @@ class BarChart extends React.Component {
             theme: "light2",
             title:{
                 text: mode === "pattern" ?
-                    "Top-20 entity pairs Based on Document Counts"
-                    : "Top-20 Entities Based on Document Counts"
+                    "Top entity pairs Based on Document Counts"
+                    : "Top Entities Based on Document Counts"
             },
             axisX: {
                 title: mode === "pattern" ? "entity pairs" : "Entities",
@@ -88,8 +88,8 @@ class BarChart extends React.Component {
             theme: "light2",
             title:{
                 text: mode === "pattern" ?
-                    "Top-20 entity pairs Based on Sentence Counts"
-                    : "Top-20 Entities Based on Sentence Counts"
+                    "Top entity pairs Based on Sentence Counts"
+                    : "Top Entities Based on Sentence Counts"
             },
             axisX: {
                 title: mode === "pattern" ? "entity pairs" : "Entities",
