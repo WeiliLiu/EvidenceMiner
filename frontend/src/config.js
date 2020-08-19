@@ -12,7 +12,7 @@ const staging = {
 
 const prod = {
   frontUrl: 'https://evidenceminer.com',
-  searchUrl: 'https://b4f22f72fb82.ngrok.io/',
+  searchUrl: 'https://b46edf855224.ngrok.io/',
 }
 
 function mergeDeep(...objects) {
