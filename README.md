@@ -2,7 +2,6 @@
 
 ### Project Structure
 - `frontend` - the frontend web application (React) that displays the information
-- `backend` - backend (Express) application that communicates with elasticsearch
 - `elasticsearch` - elasticsearch cluster set up for search purposes
 
 ### Installation
@@ -30,12 +29,6 @@ python3 setup.py
 python3 index.py
 ```
 
-Install the dependencies for the `backend` app by running these commands
-```
-cd backend
-npm install
-```
-
 Install the dependencies for the `frontend` app by running these commands
 ```
 cd frontend
@@ -43,12 +36,6 @@ npm install
 ```
 
 ### Running
-
-Start the backend API server
-```
-cd backend
-npm start
-```
 
 Start the frontend web app
 ```
@@ -58,5 +45,4 @@ npm start
 
 ### Finally
 - `elasticsearch` is served at [http://localhost:9200](http://localhost:9200)
-- `backend` is served at [http://localhost:3000](http://localhost:3000)
-- `frontend` is served at [http://localhost:3001](https://localhost:3001)
+- `frontend` is served at [http://localhost:3000](https://localhost:3000)
