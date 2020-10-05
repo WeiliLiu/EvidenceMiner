@@ -44,7 +44,7 @@ class CompareResult extends React.Component {
     }
 
     getOption(){
-        const {data, mode} = this.props;
+        const {data} = this.props;
         const {type} = this.state;
         let sent_data = data["bySentence"];
         let doc_data = data["byDocument"];

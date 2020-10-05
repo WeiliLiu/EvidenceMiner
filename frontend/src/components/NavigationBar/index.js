@@ -12,7 +12,7 @@ import api from '../../api';
 import './styles.css';
 
 const resultRenderer = ({ title, type }) => {
-    if (type != null) {
+    if (type !== null) {
         return (
             <div className="auto-complete-result">{title + " (Entity)"}</div>
         )
@@ -96,7 +96,7 @@ export default class NavigationBar extends React.Component {
         const { type,corpus } = this.props;
         const includePreprint = new URLSearchParams(window.location.search).get('ipp') === 'false'? false : true;
         if (this.props.type === "analytics") {
-            if (value.indexOf("+") != -1) {
+            if (value.indexOf("+") !== -1) {
                 let arr = value.split("+");
                 return "/" + type + '?kw=' + encodeURIComponent(arr[0].trim()) + '&corpus=' + corpus + '&constrain=' + encodeURIComponent(arr[1].trim());
             }

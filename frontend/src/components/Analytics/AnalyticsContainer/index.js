@@ -1,7 +1,7 @@
 import React from 'react';
 
 // import downloaded package
-import { Grid, Menu, Button, Message } from 'semantic-ui-react';
+import { Grid, Menu, Button } from 'semantic-ui-react';
 
 // import components
 import NavigationBar from '../../NavigationBar';
