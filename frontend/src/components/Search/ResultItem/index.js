@@ -104,7 +104,7 @@ class ResultItem extends React.Component {
 
         return(
             <Segment basic={!isMobile} raised={isMobile} className='search-segment'>
-                <a className='result-header' href={`/articles/${documentId}?jt=${sentID}`} >{this.showSentence()}</a>
+                <a className='result-header' href={`/articles/${documentId}?jt=${sentID}&archive=${this.props.archive}`} >{this.showSentence()}</a>
                 <span className="popup-container">
                     <Popup className="result-popup" inverted mouseEnterDelay={300} mouseLeaveDelay={300}
                             trigger={isTitle === 1? 

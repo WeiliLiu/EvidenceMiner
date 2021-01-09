@@ -342,6 +342,13 @@ const teamMembers = [
         "description": "Bangzheng is a BS student at the Department of CS in UIUC",
         "email": "bl17@illinois.edu",
         "image": "BangzhengLi.JPG"
+    },
+    {
+        "name": "Vivian Hu",
+        "role": "Joined in 2020",
+        "description": "Vivian is a MS student at the Department of CS in UIUC",
+        "email": "vivianh2@illinois.edu",
+        "image": "vivian.jpg"
     }
 ]
 

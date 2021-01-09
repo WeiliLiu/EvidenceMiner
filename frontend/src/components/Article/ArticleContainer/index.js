@@ -53,8 +53,8 @@ class ArticleContainer extends React.Component {
 
     async componentDidMount() {
         // Determine which archive this article belongs to
-        const article_id = this.props.match.params.id;
-        var archive = article_id > 29499? 'chd' : 'covid-19';
+
+        var archive = new URLSearchParams(window.location.search).get('archive');
 
         // Get query from the url querystring
         const jumpTarget = new URLSearchParams(window.location.search).get('jt');
