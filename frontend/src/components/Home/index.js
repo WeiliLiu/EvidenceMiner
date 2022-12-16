@@ -202,7 +202,7 @@ class Home extends React.Component {
                                     <Accordion.Content active={activeIndex === 1} className="answer">
                                         <p>
                                             EvidenceMiner uses the 75 fine-grained entity types automatically 
-                                            annotated by <a href="https://arxiv.org/abs/2003.12218">CORD-NER</a>. CORD-NER covers many new entity 
+                                            annotated by <a href="https://xuanwang91.github.io/2020-03-20-cord19-ner/">CORD-NER</a>. CORD-NER covers many new entity
                                             types specifically related to the COVID-19 studies (e.g., coronaviruses, viral proteins, 
                                             evolution, materials, substrates and immune responses), which may benefit research on COVID-19 
                                             related virus, spreading mechanisms, and potential vaccines. CORD-NER relies on distantly- 
@@ -229,6 +229,19 @@ class Home extends React.Component {
                                             higher, (2) entity score: candidate evidence sentences covering more query-related entities will be ranked 
                                             higher, and (3) pattern score: candidate evidence sentences covering more query-matched meta-patterns will 
                                             be ranked higher. More details of EvidenceMiner can be found in the <a href="https://arxiv.org/abs/2004.12563"> arXiv paper</a>.
+                                        </p>
+                                    </Accordion.Content>
+                                    <Accordion.Title className="question"
+                                                     active={activeIndex === 3}
+                                                     index={3}
+                                                     onClick={this.handleClick}
+                                    >
+                                        <Icon name='dropdown' />
+                                        Resources of the fine-grained entity types and meta-patterns used in EvidenceMiner?
+                                    </Accordion.Title>
+                                    <Accordion.Content active={activeIndex === 3} className="answer">
+                                        <p>
+                                            Get our full list of <a href={"entity.txt"} download>fine-grained entity types</a> and full list of <a href={"pattern.txt"} download>meta-patterns</a>
                                         </p>
                                     </Accordion.Content>
                                 </Accordion>

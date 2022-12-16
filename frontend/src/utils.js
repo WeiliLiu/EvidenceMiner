@@ -58,6 +58,8 @@ module.exports = {
                 patterns.push(pattern);
             });
         })
+        console.log(1)
+        console.log(docSentences.hits.hits)
         return [entities, sentences, patterns, sentColors];
     }
 }

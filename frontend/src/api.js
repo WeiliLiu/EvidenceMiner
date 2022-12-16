@@ -138,7 +138,7 @@ export default {
             "size": 1,
             "from":0
         };
-        return api.get(`/top/_search`, {
+        return api.get(`/top_with_syn/_search`, {
             params: {
                 source: JSON.stringify(query),
                 source_content_type: 'application/json'
